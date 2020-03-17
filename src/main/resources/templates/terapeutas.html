@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="layout/layout :: head">
+<body>
+	<header th:replace="layout/layout :: header"></header>
+
+	<div class="container py-4">
+		<div class="card bg-light">
+			<h1 class="card-header" th:text="${titulo}"></h1>
+			<div class="card-body">
+				<div class="container">
+				<div class="btn-group">
+					<h4 class="card-title">
+						<a sec:authorize="hasRole('ROLE_USER')"
+							class="btn btn-primary btn-xs" th:href="@{'/terapeuta/'}"
+							th:text="'Dar de alta terapeuta'"></a>
+					</h4>
+					<h4 class="card-title px-4">
+							<a sec:authorize="hasRole('ROLE_USER')" class="btn btn-primary btn-xs" th:href="@{'/paciente/listar'}"
+								th:text="'Listado de pacientes'"></a>
+						</h4>
+				</div>
+				</div>
+				
+				<div class="alert alert-info my-4"
+					th:if="${#lists.isEmpty(terapeutas)}"
+					th:text="'No hay terapeutas registrados en la base de datos'">
+				</div>
+
+				<div class="container py-4">
+					<div class="row row-cols-1 row-cols-md-3">
+						<div th:if="${terapeuta.fechaBaja==null}"
+							th:each="terapeuta: ${terapeutas}" class="col mb-4">
+							<div class="card h-100 text-center " style="width: 18rem;">
+								<img th:object="${terapeuta}"
+									th:if="${#strings.length(terapeuta.foto)>0}"
+									class="card-img-top"
+									th:src="@{'/terapeuta/uploads/' + ${terapeuta.foto}}"
+									th:alt="${terapeuta.foto}" />
+
+								<div class="card-body">
+									<h5 class="card-title" th:text="${terapeuta.apellido}"></h5>
+									<p class="card-text" th:text="${terapeuta.username}"></p>
+								</div>
+								<div class="card-footer">
+									<a th:href="@{/paciente/listar/} + ${terapeuta.id}"
+										th:text="'Pacientes'" class="btn btn-primary"></a> <a
+										sec:authorize="hasRole('ROLE_ADMIN')"
+										class="btn btn-danger btn-xs"
+										th:href="@{/terapeuta/eliminar/} + ${terapeuta.id}"
+										th:text="'Dar de baja'"
+										onclick="return confirm('¿Estás seguro que quieres dar de baja?');"></a>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="container">
+						<h4 class="card-title">
+							<a class="btn btn-primary btn-xs" th:href="@{'/'}"
+								th:text="'Volver al inicio'"></a>
+						</h4>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<footer th:replace="layout/layout :: footer"></footer>
+</body>
+
+</html>

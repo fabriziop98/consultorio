@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:fragment="head">
+<meta charset="UTF-8" />
+<title th:text="'Fonoaudiología'"></title>
+<style>
+.w3-card-4.w3-cyan {
+	z-index: 99999;
+}
+</style>
+<link rel="stylesheet" type="text/css" href="/css/modal.css" />
+<link rel="stylesheet" type="text/css" th:href="@{/css/map.css}" />
+<link rel="stylesheet" th:href="@{/css/jquery-ui.min.css}" />
+<link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
+
+</head>
+<body>
+	<header th:fragment="header">
+		<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+			<a class="navbar-brand" th:href="@{/inicio/}">Fonoaudiología
+				Marcela Mateu</a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse"
+				data-target="#navbarNav" aria-controls="navbarNav"
+				aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarNav">
+				<ul class="navbar-nav">
+					<li class="nav-item active"><a class="nav-link"
+						th:href="@{/inicio/}"> <span class="sr-only">(current)</span>
+					</a></li>
+
+
+				</ul>
+			</div>
+			<ul class="nav navbar-nav navbar-right px-4 ">
+				<li sec:authorize="!isAuthenticated()"><modal
+						th:replace="/modal/login :: modal"></modal></li>
+			</ul>
+
+			<ul class="nav navbar-nav navbar-right">
+
+
+				<li><a href="#bottom" class="btn btn-outline-primary">Contacto
+				</a></li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+
+				<!-- 				el li sec: es para si esta logeado no mustere el iniciar sesion -->
+				<li sec:authorize="isAuthenticated()"><a
+					th:href="@{/terapeuta/listar}" class="btn btn-outline-primary">Terapeutas
+				</a></li>
+			</ul>
+
+			<ul class="nav navbar-nav navbar-right">
+				<li sec:authorize="isAuthenticated()" class="dropdown"><a
+					class="btn btn-outline-primary dropdown-toggle" href="#"
+					role="button" id="dropdownMenuLink" data-toggle="dropdown"
+					aria-haspopup="true" aria-expanded="false"> <span
+						sec:authentication="name"></span>
+				</a>
+
+					<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+						<form id="logoutForm" th:action="@{/logout}" method="POST">
+							<button class="dropdown-item"
+								onclick="document.getElementById('logoutForm').submit"
+								type="submit">Salir</button>
+						</form>
+					</div></li>
+			</ul>
+
+		</nav>
+
+		<div class="alert alert-success" th:if="${success != null}"
+			th:text="${success}"></div>
+		<div class="alert alert-danger" th:if="${error != null}"
+			th:text="${error}"></div>
+		<div class="alert alert-warning" th:if="${warning != null}"
+			th:text="${warning}"></div>
+		<div class="alert alert-info" th:if="${info != null}"
+			th:text="${info}"></div>
+	</header>
+
+	<div id="carouselExampleIndicators" class="carousel slide"
+		data-ride="carousel">
+		<ol class="carousel-indicators">
+			<li data-target="#carouselExampleIndicators" data-slide-to="0"
+				class="active"></li>
+			<li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+			<li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+		</ol>
+		<div class="carousel-inner">
+			<div class="carousel-item active" style="height: 60vh">
+				<img class="d-block w-100" src="/images/bienestar1.jpg"
+					alt="First slide">
+				<div class="carousel-caption d-none d-md-block">
+					<h5>Profesionales altamente capacitados</h5>
+					<p>Felices de trabajar con todos los niños</p>
+				</div>
+			</div>
+			<div class="carousel-item" style="height: 60vh">
+				<img class="d-block w-100" src="/images/bienestar3.jpg"
+					alt="Second slide">
+				<div class="carousel-caption d-none d-md-block">
+					<h5>Altamente reconocidos en Puebla</h5>
+					<p>Más de 15 años de experiencia nos respaldan</p>
+				</div>
+			</div>
+			<div class="carousel-item" style="height: 60vh">
+				<img class="d-block w-100" src="/images/bienestar2.jpg"
+					alt="Third slide">
+				<div class="carousel-caption d-none d-md-block">
+					<h5>Resultados para toda la vida</h5>
+					<p>¿Estas listo para cambiar la tuya?</p>
+				</div>
+			</div>
+		</div>
+		<a class="carousel-control-prev" href="#carouselExampleIndicators"
+			role="button" data-slide="prev"> <span
+			class="carousel-control-prev-icon" aria-hidden="true"></span> <span
+			class="sr-only">Anterior</span>
+		</a> <a class="carousel-control-next" href="#carouselExampleIndicators"
+			role="button" data-slide="next"> <span
+			class="carousel-control-next-icon" aria-hidden="true"></span> <span
+			class="sr-only">Siguiente</span>
+		</a>
+	</div>
+
+
+	<div class="container">
+		<map th:replace="/map/map :: mapa"></map>
+	</div>
+	<div id="bottom"></div>
+
+</body>
+<footer th:replace="layout/layout :: footer"></footer>
+</html>

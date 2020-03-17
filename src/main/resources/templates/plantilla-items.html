@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<body>
+	<table th:fragment="itemsTerapeuta" class="d-none">
+
+		<tbody id="plantillaItemsTerapeuta">
+<!-- 		por cada linea vamos a tener un id oculito, un nombre, un precio -->
+			<tr id="row_{ID}">
+				<!-- item_id[]es asi porque es un arreglo, una factura puede tener muchos items -->
+				<td class="d-none"><input type="hidden" value="{ID}"
+					name="item_id[]" /></td>
+				<td>{USERNAME}</td>
+<!-- 				cantidad por item que por defecto es uno -->
+<!-- 				<td><input type="number" value="1" name="cantidad[]" -->
+<!-- 					id="cantidad_{ID}" class="form-control col-sm-4" /></td> -->
+<!-- 			</tr> -->
+
+		</tbody>
+
+	</table>
+</body>
+</html>

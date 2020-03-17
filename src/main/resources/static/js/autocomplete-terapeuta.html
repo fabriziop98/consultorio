@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+	<script type="text/javascript" th:fragment="javascript">
+		// 	para corroborar que la pagina esta compleatmente cargada
+		$(document).ready(function() {
+
+			$("#buscar_terapeuta").autocomplete({
+
+				//este source se encarga de buscar con el autocomplete los objetos con el query enviado.
+				source : function(request, response) {
+					$.ajax({
+						url : "/paciente/cargar-terapeuta/" + request.term,
+						dataType : "json",
+						data : {
+							term : request.term
+						},
+						success : function(data) {
+							response($.map(data, function(item) {
+								return {
+									value : item.id,
+									label : item.username,
+								};
+							}));
+						},
+					});
+				},
+				//este select se encarga de seleccionar cualquier objeto que retorno el metodo source
+				select : function(event, ui) {
+					
+					//mismo que value: item.nombre
+// 					$("#buscar_producto").val(ui.item.label);
+					//crear la linea a partir de la plantilla, traemos el tr de plantilla-itmes
+					//#plantillaItemsFactura es el id
+					var linea= $("#plantillaItemsTerapeuta").html();
+					
+// 					remplaza los valores de la tabla con los valores que retornamos arriba.
+					linea=linea.replace(/{ID}/g, ui.item.value);
+					linea=linea.replace(/{USERNAME}/g, ui.item.label);
+					
+					
+// 					agregamos las lineas obtenidas al tbody de la tabla que esta en blanco en nuestro html
+					$("#mostrarItemTerapeuta tbody").append(linea);
+					
+					return false;
+				}
+			});
+
+// 			este es para eliminar el input de la plantilla porque sino lo toma como un id mas, y lo toma como un string
+// 			al momento de hacer el submit del form
+			$("form").submit(function(){
+				$("#plantillaItemsTerapeuta").remove();
+				return;
+			});
+		});
+	</script>
+</body>
+</html>
