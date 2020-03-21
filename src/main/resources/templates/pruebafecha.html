@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+ 
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+ 
+  <head>
+ 
+  
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2018.2.620/styles/kendo.bootstrap-v4.min.css">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}" />
+<link rel="stylesheet" type="text/css" th:href="@{/css/jquery-ui.min.css}" />
+ 
+<style>body {font-family: helvetica;}</style>
+ 
+  </head>
+ 
+  <body>
+ 
+    <input id="dateTimePicker">
+  <script src="https://code.jquery.com/jquery-1.12.3.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2018.2.620/js/kendo.all.min.js"></script>
+<script>
+ 
+  $(document).ready(function(){
+    $('#dateTimePicker').kendoDateTimePicker();
+  });
+ 
+</script>
+<script th:src="@{/js/confirmpassword.js}"></script>
+<!-- 		<script th:src="@{/js/jquery-3.4.1.min.js}"></script> -->
+		<script th:src="@{/js/popper.min.js}"></script>
+		<script th:src="@{/js/bootstrap.min.js}"></script>
+		<script th:src="@{/js/jquery-ui.min.js}"></script>
+  </body>
+</html>

@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fabrizio.consultorio.app.models.dao.IPacienteDao;
 import com.fabrizio.consultorio.app.models.entity.Paciente;
+import com.fabrizio.consultorio.app.models.entity.Terapeuta;
 
 @Service
 public class PacienteServiceImpl implements IPacienteService{
@@ -16,7 +17,8 @@ public class PacienteServiceImpl implements IPacienteService{
 	@Autowired
 	private IPacienteDao pacienteDao;
 	
-	
+	@Autowired
+	private ITerapeutaService terapeutaService;
 	
 	@SuppressWarnings("unused")
 	@Autowired(required=false)
@@ -67,6 +69,7 @@ public class PacienteServiceImpl implements IPacienteService{
 
 	@Override
 	public List<Paciente> findByTerapeutaId(Long id) {
-		return null;
+		Terapeuta terapeuta = terapeutaService.findOne(id);
+		return terapeuta.getPacientes();
 	}
 }

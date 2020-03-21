@@ -2,6 +2,10 @@ package com.fabrizio.consultorio.app.controllers;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -30,6 +34,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fabrizio.consultorio.app.models.entity.Paciente;
 import com.fabrizio.consultorio.app.models.entity.Terapeuta;
+import com.fabrizio.consultorio.app.models.entity.Turno;
 import com.fabrizio.consultorio.app.models.service.IPacienteService;
 import com.fabrizio.consultorio.app.models.service.ITerapeutaService;
 import com.fabrizio.consultorio.app.models.service.IUploadFileService;
@@ -59,16 +64,65 @@ public class PacienteController {
 		
 	}
 	
-	@GetMapping("/form/{id}")
-	public String displayAsignarTerapeuta(@PathVariable(value = "id") Long id, Map<String, Object> model, @RequestParam(name = "item_id[]", required = false) Long[] itemId,  Model modelo , RedirectAttributes flash) {
-		Paciente paciente = pacienteService.findOne(id);
+	@PostMapping("/turno/{id}")
+	public String asignarTurno(@PathVariable(value="id") Long id, Model model,
+			@RequestParam(name = "turnos", required = false) Turno turno, 
+			RedirectAttributes flash, SessionStatus status) {
 		
-		modelo.addAttribute("pacientes", paciente);
-
-		for (int i = 0; i < itemId.length; i++) {
-			Terapeuta terapeuta = terapeutaService.findTerapeutaById(itemId[i]);
-			paciente.addTerapeuta(terapeuta);
+		
+		Paciente pacientes = pacienteService.findOne(id);
+		model.addAttribute("pacientes", pacientes);
+		
+		if (turno == null) {
+			model.addAttribute("titulo", "Asignar turno");
+//			el error se conecta al th:errorclass
+			model.addAttribute("error", "Error: El turno es nulo");
+			return "asignarTurno";
 		}
+		
+//		for (int i = 0; i < turno.length; i++) {
+			String dateTimePicker = turno.toString();
+			DateFormat format = new SimpleDateFormat("M/d/yyyy", Locale.ENGLISH);
+			try {
+				turno.setFechaTurno(format.parse(dateTimePicker));
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			System.out.println(turno.getFechaTurno());
+			pacientes.addTurno(turno);
+		
+		
+		pacienteService.save(pacientes);
+		status.setComplete();
+		
+		return "redirect:/paciente/listar";
+	}
+	
+	
+	@GetMapping("/turno/{id}")
+	public String displayAsignarTurno(@PathVariable(value = "id") Long id, Map<String, Object> model, Model modelo , RedirectAttributes flash) {
+		Paciente paciente = pacienteService.findOne(id);
+		modelo.addAttribute("pacientes", paciente);
+		
+		if (paciente == null) {
+			flash.addFlashAttribute("error", "El paciente no existe en la base de datos");
+			return "redirect:/paciente/listar";
+		}
+		model.put("paciente", paciente);
+		model.put("titulo", "Turno para paciente: " + paciente.getUsername());
+		
+		pacienteService.save(paciente);
+		
+		return "asignarTurno";
+	}
+	
+	
+	
+	@GetMapping("/form/{id}")
+	public String displayAsignarTerapeuta(@PathVariable(value = "id") Long id, Map<String, Object> model,/* @RequestParam(name = "item_id[]", required = false) Long[] itemId,*/  Model modelo , RedirectAttributes flash) {
+		Paciente paciente = pacienteService.findOne(id);
+		modelo.addAttribute("pacientes", paciente);
 		
 		if (paciente == null) {
 			flash.addFlashAttribute("error", "El cliente no existe en la base de datos");
@@ -79,33 +133,51 @@ public class PacienteController {
 		
 		pacienteService.save(paciente);
 		
-		return "redirect:/paciente/listar";
+		return "asignarTerapeuta";
 	}
 	
-	@PostMapping("/form1")
-	public String asignarTerapeuta(@Valid Paciente paciente, BindingResult result, Model model,
+	
+	@PostMapping("/form/{id}")
+	public String asignarTerapeuta(@PathVariable(value = "id") Long id, Model model,
 			@RequestParam(name = "item_id[]", required = false) Long[] itemId, 
 			RedirectAttributes flash, SessionStatus status) {
 		
-		Paciente paciente = pacienteService.findOne(id);
+		Paciente pacientes = pacienteService.findOne(id);
+		
+		pacientes = pacienteService.findOne(id);
+		model.addAttribute("pacientes", pacientes);
+//		paciente = pacienteService.findOne((Long) model.getAttribute("id"));
+		
+		if (itemId == null || itemId.length == 0) {
+			model.addAttribute("titulo", "Asignar terapeuta");
+//			el error se conecta al th:errorclass
+			model.addAttribute("error", "Error: El terapeuta es nulo");
+			return "asignarTerapeuta";
+		}
+		
+		System.out.println(itemId);
 		
 		for (int i = 0; i < itemId.length; i++) {
 			Terapeuta terapeuta = terapeutaService.findTerapeutaById(itemId[i]);
-			paciente.addTerapeuta(terapeuta);
+			pacientes.addTerapeuta(terapeuta);
 		}
 		
-		pacienteService.save(paciente);
+		pacienteService.save(pacientes);
+		flash.addAttribute("success", "Terapeuta asignado con éxito");
 		
 		
-		return "redirect:/paciente/listar";
+		
+		return "redirect:/paciente/ver/{id}";
 	}
 	
 	@Secured("ROLE_USER")
 	@GetMapping("/listar/{id}")
-	public String verPacienteTerapeuta(@PathVariable(value="id") Long id, Map<String, Object> model, RedirectAttributes flash) {
+	public String verPacienteTerapeuta(@PathVariable(value="id") Long id, Map<String, Object> model, Model modelo, RedirectAttributes flash) {
 		List<Paciente> pacientes = pacienteService.findByTerapeutaId(id);
-		
-		
+		model.put("titulo", "Pacientes");
+		model.put("pacientes", pacientes);
+		modelo.getAttribute("dateTimePicker");
+		System.out.println(modelo.getAttribute("dateTimePicker"));
 		return "pacientes";
 	}
 	
@@ -118,12 +190,15 @@ public class PacienteController {
 	@GetMapping(value = "/ver/{id}")
 	public String ver(@PathVariable(value = "id") Long id, Map<String, Object> model, RedirectAttributes flash) {
 		Paciente paciente = pacienteService.findOne(id);
+		
 		if (paciente == null) {
 			flash.addFlashAttribute("error", "El cliente no existe en la base de datos");
 			return "redirect:/paciente/listar";
 		}
 		model.put("paciente", paciente);
-		model.put("titulo", "Detalle paciente: " + paciente.getUsername());
+		model.put("titulo", "Detalle paciente: " + paciente.getUsername() +" "+ paciente.getApellido());
+		model.put("nombreTerapeuta", paciente.getTerapeutas().toString().replace("[", "").replace("]", ""));
+		model.put("turnos", paciente.getTurnos().toString().replace("[", "").replace("]", ""));
 		return "verPaciente";
 	}
 	

@@ -13,4 +13,10 @@ public class PrincipalController {
 		return "inicio";
 	}
 	
+	
+	@GetMapping("/prueba")
+	public String prueba() {
+		return "pruebafecha";
+	}
+	
 }

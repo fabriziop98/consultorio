@@ -1,57 +1,80 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
 	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head th:replace="layout/layout :: head">
-<body>
-	<header th:replace="layout/layout :: header"></header>
 
 
-	<div class="container py-4">
-		<div class="card bg-light">
-			<div class="card-header" th:text="${titulo}"></div>
-			<div class="card-body">
+<link rel="stylesheet"
+	href="https://kendo.cdn.telerik.com/2018.2.620/styles/kendo.bootstrap-v4.min.css">
+<head th:replace="layout/layout :: head"></head>
+<header th:replace="layout/layout :: header"></header>
 
-				<div class="container">
-					<div class="btn-group">
-						<h4 class="card-title">
-						
-							<a sec:authorize="hasRole('ROLE_ADMIN')"
-								class="btn btn-primary btn-xs" th:href="@{'/paciente/form/'+${paciente.id}}"
-								th:text="'Asignar terapeuta'"></a>
-						</h4></div>
+
+<div class="container py-4">
+	<div class="card bg-light">
+		<div class="card-header" th:text="${titulo}"></div>
+		<div class="card-body">
+
+			<div class="container">
+				<div class="btn-group">
+					<h4 class="card-title">
+
+						<a sec:authorize="hasRole('ROLE_ADMIN')"
+							class="btn btn-primary btn-xs"
+							th:href="@{'/paciente/form/'+${paciente.id}}"
+							th:text="'Asignar terapeuta'"></a>
+					</h4>
 				</div>
-
-				<img th:if="${#strings.length(paciente.foto)>0}"
-					class="img-thumbnail rounded float-left" style="max-width: 25%;"
-					th:src="@{'/paciente/uploads/' + ${paciente.foto}}"
-					th:alt="${paciente.foto}" />
-				<ul class="list-group">
-					<li class="list-group-item" th:text="${paciente.username}"></li>
-					<li class="list-group-item" th:text="${paciente.apellido}"></li>
-					<li class="list-group-item"
-						th:text="'Terapeuta: '+${paciente.terapeutas}"></li>
-					<li class="list-group-item" th:text="'Turnos: '"></li>
-<!-- 					<li class="list-group-item"><div class="btn-group"> -->
-<!-- 						<h4 class="card-title"> -->
-						
-<!-- 							<a sec:authorize="hasRole('ROLE_ADMIN')" -->
-<!-- 								class="btn btn-primary btn-xs" th:href="@{'/paciente/form/'+${paciente.id}}" -->
-<!-- 								th:text="'Asignar terapeuta'"></a> -->
-<!-- 						</h4></div></li> -->
-				</ul>
 			</div>
+
+			<img th:if="${#strings.length(paciente.foto)>0}"
+				class="img-thumbnail rounded float-left" style="max-width: 25%;"
+				th:src="@{'/paciente/uploads/' + ${paciente.foto}}"
+				th:alt="${paciente.foto}" />
+			<ul class="list-group">
+				<li class="list-group-item" th:text="${paciente.username}"></li>
+				<li class="list-group-item" th:text="${paciente.apellido}"></li>
+				<li class="list-group-item"
+					th:utext="'Terapeuta(s): '+${nombreTerapeuta}"></li>
+				<li class="list-group-item" th:utext="'Turnos: '+${turnos}"></li>
+				
+				<input name="dateTimePicker" id="dateTimePicker">
+				<!-- 					<li class="list-group-item"><div class="btn-group"> -->
+				<!-- 						<h4 class="card-title"> -->
+
+				<!-- 							<a sec:authorize="hasRole('ROLE_ADMIN')" -->
+				<!-- 								class="btn btn-primary btn-xs" th:href="@{'/paciente/form/'+${paciente.id}}" -->
+				<!-- 								th:text="'Asignar terapeuta'"></a> -->
+				<!-- 						</h4></div></li> -->
+			</ul>
+
+
 		</div>
-	</div>
-	<div class="container">
-		<h4 class="card-title">
-			<a class="btn btn-primary btn-xs" th:href="@{'/'}"
-				th:text="'Volver al inicio'"></a>
-		</h4>
+		<div class="card-body">
+			
+			<div class="container">
+			<div class="btn-group">
+				<h4 class="card-title">
+					<a class="btn btn-primary btn-xs" th:href="@{'/'}"
+						th:text="'Volver al inicio'"></a>
+				</h4>
+				<h4 sec:authorize="hasRole('ROLE_ADMIN')" class="card-title px-4">
+					<a class="btn btn-primary btn-xs" th:href="@{'/paciente/turno/'+${paciente.id}}"
+						th:text="'Asignar turnos'"></a>
+				</h4>
 
+			</div>
+		</div></div>
 	</div>
-	<footer th:replace="layout/layout :: footer"></footer>
+</div>
+<script src="https://code.jquery.com/jquery-1.12.3.min.js"></script>
+<script
+	src="https://kendo.cdn.telerik.com/2018.2.620/js/kendo.all.min.js"></script>
+<script>
+	$(document).ready(function() {
+		$('#dateTimePicker').kendoDateTimePicker();
+	});
+</script>
+<footer th:replace="layout/layout :: footer"></footer>
 </body>
 
-</html>
-</body>
 </html>

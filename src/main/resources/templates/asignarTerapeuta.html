@@ -11,7 +11,7 @@
 <!-- 						<li th:each="err: ${#fields.errors('*')}" th:text="${err}"></li> -->
 <!-- 					</ul> -->
 <!-- 				</div> -->
-				<form th:action="@{/paciente/form1}" th:object="${paciente}"
+				<form th:action="@{'/paciente/form/'+${paciente.id}}" th:object="${paciente}"
 					method="POST" enctype="multipart/form-data">
 					<div class="form-group row">
 						<label class="col-sm-2 col-form-label">Nombre paciente</label>

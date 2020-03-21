@@ -12,12 +12,12 @@
 				<div class="container">
 				<div class="btn-group">
 					<h4 class="card-title">
-						<a sec:authorize="hasRole('ROLE_USER')"
+						<a sec:authorize="hasRole('ROLE_ADMIN')"
 							class="btn btn-primary btn-xs" th:href="@{'/terapeuta/'}"
 							th:text="'Dar de alta terapeuta'"></a>
 					</h4>
 					<h4 class="card-title px-4">
-							<a sec:authorize="hasRole('ROLE_USER')" class="btn btn-primary btn-xs" th:href="@{'/paciente/listar'}"
+							<a sec:authorize="hasRole('ROLE_ADMIN')" class="btn btn-primary btn-xs" th:href="@{'/paciente/listar'}"
 								th:text="'Listado de pacientes'"></a>
 						</h4>
 				</div>
