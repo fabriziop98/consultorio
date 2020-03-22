@@ -10,7 +10,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -24,8 +23,9 @@ public class Turno {
 	private Long id;
 	
 //	@NotNull
+//	HACERLO UNICO AL TURNO
 	@Column(name = "fecha_turno")
-	@DateTimeFormat(pattern = "M/d/yyyy HH:mm:ss")
+	@DateTimeFormat(pattern = "M/d/yyyy hh:mm aa")
 	private Date fechaTurno;
 	
 	@ManyToMany(mappedBy="turnos")
@@ -55,5 +55,11 @@ public class Turno {
 	public void setPaciente(List<Paciente> paciente) {
 		this.paciente = paciente;
 	}
+
+	@Override
+	public String toString() {
+		return fechaTurno+"";
+	}
+	
 	
 }

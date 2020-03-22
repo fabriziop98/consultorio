@@ -4,16 +4,16 @@
 <head th:fragment="head">
 <meta charset="UTF-8" />
 <title th:text="'Fonoaudiología'"></title>
-<style>
-.w3-card-4.w3-cyan {
-	z-index: 99999;
-}
-</style>
 <link rel="stylesheet" type="text/css" href="/css/modal.css" />
 <link rel="stylesheet" type="text/css" th:href="@{/css/map.css}" />
 <link rel="stylesheet" th:href="@{/css/jquery-ui.min.css}" />
 <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
+<style type="text/css">
+	div {
+		z-index: -1;
+	}
 
+</style>
 </head>
 <body>
 	<header th:fragment="header">

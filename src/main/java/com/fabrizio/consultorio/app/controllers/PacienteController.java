@@ -4,8 +4,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.text.SimpleDateFormat;	
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -66,12 +65,15 @@ public class PacienteController {
 	
 	@PostMapping("/turno/{id}")
 	public String asignarTurno(@PathVariable(value="id") Long id, Model model,
-			@RequestParam(name = "turnos", required = false) Turno turno, 
+			@RequestParam(name = "turnos", required = false) String turno, 
 			RedirectAttributes flash, SessionStatus status) {
 		
-		
+		System.out.println(turno);
 		Paciente pacientes = pacienteService.findOne(id);
 		model.addAttribute("pacientes", pacientes);
+		
+		Turno turnos = new Turno();
+		
 		
 		if (turno == null) {
 			model.addAttribute("titulo", "Asignar turno");
@@ -81,22 +83,22 @@ public class PacienteController {
 		}
 		
 //		for (int i = 0; i < turno.length; i++) {
-			String dateTimePicker = turno.toString();
-			DateFormat format = new SimpleDateFormat("M/d/yyyy", Locale.ENGLISH);
+			String dateTimePicker = turno;
+			DateFormat format = new SimpleDateFormat("M/d/yyyy hh:mm aa", Locale.ENGLISH);
 			try {
-				turno.setFechaTurno(format.parse(dateTimePicker));
+				turnos.setFechaTurno(format.parse(dateTimePicker));
 			} catch (ParseException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			System.out.println(turno.getFechaTurno());
-			pacientes.addTurno(turno);
+			System.out.println(turnos.getFechaTurno());
+			pacientes.addTurno(turnos);
 		
 		
 		pacienteService.save(pacientes);
 		status.setComplete();
 		
-		return "redirect:/paciente/listar";
+		return "redirect:/paciente/ver/{id}";
 	}
 	
 	
