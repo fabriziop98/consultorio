@@ -63,6 +63,52 @@ public class PacienteController {
 		
 	}
 	
+	@Secured("ROLE_ADMIN")
+	@GetMapping("/")
+	public String displayCrearPaciente(Model model) {
+		model.addAttribute("paciente", new Paciente());
+		return "crearPaciente";
+	}
+	
+	
+	@Secured("ROLE_ADMIN")
+	@PostMapping("/crear")
+	public String crearPaciente(@Valid Paciente paciente, BindingResult result, Model model,
+			@RequestParam("file") MultipartFile foto, RedirectAttributes flash, SessionStatus status) {
+//		if (result.hasErrors()) {
+//			model.addAttribute("titulo", "Crear terapeuta");
+//			return "crearTerapeuta";
+//		}
+		
+		
+		if(foto.isEmpty()) {
+			model.addAttribute("titulo", "Crear Paciente");
+			model.addAttribute("error", "Error: El perfil del paciente no puede no tener foto.");
+			return "crearPaciente";
+		}
+		
+		if(!foto.isEmpty()) {
+			if(paciente.getId()!=null && paciente.getId() > 0 && paciente.getFoto() != null
+					&& paciente.getFoto().length() >0) {
+				uploadFileService.delete(paciente.getFoto());
+			}
+			String uniqueFilename = null;
+			try {
+				uniqueFilename = uploadFileService.copy(foto);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			flash.addAttribute("info", "Se ha subido correctamente la foto de perfil de "+paciente.getApellido()+".");
+			paciente.setFoto(uniqueFilename);
+		}
+		
+		flash.addFlashAttribute("success", "Paciente creado con éxito.");
+		pacienteService.save(paciente);
+		status.setComplete();
+		return "redirect:/paciente/listar";
+	}
+	
+	
 	@PostMapping("/turno/{id}")
 	public String asignarTurno(@PathVariable(value="id") Long id, Model model,
 			@RequestParam(name = "turnos", required = false) String turno, 
@@ -88,7 +134,6 @@ public class PacienteController {
 			try {
 				turnos.setFechaTurno(format.parse(dateTimePicker));
 			} catch (ParseException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			System.out.println(turnos.getFechaTurno());
@@ -101,6 +146,37 @@ public class PacienteController {
 		return "redirect:/paciente/ver/{id}";
 	}
 	
+	@GetMapping("/pdf/{id}")
+	public String displayPdf(@PathVariable Long id, Model model) {
+		Paciente paciente = pacienteService.findOne(id);
+		model.addAttribute("paciente", paciente);
+		return "subirPdf";
+	}
+	
+	@PostMapping("/pdf/{id}")
+	public String subirPdf(@PathVariable Long id, Model model, @RequestParam("file") MultipartFile archivo, RedirectAttributes flash, SessionStatus status) {
+		Paciente paciente = pacienteService.findOne(id);
+		if(archivo.isEmpty()) {
+			model.addAttribute("titulo", "Subir Pdf");
+			model.addAttribute("error", "Error: El pdf no puede ser nulo.");
+			return "subirPdf";
+		}
+		
+		if(!archivo.isEmpty()) {
+			String uniqueFilename = null;
+			try {
+				uniqueFilename = uploadFileService.copy(archivo);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			flash.addAttribute("info", "Se ha subido correctamente el pdf: "+archivo.getName());
+			paciente.addPdf(uniqueFilename);
+		}
+		pacienteService.save(paciente);
+		status.setComplete();
+		
+		return "redirect:/paciente/ver/{id}";
+	}
 	
 	@GetMapping("/turno/{id}")
 	public String displayAsignarTurno(@PathVariable(value = "id") Long id, Map<String, Object> model, Model modelo , RedirectAttributes flash) {
@@ -190,7 +266,7 @@ public class PacienteController {
 	
 	@Secured("ROLE_USER")
 	@GetMapping(value = "/ver/{id}")
-	public String ver(@PathVariable(value = "id") Long id, Map<String, Object> model, RedirectAttributes flash) {
+	public String ver(@PathVariable(value = "id") Long id,  Map<String, Object> model, RedirectAttributes flash) {
 		Paciente paciente = pacienteService.findOne(id);
 		
 		if (paciente == null) {
@@ -204,57 +280,32 @@ public class PacienteController {
 		return "verPaciente";
 	}
 	
+	@GetMapping("/listadoPdf/{id}")
+	public String verPdfPaciente(@PathVariable Long id, Model model) {
+		Paciente paciente = pacienteService.findOne(id);
+		model.addAttribute("paciente", paciente);
+		return "verPdf";
+	}
 	
-	
-	
-	@Secured("ROLE_ADMIN")
-	@GetMapping("/")
-	public String displayCrearPaciente(Model model) {
-		model.addAttribute("paciente", new Paciente());
-		return "crearPaciente";
+	@GetMapping(value = "/listado/pdf/{filename:.+}")
+	public ResponseEntity<Resource> verPdf(@PathVariable String filename) {
+		Resource recurso = null;
+		try {
+			System.out.println("filename: "+filename);
+			recurso = uploadFileService.load(filename);
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+
+		return ResponseEntity.ok()
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + recurso.getFilename() + "\"")
+				.body(recurso);
 	}
 	
 	
-	@Secured("ROLE_ADMIN")
-	@PostMapping("/crear")
-	public String crearPaciente(@Valid Paciente paciente, BindingResult result, Model model,
-			@RequestParam(name="turno_id[]", required = false)Long[] turnoId, @RequestParam("file") MultipartFile foto, RedirectAttributes flash, SessionStatus status) {
-//		if (result.hasErrors()) {
-//			model.addAttribute("titulo", "Crear terapeuta");
-//			return "crearTerapeuta";
-//		}
-		
-		
-		if(foto.isEmpty()) {
-			model.addAttribute("titulo", "Crear Paciente");
-			model.addAttribute("error", "Error: El perfil del paciente no puede no tener foto.");
-			return "crearPaciente";
-		}
-		
-		if(!foto.isEmpty()) {
-			if(paciente.getId()!=null && paciente.getId() > 0 && paciente.getFoto() != null
-					&& paciente.getFoto().length() >0) {
-				uploadFileService.delete(paciente.getFoto());
-			}
-			String uniqueFilename = null;
-			try {
-				uniqueFilename = uploadFileService.copy(foto);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			flash.addAttribute("info", "Se ha subido correctamente la foto de perfil de "+paciente.getApellido()+".");
-			paciente.setFoto(uniqueFilename);
-		}
-		
-		flash.addFlashAttribute("success", "Paciente creado con éxito.");
-		pacienteService.save(paciente);
-		status.setComplete();
-		return "redirect:/paciente/listar";
-	}
 	
 	@GetMapping(value = "/uploads/{filename:.+}")
 	public ResponseEntity<Resource> verFoto(@PathVariable String filename) {
-//		Resource recurso = uploadFileService.load(filename);
 		Resource recurso = null;
 		try {
 			recurso = uploadFileService.load(filename);

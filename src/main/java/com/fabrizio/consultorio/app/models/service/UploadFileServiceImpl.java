@@ -22,28 +22,44 @@ public class UploadFileServiceImpl implements IUploadFileService {
 
 	@Override
 	public Resource load(String filename) throws MalformedURLException {
-		Path pathFoto = getPath(filename);
 		Resource recurso = null;
-		recurso = new UrlResource(pathFoto.toUri());
-		if (!recurso.exists() || !recurso.isReadable()) {
-			throw new RuntimeException("Error: no se puede cargar la imagen: " + pathFoto.toString());
+		if(filename.endsWith("pdf")) {
+			Path pathPdf = pdfPath(filename);
+			recurso = new UrlResource(pathPdf.toUri());
+			if (!recurso.exists() || !recurso.isReadable()) {
+				throw new RuntimeException("Error: no se puede cargar el pdf: " + pathPdf.toString());
+			}
+		} 
+		else {
+			Path pathFoto = getPath(filename);
+			recurso = new UrlResource(pathFoto.toUri());
+			if (!recurso.exists() || !recurso.isReadable()) {
+				throw new RuntimeException("Error: no se puede cargar la imagen: " + pathFoto.toString());
+			}
 		}
-
+		
 		return recurso;
 	}
 
 	@Override
 	public String copy(MultipartFile file) throws IOException {
 		String uniqueFilename = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
-		Path rootPath = getPath(uniqueFilename);
-		
-		log.info("rootPath: " + rootPath);
+		if (file.getContentType().endsWith("pdf")) {
+			Path rutaPdf = pdfPath(uniqueFilename);
+			log.info("rootPath: " + rutaPdf);
+			Files.copy(file.getInputStream(), rutaPdf);
+		} else {
+			Path rootPath = getPath(uniqueFilename);
+			
+			log.info("rootPath: " + rootPath);
 
-		Files.copy(file.getInputStream(), rootPath);
-//			otra forma de hacerlo
-//			byte[] bytes = foto.getBytes();
-//			Path rutaCompleta = Paths.get(rootPath + "//" + foto.getOriginalFilename());
-//			Files.write(rutaCompleta, bytes);
+			Files.copy(file.getInputStream(), rootPath);
+//				otra forma de hacerlo
+//				byte[] bytes = foto.getBytes();
+//				Path rutaCompleta = Paths.get(rootPath + "//" + foto.getOriginalFilename());
+//				Files.write(rutaCompleta, bytes);
+		}
+	
 
 		return uniqueFilename;
 	}
@@ -58,6 +74,10 @@ public class UploadFileServiceImpl implements IUploadFileService {
 			}
 		}
 		return false;
+	}
+	
+	public Path pdfPath(String filename){
+		return Paths.get("archivos").resolve(filename).toAbsolutePath();
 	}
 	
 	public Path getPath(String filename) {
