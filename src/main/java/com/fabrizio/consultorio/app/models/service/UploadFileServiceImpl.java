@@ -54,10 +54,6 @@ public class UploadFileServiceImpl implements IUploadFileService {
 			log.info("rootPath: " + rootPath);
 
 			Files.copy(file.getInputStream(), rootPath);
-//				otra forma de hacerlo
-//				byte[] bytes = foto.getBytes();
-//				Path rutaCompleta = Paths.get(rootPath + "//" + foto.getOriginalFilename());
-//				Files.write(rutaCompleta, bytes);
 		}
 	
 

@@ -17,19 +17,25 @@
 								th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></small>
 						</div>
 					</div>
-						<a class="btn btn-danger btn-xs float-right mx-2" th:href="@{'/paciente/listado/pdf/' + ${paciente.pdf}(format=pdf)}">Exportar a PDF</a>
-					
-<!-- 					<embed type='application/pdf' src="/Users/fabriziopratici/Documents/workspace-spring-tool-suite-4-4.5.1.RELEASE/Consultorio/archivos/5e61d836-c486-403e-ad46-fb7fec949f59_ATM_LBB935.pdf" width=”600” height=”500”> </embed> -->
-<!-- 					<a type='application/pdf' href="/Users/fabriziopratici/Documents/workspace-spring-tool-suite-4-4.5.1.RELEASE/Consultorio/archivos/5e61d836-c486-403e-ad46-fb7fec949f59_ATM_LBB935.pdf"> Download PDF </a> -->
-					<!-- 					<embed src="https://drive.google.com/viewerng/ -->
-					<!-- viewer?embedded=true&url=http://example.com/the.pdf" width="500" height="375"> -->
-<!-- 					<embed -->
-<!-- 						src="http://localhost:8080'+@{'/paciente/listado/pdf/' + ${paciente.pdf}}" -->
-<!-- 						width="500" height="375" type="application/pdf" /> -->
-					<div>
-						<iframe src="/Users/fabriziopratici/Documents/workspace-spring-tool-suite-4-4.5.1.RELEASE/Consultorio/archivos/5e61d836-c486-403e-ad46-fb7fec949f59_ATM_LBB935.pdf" style="width: 100%; height: 700px;"></iframe>
+					<div th:each="pdf : ${paciente.pdf}">
+						<a class="btn btn-danger btn-xs float-right mx-2"
+							th:href="@{'/paciente/listado/pdf/' + ${pdf}(format=pdf)}"
+							
+							th:text="${#strings.substring(pdf,0,10)}" target="_blank"></a>
+							
+							
+
+<!-- 						<div style="padding: 20px"> -->
+<!-- 							<embed type="application/pdf" th:src="@{'/archivos/' + ${pdf}}" -->
+<!-- 								style="width: 50%; height:620px;" ></embed> -->
+<!-- 						</div> -->
 					</div>
-					<div></div>
+
+<!-- 										<div> -->
+<!-- 											<iframe -->
+<!-- 												src="/Users/fabriziopratici/Documents/workspace-spring-tool-suite-4-4.5.1.RELEASE/Consultorio/archivos/5e61d836-c486-403e-ad46-fb7fec949f59_ATM_LBB935.pdf" -->
+<!-- 												style="width: 100%; height: 700px;"></iframe> -->
+<!-- 										</div> -->
 				</form>
 			</div>
 		</div>

@@ -276,7 +276,8 @@ public class PacienteController {
 		model.put("paciente", paciente);
 		model.put("titulo", "Detalle paciente: " + paciente.getUsername() +" "+ paciente.getApellido());
 		model.put("nombreTerapeuta", paciente.getTerapeutas().toString().replace("[", "").replace("]", ""));
-		model.put("turnos", paciente.getTurnos().toString().replace("[", "").replace("]", ""));
+		model.put("turnos", paciente.getTurnos());
+//				paciente.getTurnos().toString().replace("[", "").replace("]", ""));
 		return "verPaciente";
 	}
 	
@@ -298,7 +299,6 @@ public class PacienteController {
 		}
 
 		return ResponseEntity.ok()
-				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + recurso.getFilename() + "\"")
 				.body(recurso);
 	}
 	

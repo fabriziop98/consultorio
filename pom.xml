@@ -106,11 +106,15 @@
 			<artifactId>spring-oxm</artifactId>
 		</dependency>
 
-		<!-- solo para JDK 9 o superior -->
-
 		<dependency>
 			<groupId>javax.xml.bind</groupId>
 			<artifactId>jaxb-api</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.github.librepdf</groupId>
+			<artifactId>openpdf</artifactId>
+			<version>1.3.16</version>
 		</dependency>
 
 		<dependency>
