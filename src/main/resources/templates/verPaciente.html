@@ -45,7 +45,7 @@
 				<li class="list-group-item"
 					th:utext="'Terapeuta(s): '+${nombreTerapeuta}"></li>
 				<p th:each="turno : ${turnos}" class="list-group-item"
-					th:text="'Turno: '+${turno.fechaTurno}"></p>
+					th:text="'Próximo turno: '+${turno.fechaTurno}"></p>
 <!-- 					 ? ${#dates.format(turno.fechaTurno, 'dd-MM-yyyy HH:mm')}18:00" -->
 					 
 				<li class="list-group-item"><a class="btn btn-secondary btn-xs"
@@ -78,12 +78,6 @@
 						<a sec:authorize="hasRole('ROLE_ADMIN')" class="card-title"
 							th:replace="/modal/asignarTurno :: modal"></a>
 					</h4>
-					<!-- 					<h4 sec:authorize="hasRole('ROLE_ADMIN')" class="card-title px-4"> -->
-					<!-- 						<a class="btn btn-primary btn-xs" -->
-					<!-- 							th:href="@{'/paciente/turno/'+${paciente.id}}" -->
-					<!-- 							th:text="'Asignar turnos'"></a> -->
-					<!-- 					</h4> -->
-
 				</div>
 			</div>
 		</div>

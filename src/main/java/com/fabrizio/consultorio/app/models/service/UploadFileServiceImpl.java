@@ -43,7 +43,7 @@ public class UploadFileServiceImpl implements IUploadFileService {
 
 	@Override
 	public String copy(MultipartFile file) throws IOException {
-		String uniqueFilename = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+		String uniqueFilename = UUID.randomUUID().toString() + "___" + file.getOriginalFilename();
 		if (file.getContentType().endsWith("pdf")) {
 			Path rutaPdf = pdfPath(uniqueFilename);
 			log.info("rootPath: " + rutaPdf);

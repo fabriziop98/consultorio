@@ -12,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
@@ -49,8 +50,9 @@ public class Paciente implements Serializable {
 
 	private String foto;
 
-	@ElementCollection(targetClass = String.class)
-	private List<String> pdf;
+	@ElementCollection(targetClass = Pdf.class)
+	@OneToMany(cascade=CascadeType.ALL)
+	private List<Pdf> pdf;
 
 	@PrePersist
 	public void prePersist() {
@@ -157,15 +159,15 @@ public class Paciente implements Serializable {
 		this.foto = foto;
 	}
 
-	public List<String> getPdf() {
+	public List<Pdf> getPdf() {
 		return pdf;
 	}
 
-	public void setPdf(List<String> pdf) {
+	public void setPdf(List<Pdf> pdf) {
 		this.pdf = pdf;
 	}
 
-	public void addPdf(String pdf) {
+	public void addPdf(Pdf pdf) {
 		this.pdf.add(pdf);
 	}
 

@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;	
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -32,9 +34,11 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fabrizio.consultorio.app.models.entity.Paciente;
+import com.fabrizio.consultorio.app.models.entity.Pdf;
 import com.fabrizio.consultorio.app.models.entity.Terapeuta;
 import com.fabrizio.consultorio.app.models.entity.Turno;
 import com.fabrizio.consultorio.app.models.service.IPacienteService;
+import com.fabrizio.consultorio.app.models.service.IPdfService;
 import com.fabrizio.consultorio.app.models.service.ITerapeutaService;
 import com.fabrizio.consultorio.app.models.service.IUploadFileService;
 
@@ -44,6 +48,9 @@ public class PacienteController {
 
 	@Autowired
 	private IPacienteService pacienteService;
+	
+	@Autowired
+	private IPdfService pdfService;
 	
 	@Autowired
 	private ITerapeutaService terapeutaService;
@@ -156,6 +163,9 @@ public class PacienteController {
 	@PostMapping("/pdf/{id}")
 	public String subirPdf(@PathVariable Long id, Model model, @RequestParam("file") MultipartFile archivo, RedirectAttributes flash, SessionStatus status) {
 		Paciente paciente = pacienteService.findOne(id);
+		Pdf pdf = new Pdf();
+		
+		
 		if(archivo.isEmpty()) {
 			model.addAttribute("titulo", "Subir Pdf");
 			model.addAttribute("error", "Error: El pdf no puede ser nulo.");
@@ -170,7 +180,10 @@ public class PacienteController {
 				e.printStackTrace();
 			}
 			flash.addAttribute("info", "Se ha subido correctamente el pdf: "+archivo.getName());
-			paciente.addPdf(uniqueFilename);
+			pdf.setNombre(uniqueFilename);
+			paciente.addPdf(pdf);
+			pdf.setFechaSubida(new Date());
+			pdf.setEliminado(false);
 		}
 		pacienteService.save(paciente);
 		status.setComplete();
@@ -268,7 +281,7 @@ public class PacienteController {
 	@GetMapping(value = "/ver/{id}")
 	public String ver(@PathVariable(value = "id") Long id,  Map<String, Object> model, RedirectAttributes flash) {
 		Paciente paciente = pacienteService.findOne(id);
-		
+		List<Turno> proximosTurnos = new ArrayList<>();
 		if (paciente == null) {
 			flash.addFlashAttribute("error", "El cliente no existe en la base de datos");
 			return "redirect:/paciente/listar";
@@ -276,7 +289,12 @@ public class PacienteController {
 		model.put("paciente", paciente);
 		model.put("titulo", "Detalle paciente: " + paciente.getUsername() +" "+ paciente.getApellido());
 		model.put("nombreTerapeuta", paciente.getTerapeutas().toString().replace("[", "").replace("]", ""));
-		model.put("turnos", paciente.getTurnos());
+		for(Turno turno : paciente.getTurnos()) {
+			if(turno.getFechaTurno().after(new Date())) {
+				proximosTurnos.add(turno);
+			}
+		}
+		model.put("turnos", proximosTurnos);
 //				paciente.getTurnos().toString().replace("[", "").replace("]", ""));
 		return "verPaciente";
 	}
@@ -338,6 +356,18 @@ public class PacienteController {
 		flash.addFlashAttribute("success", "Todas las terapeutas fueron eliminadas con éxito");
 
 		return "redirect:/receta/listar";
+	}
+	
+	@Secured("ROLE_ADMIN")
+	@RequestMapping(value = "/pdf/eliminar/{id}")
+	public String eliminarPdf(@PathVariable(value = "id") Long id, RedirectAttributes flash) {
+		if (id>0){
+			Pdf pdf = pdfService.findOne(id);
+			pdfService.darDeBaja(pdf);
+			flash.addFlashAttribute("success", "Informe: "+pdf.getNombre()+" eliminado.");
+			
+		}
+		return "redirect:/terapeuta/listar";
 	}
 	
 	
