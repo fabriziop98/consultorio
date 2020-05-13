@@ -34,9 +34,8 @@ public class TurnoController {
 	@Secured("ROLE_ADMIN")
 	@GetMapping("/listar")
 	public String listarTurnos(Model model, Authentication authentication, HttpServletRequest request, Locale locale) {
-		
 		model.addAttribute("titulo", "Todos los turnos");
-		model.addAttribute("turnos", turnoService.listarSorted());
+		model.addAttribute("turnos", turnoService.listarSortedObject(turnoService.findAll()));
 		return "turnos";
 		
 	}
@@ -47,7 +46,7 @@ public class TurnoController {
 		Paciente paciente = pacienteService.findOne(id);
 		
 		model.addAttribute("titulo", "Todos los turnos de: "+paciente.getApellido() + " " + paciente.getUsername());
-		model.addAttribute("turnos", turnoService.listarSorted(paciente));
+		model.addAttribute("turnos", turnoService.listarSortedObject(paciente.getTurnos()));
 		model.addAttribute("paciente", paciente);
 		return "turnos";
 		
@@ -57,7 +56,7 @@ public class TurnoController {
 	@GetMapping("/listarAnteriores")
 	public String listarTurnosAnteriores(Model model, Authentication authentication, HttpServletRequest request, Locale locale) {
 		model.addAttribute("titulo", "Todos los turnos pasados.");
-		model.addAttribute("turnos", turnoService.listarSorted(turnoService.listarPasados()));
+		model.addAttribute("turnos", turnoService.listarSortedObject(turnoService.listarPasados()));
 		
 		return "turnos";
 		
@@ -68,7 +67,7 @@ public class TurnoController {
 	public String listarTurnosAnteriores(@PathVariable Long id, Model model, Authentication authentication, HttpServletRequest request, Locale locale) {
 		Paciente paciente = pacienteService.findOne(id);
 		model.addAttribute("titulo", "Turnos pasados de: "+paciente.getApellido() + " " + paciente.getUsername());
-		model.addAttribute("turnos", turnoService.listarSorted(turnoService.listarPasados(paciente)));
+		model.addAttribute("turnos", turnoService.listarSortedObject(turnoService.listarPasados(paciente)));
 		model.addAttribute("paciente", paciente);
 		return "turnos";
 		
@@ -78,7 +77,7 @@ public class TurnoController {
 	@GetMapping("/listarFuturos")
 	public String listarTurnosFuturos(Model model, Authentication authentication, HttpServletRequest request, Locale locale) {
 		
-		List<Turno> turnos = turnoService.listarFuturos();
+		List<Turno> turnos = turnoService.listarSortedObject(turnoService.listarFuturos());
 		
 		model.addAttribute("titulo", "Turnos futuros");
 		model.addAttribute("turnos", turnos);
@@ -92,7 +91,7 @@ public class TurnoController {
 		Paciente paciente = pacienteService.findOne(id);
 		
 		model.addAttribute("titulo", "Turnos futuros de: "+paciente.getApellido() + " " + paciente.getUsername());
-		model.addAttribute("turnos", turnoService.listarSorted(turnoService.listarFuturos(paciente)));
+		model.addAttribute("turnos", turnoService.listarSortedObject(turnoService.listarFuturos(paciente)));
 		model.addAttribute("paciente", paciente);
 		return "turnos";
 		

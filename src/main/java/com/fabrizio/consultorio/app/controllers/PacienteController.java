@@ -145,6 +145,7 @@ public class PacienteController {
 				e.printStackTrace();
 			}
 			pacientes.addTurno(turnos);
+			turnos.setPaciente(pacientes);
 		
 		
 		pacienteService.save(pacientes);
@@ -279,7 +280,6 @@ public class PacienteController {
 	@GetMapping(value = "/ver/{id}")
 	public String ver(@PathVariable(value = "id") Long id,  Map<String, Object> model, RedirectAttributes flash) {
 		Paciente paciente = pacienteService.findOne(id);
-		List<Turno> proximosTurnos = turnoService.listarFuturos(paciente);
 		if (paciente == null) {
 			flash.addFlashAttribute("error", "El cliente no existe en la base de datos");
 			return "redirect:/paciente/listar";
@@ -287,7 +287,7 @@ public class PacienteController {
 		model.put("paciente", paciente);
 		model.put("titulo", "Detalle paciente: " + paciente.getUsername() +" "+ paciente.getApellido());
 		model.put("nombreTerapeuta", paciente.getTerapeutas().toString().replace("[", "").replace("]", ""));
-		model.put("turnos", proximosTurnos);
+		model.put("turnos", turnoService.listarSorted(turnoService.listarFuturos(paciente)));
 		return "verPaciente";
 	}
 	

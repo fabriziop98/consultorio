@@ -120,8 +120,16 @@ public class TurnoServiceImpl implements ITurnoService {
 			turnoDate.add(turno.getFechaTurno());
 		}
 		Collections.sort(turnoDate);
+		
 		return turnoDate;
 	}
+
+	@Override
+	public List<Turno> listarSortedObject(List<Turno> turnos) {
+		Collections.sort(turnos);
+		return turnos;
+	}
+
 
 	
 

@@ -18,6 +18,8 @@ public interface ITurnoService {
 	
 	public List<Turno> listarPasados(Paciente paciente);
 	
+	public List<Turno> listarSortedObject(List<Turno> turnos);
+	
 	public void save(Turno turno);
 	
 	public void delete(Turno turno);

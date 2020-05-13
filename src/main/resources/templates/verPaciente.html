@@ -40,12 +40,11 @@
 				th:src="@{'/paciente/uploads/' + ${paciente.foto}}"
 				th:alt="${paciente.foto}" />
 			<ul class="list-group">
-				<li class="list-group-item" th:text="${paciente.username}"></li>
-				<li class="list-group-item" th:text="${paciente.apellido}"></li>
+				<li class="list-group-item" th:text="${paciente.username} + ' ' + ${paciente.apellido}"></li>
 				<li class="list-group-item"
 					th:utext="'Terapeuta(s): '+${nombreTerapeuta}"></li>
 				<li class="list-group-item"><p th:each="turno : ${turnos}"
-					th:text="'Próximo turno: '+${turno.fechaTurno}"></p>
+					th:text="'Próximo turno: '+ ${#dates.format(turno, 'dd/MM/yyyy HH:mm')}"></p>
 					<a class="btn btn-success btn-xs"
 					th:href="@{'/turno/listar/'+${paciente.id}}" th:text="'Ver todos los turnos'"></a></li>
 <!-- 					 ? ${#dates.format(turno.fechaTurno, 'dd-MM-yyyy HH:mm')}18:00" -->

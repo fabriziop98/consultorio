@@ -1,14 +1,14 @@
 package com.fabrizio.consultorio.app.models.entity;
 
 import java.util.Date;
-import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -16,7 +16,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Table(name = "turnos")
-public class Turno {
+public class Turno implements Comparable<Turno>{
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,10 +28,12 @@ public class Turno {
 	@DateTimeFormat(pattern = "M/d/yyyy hh:mm aa")
 	private Date fechaTurno;
 	
-	@ManyToMany(mappedBy="turnos")
-	private List<Paciente> paciente;
+//	@ManyToOne(mappedBy="turnos")
+//	private List<Paciente> paciente;
 	
-
+	@ManyToOne(fetch = FetchType.LAZY)
+	private Paciente paciente;
+	
 	public Long getId() {
 		return id;
 	}
@@ -48,17 +50,22 @@ public class Turno {
 		this.fechaTurno = fechaTurno;
 	}
 
-	public List<Paciente> getPaciente() {
+	public Paciente getPaciente() {
 		return paciente;
 	}
 
-	public void setPaciente(List<Paciente> paciente) {
+	public void setPaciente(Paciente paciente) {
 		this.paciente = paciente;
 	}
 
 	@Override
 	public String toString() {
 		return fechaTurno+"";
+	}
+
+	@Override
+	public int compareTo(Turno o) {
+		return this.getFechaTurno().compareTo(o.getFechaTurno());
 	}
 	
 	
