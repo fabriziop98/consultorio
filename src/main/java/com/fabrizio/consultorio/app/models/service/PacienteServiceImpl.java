@@ -1,5 +1,7 @@
 package com.fabrizio.consultorio.app.models.service;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -10,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.fabrizio.consultorio.app.models.dao.IPacienteDao;
 import com.fabrizio.consultorio.app.models.entity.Paciente;
 import com.fabrizio.consultorio.app.models.entity.Terapeuta;
+import com.fabrizio.consultorio.app.models.entity.Turno;
 
 @Service
 public class PacienteServiceImpl implements IPacienteService{
@@ -72,4 +75,5 @@ public class PacienteServiceImpl implements IPacienteService{
 		Terapeuta terapeuta = terapeutaService.findOne(id);
 		return terapeuta.getPacientes();
 	}
+
 }

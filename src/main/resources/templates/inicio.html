@@ -20,7 +20,7 @@
 		<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
 			<a class="navbar-brand" th:href="@{/inicio/}">Fonoaudiología
 				Marcela Mateu</a>
-			<button class="navbar-toggler" type="button" data-toggle="collapse"
+			<button class="navbar-toggler px-4" type="button" data-toggle="collapse"
 				data-target="#navbarNav" aria-controls="navbarNav"
 				aria-expanded="false" aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
@@ -34,22 +34,26 @@
 
 				</ul>
 			</div>
-			<ul class="nav navbar-nav navbar-right px-4 ">
+			<ul class="nav navbar-nav navbar-right">
 				<li sec:authorize="!isAuthenticated()"><modal
 						th:replace="/modal/login :: modal"></modal></li>
 			</ul>
 
-			<ul class="nav navbar-nav navbar-right">
+			<ul class="nav navbar-nav navbar-right px-4">
 
 
 				<li><a href="#bottom" class="btn btn-outline-primary">Contacto
 				</a></li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
-
-				<!-- 				el li sec: es para si esta logeado no mustere el iniciar sesion -->
 				<li sec:authorize="isAuthenticated()"><a
 					th:href="@{/terapeuta/listar}" class="btn btn-outline-primary">Terapeutas
+				</a></li>
+			</ul>
+			
+			<ul class="nav navbar-nav navbar-right px-4">
+				<li sec:authorize="isAuthenticated()"><a
+					th:href="@{/turno/listar}" class="btn btn-outline-primary">Turnos
 				</a></li>
 			</ul>
 

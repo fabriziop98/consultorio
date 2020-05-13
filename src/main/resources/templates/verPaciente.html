@@ -44,8 +44,10 @@
 				<li class="list-group-item" th:text="${paciente.apellido}"></li>
 				<li class="list-group-item"
 					th:utext="'Terapeuta(s): '+${nombreTerapeuta}"></li>
-				<p th:each="turno : ${turnos}" class="list-group-item"
+				<li class="list-group-item"><p th:each="turno : ${turnos}"
 					th:text="'Próximo turno: '+${turno.fechaTurno}"></p>
+					<a class="btn btn-success btn-xs"
+					th:href="@{'/turno/listar/'+${paciente.id}}" th:text="'Ver todos los turnos'"></a></li>
 <!-- 					 ? ${#dates.format(turno.fechaTurno, 'dd-MM-yyyy HH:mm')}18:00" -->
 					 
 				<li class="list-group-item"><a class="btn btn-secondary btn-xs"

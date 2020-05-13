@@ -5,7 +5,6 @@ import java.net.MalformedURLException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -40,6 +39,7 @@ import com.fabrizio.consultorio.app.models.entity.Turno;
 import com.fabrizio.consultorio.app.models.service.IPacienteService;
 import com.fabrizio.consultorio.app.models.service.IPdfService;
 import com.fabrizio.consultorio.app.models.service.ITerapeutaService;
+import com.fabrizio.consultorio.app.models.service.ITurnoService;
 import com.fabrizio.consultorio.app.models.service.IUploadFileService;
 
 @Controller
@@ -57,6 +57,9 @@ public class PacienteController {
 	
 	@Autowired
 	private IUploadFileService uploadFileService;
+	
+	@Autowired
+	private ITurnoService turnoService;
 	
 	@Secured("ROLE_USER")
 	@GetMapping("/listar")
@@ -121,7 +124,6 @@ public class PacienteController {
 			@RequestParam(name = "turnos", required = false) String turno, 
 			RedirectAttributes flash, SessionStatus status) {
 		
-		System.out.println(turno);
 		Paciente pacientes = pacienteService.findOne(id);
 		model.addAttribute("pacientes", pacientes);
 		
@@ -135,7 +137,6 @@ public class PacienteController {
 			return "asignarTurno";
 		}
 		
-//		for (int i = 0; i < turno.length; i++) {
 			String dateTimePicker = turno;
 			DateFormat format = new SimpleDateFormat("M/d/yyyy hh:mm aa", Locale.ENGLISH);
 			try {
@@ -143,7 +144,6 @@ public class PacienteController {
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
-			System.out.println(turnos.getFechaTurno());
 			pacientes.addTurno(turnos);
 		
 		
@@ -237,7 +237,6 @@ public class PacienteController {
 		
 		pacientes = pacienteService.findOne(id);
 		model.addAttribute("pacientes", pacientes);
-//		paciente = pacienteService.findOne((Long) model.getAttribute("id"));
 		
 		if (itemId == null || itemId.length == 0) {
 			model.addAttribute("titulo", "Asignar terapeuta");
@@ -246,7 +245,6 @@ public class PacienteController {
 			return "asignarTerapeuta";
 		}
 		
-		System.out.println(itemId);
 		
 		for (int i = 0; i < itemId.length; i++) {
 			Terapeuta terapeuta = terapeutaService.findTerapeutaById(itemId[i]);
@@ -281,7 +279,7 @@ public class PacienteController {
 	@GetMapping(value = "/ver/{id}")
 	public String ver(@PathVariable(value = "id") Long id,  Map<String, Object> model, RedirectAttributes flash) {
 		Paciente paciente = pacienteService.findOne(id);
-		List<Turno> proximosTurnos = new ArrayList<>();
+		List<Turno> proximosTurnos = turnoService.listarFuturos(paciente);
 		if (paciente == null) {
 			flash.addFlashAttribute("error", "El cliente no existe en la base de datos");
 			return "redirect:/paciente/listar";
@@ -289,13 +287,7 @@ public class PacienteController {
 		model.put("paciente", paciente);
 		model.put("titulo", "Detalle paciente: " + paciente.getUsername() +" "+ paciente.getApellido());
 		model.put("nombreTerapeuta", paciente.getTerapeutas().toString().replace("[", "").replace("]", ""));
-		for(Turno turno : paciente.getTurnos()) {
-			if(turno.getFechaTurno().after(new Date())) {
-				proximosTurnos.add(turno);
-			}
-		}
 		model.put("turnos", proximosTurnos);
-//				paciente.getTurnos().toString().replace("[", "").replace("]", ""));
 		return "verPaciente";
 	}
 	

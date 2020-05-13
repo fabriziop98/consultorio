@@ -30,7 +30,7 @@ public class Turno {
 	
 	@ManyToMany(mappedBy="turnos")
 	private List<Paciente> paciente;
-
+	
 
 	public Long getId() {
 		return id;

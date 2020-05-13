@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="layout/layout :: head">
+<body>
+	<header th:replace="layout/layout :: header"></header>
+
+	<div class="container py-4">
+		<div class="card bg-light">
+			<h1 class="card-header" th:text="${titulo}"></h1>
+			<div class="card-body">
+			<a class="btn btn-primary btn-xs" th:href="@{'/turno/listarFuturos/'+${paciente.id}}"
+								th:text="'Turnos próximos'"></a>
+								
+			<a class="btn btn-primary btn-xs" th:href="@{'/turno/listarAnteriores/'+${paciente.id}}"
+			th:text="'Turnos anteriores'"></a>
+			<a class="btn btn-primary btn-xs" th:href="@{'/turno/listar/'+${paciente.id}}"
+			th:text="'Todos los turnos'"></a>
+				<div class="alert alert-info my-4"
+					th:if="${#lists.isEmpty(turnos)}"
+					th:text="'No hay turnos registrados en la base de datos'">
+				</div>
+
+				<div class="container py-4">
+					<div>
+						<ul th:each="turno: ${turnos}" class="list-group">
+							<li class="list-group-item" th:text="${turno}"></li>
+							<a class="btn btn-danger btn-xs" th:href="@{'/turno/eliminar/'+${turno.id}}"
+							th:text="'Eliminar turno'"></a>
+						</ul>
+					</div>
+					
+					<div class="container py-4" th:object="${paciente}">
+						<h4 class="card-title">
+							<a class="btn btn-primary btn-xs" th:href="@{'/paciente/ver/'+${paciente.id}}"
+								th:text="'Volver a paciente'"></a>
+						</h4>
+					</div>
+					
+				</div>
+			</div>
+		</div>
+	</div>
+	<footer th:replace="layout/layout :: footer"></footer>
+</body>
+
+</html>

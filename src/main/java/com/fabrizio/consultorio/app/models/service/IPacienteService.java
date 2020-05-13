@@ -17,7 +17,7 @@ public interface IPacienteService {
 	public void darDeBaja(Paciente paciente);
 
 	public Paciente findOne(Long id);
-
+	
 	public void deleteAll();
 
 	public List<Paciente> findByTerapeutaId(Long id);
