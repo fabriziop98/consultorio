@@ -1,27 +1,28 @@
 package com.fabrizio.consultorio.app;
 
-import javax.sql.DataSource;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.User.UserBuilder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.fabrizio.consultorio.app.auth.handler.LoginSuccessHandler;
+import com.fabrizio.consultorio.app.models.service.JpaUserSecurityService;
 
-
-@EnableGlobalMethodSecurity(securedEnabled = true)
 @Configuration
+@EnableGlobalMethodSecurity(
+		  prePostEnabled = true, 
+		  securedEnabled = true, 
+		  jsr250Enabled = true)
+@EnableWebSecurity
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
-	@Autowired 
-	DataSource dataSource;
+	
+	@Autowired
+	private JpaUserSecurityService userDetailsService;
 
 	@Autowired
 	private LoginSuccessHandler successHandler;
@@ -32,7 +33,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		
-		http.authorizeRequests().antMatchers("/","/css/**","/js/**","/images/**","/inicio/","/paciente/**").permitAll()
+		http.authorizeRequests().antMatchers("/","/css/**","/js/**","/images/**","/inicio/","/paciente/**","/usuario/**").permitAll()
 		.anyRequest().authenticated()
 		.and()
 		.formLogin()
@@ -47,25 +48,9 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 	
 	@Autowired
-	public void configuredGlobal(AuthenticationManagerBuilder builder) throws Exception {
-//		builder.userDetailsService(userDetailsService)
-//		.passwordEncoder(passwordEncoder);
-
-		
-		
-//		forma de encriptar password por sql
-		builder.jdbcAuthentication()
-		.dataSource(dataSource)
-		.passwordEncoder(passwordEncoder)
-		.usersByUsernameQuery("select username, password from users where username=?")
-		.authoritiesByUsernameQuery("select u.username, a.authority from authorities a inner join users u on (a.user_id=u.id) where u.username=?");
-//		otra forma
-		PasswordEncoder encoder = passwordEncoder;
-		UserBuilder users=User.builder().passwordEncoder(encoder::encode);
-		
-		builder.inMemoryAuthentication()
-		.withUser(users.username("admin").password("12345").roles("ADMIN","USER"))
-		.withUser(users.username("fabrizio").password("12345").roles("USER"));
+	public void configuredGlobal(AuthenticationManagerBuilder auth) throws Exception {
+		 auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
+		 
 	}
 	
 }

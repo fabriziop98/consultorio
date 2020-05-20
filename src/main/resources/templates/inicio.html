@@ -30,8 +30,6 @@
 					<li class="nav-item active"><a class="nav-link"
 						th:href="@{/inicio/}"> <span class="sr-only">(current)</span>
 					</a></li>
-
-
 				</ul>
 			</div>
 			<ul class="nav navbar-nav navbar-right">
@@ -39,10 +37,20 @@
 						th:replace="/modal/login :: modal"></modal></li>
 			</ul>
 
-			<ul class="nav navbar-nav navbar-right px-4">
-
-
+			<ul class="nav navbar-nav navbar-right">
 				<li><a href="#bottom" class="btn btn-outline-primary">Contacto
+				</a></li>
+			</ul>
+			
+			<ul class="nav navbar-nav navbar-right">
+				<li sec:authorize="hasRole('ROLE_ADMINISTRADOR')">
+					<a
+					th:href="@{/usuario/}" class="btn btn-outline-primary">Crear usuario
+				</a></li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right px-1">
+				<li sec:authorize="hasAnyRole('ROLE_ADMINISTRADOR')"><a
+					th:href="@{/turno/listar}" class="btn btn-outline-primary">Turnos
 				</a></li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
@@ -51,11 +59,6 @@
 				</a></li>
 			</ul>
 			
-			<ul class="nav navbar-nav navbar-right px-4">
-				<li sec:authorize="isAuthenticated()"><a
-					th:href="@{/turno/listar}" class="btn btn-outline-primary">Turnos
-				</a></li>
-			</ul>
 
 			<ul class="nav navbar-nav navbar-right">
 				<li sec:authorize="isAuthenticated()" class="dropdown"><a
@@ -71,7 +74,16 @@
 								onclick="document.getElementById('logoutForm').submit"
 								type="submit">Salir</button>
 						</form>
-					</div></li>
+						
+						<div sec:authorize="hasAnyRole('ROLE_ADMINISTRADOR')" id="logoutForm" th:href="@{/turno/listar}">
+						<ul>
+							<li class="dropdown-item">Turnos</li>
+						</ul>
+						</div>
+						
+					</div>
+					
+				</li>
 			</ul>
 
 		</nav>

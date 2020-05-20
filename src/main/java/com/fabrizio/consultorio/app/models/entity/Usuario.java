@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -43,9 +45,16 @@ public class Usuario implements Serializable {
 	@Column(name = "fecha_alta")
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date fechaAlta;
+	
+	@Column(name = "fecha_baja")
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Date fechaBaja;
 
 	private String foto;
 
+	@Enumerated(EnumType.STRING)
+	private Rol rol;
+	
 	@PrePersist
 	public void prePersist() {
 		fechaAlta = new Date();
@@ -108,6 +117,28 @@ public class Usuario implements Serializable {
 	}
 	
 	
+	
+	
+
+	public Date getFechaBaja() {
+		return fechaBaja;
+	}
+
+	public void setFechaBaja(Date fechaBaja) {
+		this.fechaBaja = fechaBaja;
+	}
+
+	public Rol getRol() {
+		return rol;
+	}
+
+	public void setRol(Rol rol) {
+		this.rol = rol;
+	}
+
+
+
+
 
 	/**
 	 * 

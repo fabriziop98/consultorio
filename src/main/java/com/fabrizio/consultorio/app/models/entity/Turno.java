@@ -28,9 +28,6 @@ public class Turno implements Comparable<Turno>{
 	@DateTimeFormat(pattern = "M/d/yyyy hh:mm aa")
 	private Date fechaTurno;
 	
-//	@ManyToOne(mappedBy="turnos")
-//	private List<Paciente> paciente;
-	
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Paciente paciente;
 	

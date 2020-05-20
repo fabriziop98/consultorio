@@ -14,6 +14,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -42,7 +43,7 @@ public class TerapeutaController {
 	@Autowired
 	private IUploadFileService uploadFileService;
 	
-	@Secured("ROLE_USER")
+	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR')")
 	@GetMapping("/listar")
 	public String listarTerapeutas(Model model, Authentication authentication, HttpServletRequest request, Locale locale) {
 		
