@@ -12,6 +12,8 @@ public interface IUsuarioService {
 	
 	public List<Usuario> findByNombre(String term);
 	
+	public Usuario findByMail(String mail);
+	
 	public void detele(Usuario usuario);
 	
 	public void darDeBaja(Usuario usuario);
@@ -20,5 +22,5 @@ public interface IUsuarioService {
 	
 	public void deleteAll();
 
-
+	
 }

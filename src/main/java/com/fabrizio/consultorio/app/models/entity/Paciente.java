@@ -14,6 +14,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
@@ -50,6 +51,9 @@ public class Paciente implements Serializable {
 	private Date fechaAlta;
 
 	private String foto;
+	
+	@OneToOne
+	private Usuario usuario;
 
 	@ElementCollection(targetClass = Pdf.class)
 	@OneToMany(cascade=CascadeType.ALL)
@@ -170,6 +174,15 @@ public class Paciente implements Serializable {
 
 	public void addPdf(Pdf pdf) {
 		this.pdf.add(pdf);
+	}
+	
+
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
 	}
 
 	/**

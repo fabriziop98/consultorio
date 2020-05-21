@@ -21,12 +21,12 @@
 					<h4 class="card-title">
 
 
-						<!-- 						<a sec:authorize="hasRole('ROLE_ADMIN')" -->
+						<!-- 						<a sec:authorize="hasRole('ROLE_ADMINISTRADOR')" -->
 						<!-- 							class="btn btn-primary btn-xs" -->
 						<!-- 							th:replace="/modal/asignarTerapeuta :: modal"></a> -->
 
 
-						<a sec:authorize="hasRole('ROLE_ADMIN')"
+						<a sec:authorize="hasRole('ROLE_ADMINISTRADOR')"
 							class="btn btn-primary btn-xs"
 							th:href="@{'/paciente/form/'+${paciente.id}}"
 							th:text="'Asignar terapeuta'"></a>
@@ -76,7 +76,7 @@
 					<!-- 			</ul> -->
 
 					<h4 class="card-title px-4">
-						<a sec:authorize="hasRole('ROLE_ADMIN')" class="card-title"
+						<a sec:authorize="hasRole('ROLE_ADMINISTRADOR')" class="card-title"
 							th:replace="/modal/asignarTurno :: modal"></a>
 					</h4>
 				</div>

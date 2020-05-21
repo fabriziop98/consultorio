@@ -12,6 +12,8 @@ public interface IPacienteService {
 	
 	public List<Paciente> findByNombre(String term);
 	
+	public Paciente byUsuarioId(Long id);
+	
 	public void detele(Paciente paciente);
 	
 	public void darDeBaja(Paciente paciente);

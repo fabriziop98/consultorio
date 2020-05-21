@@ -37,7 +37,7 @@
 						th:replace="/modal/login :: modal"></modal></li>
 			</ul>
 
-			<ul class="nav navbar-nav navbar-right">
+			<ul class="nav navbar-nav navbar-right px-1">
 				<li><a href="#bottom" class="btn btn-outline-primary">Contacto
 				</a></li>
 			</ul>
@@ -54,8 +54,20 @@
 				</a></li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
-				<li sec:authorize="isAuthenticated()"><a
+				<li sec:authorize="hasAnyRole('ROLE_ADMINISTRADOR')"><a
 					th:href="@{/terapeuta/listar}" class="btn btn-outline-primary">Terapeutas
+				</a></li>
+			</ul>
+			
+			<ul class="nav navbar-nav navbar-right px-2">
+				<li sec:authorize="hasAnyRole('ROLE_TERAPEUTA')"><a
+					th:href="@{'/paciente/listar/'+${usuarioId}}" class="btn btn-outline-primary">Mis pacientes
+				</a></li>
+			</ul>
+			
+			<ul class="nav navbar-nav navbar-right px-2">
+				<li sec:authorize="hasAnyRole('ROLE_PACIENTE')"><a
+					th:href="@{'/paciente/ver/'+${usuarioId}}" class="btn btn-outline-primary">Mi perfil
 				</a></li>
 			</ul>
 			

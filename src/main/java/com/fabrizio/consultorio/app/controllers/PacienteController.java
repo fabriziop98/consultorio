@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -61,7 +61,7 @@ public class PacienteController {
 	@Autowired
 	private ITurnoService turnoService;
 	
-	@Secured("ROLE_USER")
+	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR','ROLE_TERAPEUTA')")
 	@GetMapping("/listar")
 	public String listarPacientes(Model model, Authentication authentication, HttpServletRequest request, Locale locale) {
 		
@@ -73,7 +73,7 @@ public class PacienteController {
 		
 	}
 	
-	@Secured("ROLE_ADMIN")
+	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR')")
 	@GetMapping("/")
 	public String displayCrearPaciente(Model model) {
 		model.addAttribute("paciente", new Paciente());
@@ -81,7 +81,7 @@ public class PacienteController {
 	}
 	
 	
-	@Secured("ROLE_ADMIN")
+	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR')")
 	@PostMapping("/crear")
 	public String crearPaciente(@Valid Paciente paciente, BindingResult result, Model model,
 			@RequestParam("file") MultipartFile foto, RedirectAttributes flash, SessionStatus status) {
@@ -118,7 +118,7 @@ public class PacienteController {
 		return "redirect:/paciente/listar";
 	}
 	
-	
+	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR','ROLE_TERAPEUTA')")
 	@PostMapping("/turno/{id}")
 	public String asignarTurno(@PathVariable(value="id") Long id, Model model,
 			@RequestParam(name = "turnos", required = false) String turno, 
@@ -154,6 +154,7 @@ public class PacienteController {
 		return "redirect:/paciente/ver/{id}";
 	}
 	
+	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR','ROLE_TERAPEUTA','ROLE_PACIENTE','ROLE_USUARIO')")
 	@GetMapping("/pdf/{id}")
 	public String displayPdf(@PathVariable Long id, Model model) {
 		Paciente paciente = pacienteService.findOne(id);
@@ -161,6 +162,7 @@ public class PacienteController {
 		return "subirPdf";
 	}
 	
+	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR','ROLE_TERAPEUTA')")
 	@PostMapping("/pdf/{id}")
 	public String subirPdf(@PathVariable Long id, Model model, @RequestParam("file") MultipartFile archivo, RedirectAttributes flash, SessionStatus status) {
 		Paciente paciente = pacienteService.findOne(id);
@@ -192,6 +194,7 @@ public class PacienteController {
 		return "redirect:/paciente/ver/{id}";
 	}
 	
+	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR','ROLE_TERAPEUTA')")
 	@GetMapping("/turno/{id}")
 	public String displayAsignarTurno(@PathVariable(value = "id") Long id, Map<String, Object> model, Model modelo , RedirectAttributes flash) {
 		Paciente paciente = pacienteService.findOne(id);
@@ -210,7 +213,7 @@ public class PacienteController {
 	}
 	
 	
-	
+	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR')")
 	@GetMapping("/form/{id}")
 	public String displayAsignarTerapeuta(@PathVariable(value = "id") Long id, Map<String, Object> model,/* @RequestParam(name = "item_id[]", required = false) Long[] itemId,*/  Model modelo , RedirectAttributes flash) {
 		Paciente paciente = pacienteService.findOne(id);
@@ -228,7 +231,7 @@ public class PacienteController {
 		return "asignarTerapeuta";
 	}
 	
-	
+	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR')")
 	@PostMapping("/form/{id}")
 	public String asignarTerapeuta(@PathVariable(value = "id") Long id, Model model,
 			@RequestParam(name = "item_id[]", required = false) Long[] itemId, 
@@ -260,7 +263,7 @@ public class PacienteController {
 		return "redirect:/paciente/ver/{id}";
 	}
 	
-	@Secured("ROLE_USER")
+	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR','ROLE_TERAPEUTA')")
 	@GetMapping("/listar/{id}")
 	public String verPacienteTerapeuta(@PathVariable(value="id") Long id, Map<String, Object> model, Model modelo, RedirectAttributes flash) {
 		List<Paciente> pacientes = pacienteService.findByTerapeutaId(id);
@@ -276,7 +279,7 @@ public class PacienteController {
 		return terapeutaService.findTerapeutaByNombre(term);
 	}
 	
-	@Secured("ROLE_USER")
+	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR','ROLE_PACIENTE','ROLE_TERAPEUTA')")
 	@GetMapping(value = "/ver/{id}")
 	public String ver(@PathVariable(value = "id") Long id,  Map<String, Object> model, RedirectAttributes flash) {
 		Paciente paciente = pacienteService.findOne(id);
@@ -291,6 +294,7 @@ public class PacienteController {
 		return "verPaciente";
 	}
 	
+	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR','ROLE_PACIENTE','ROLE_TERAPEUTA')")
 	@GetMapping("/listadoPdf/{id}")
 	public String verPdfPaciente(@PathVariable Long id, Model model) {
 		Paciente paciente = pacienteService.findOne(id);
@@ -298,6 +302,7 @@ public class PacienteController {
 		return "verPdf";
 	}
 	
+	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR','ROLE_PACIENTE','ROLE_TERAPEUTA')")
 	@GetMapping(value = "/listado/pdf/{filename:.+}")
 	public ResponseEntity<Resource> verPdf(@PathVariable String filename) {
 		Resource recurso = null;
@@ -313,7 +318,7 @@ public class PacienteController {
 	}
 	
 	
-	
+	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR','ROLE_PACIENTE','ROLE_TERAPEUTA')")
 	@GetMapping(value = "/uploads/{filename:.+}")
 	public ResponseEntity<Resource> verFoto(@PathVariable String filename) {
 		Resource recurso = null;
@@ -328,7 +333,7 @@ public class PacienteController {
 				.body(recurso);
 	}
 	
-	@Secured("ROLE_ADMIN")
+	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR')")
 	@RequestMapping(value = "/eliminar/{id}")
 	public String eliminar(@PathVariable(value = "id") Long id, RedirectAttributes flash) {
 		if (id>0){
@@ -340,7 +345,7 @@ public class PacienteController {
 		return "redirect:/terapeuta/listar";
 	}
 	
-	@Secured("ROLE_ADMIN")
+	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR')")
 	@RequestMapping(value = "/eliminar")
 	public String eliminar(RedirectAttributes flash) {
 
@@ -350,7 +355,7 @@ public class PacienteController {
 		return "redirect:/receta/listar";
 	}
 	
-	@Secured("ROLE_ADMIN")
+	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR')")
 	@RequestMapping(value = "/pdf/eliminar/{id}")
 	public String eliminarPdf(@PathVariable(value = "id") Long id, RedirectAttributes flash) {
 		if (id>0){

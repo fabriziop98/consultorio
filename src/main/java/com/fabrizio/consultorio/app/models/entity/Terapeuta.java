@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
@@ -46,6 +47,9 @@ public class Terapeuta implements Serializable {
 	@Column(name = "fecha_alta")
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date fechaAlta;
+	
+	@OneToOne
+	private Usuario usuario;
 
 	private String foto;
 
@@ -136,6 +140,16 @@ public class Terapeuta implements Serializable {
 
 	public void setFoto(String foto) {
 		this.foto = foto;
+	}
+	
+	
+
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
 	}
 
 	private static final long serialVersionUID = 1L;

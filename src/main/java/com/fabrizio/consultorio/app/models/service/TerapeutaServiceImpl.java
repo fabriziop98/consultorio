@@ -79,4 +79,9 @@ public class TerapeutaServiceImpl implements ITerapeutaService {
 		return terapeutaDao.findByUsernameLikeIgnoreCase(term);
 	}
 
+	@Override
+	public Terapeuta byUsuarioId(Long id) {
+		return terapeutaDao.findByUsuarioId(id);
+	}
+
 }

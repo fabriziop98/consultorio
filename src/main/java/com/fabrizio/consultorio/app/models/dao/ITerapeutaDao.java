@@ -11,5 +11,7 @@ import com.fabrizio.consultorio.app.models.entity.Terapeuta;
 public interface ITerapeutaDao extends JpaRepository<Terapeuta, Long>{
 	
 	public List<Terapeuta> findByUsernameLikeIgnoreCase(String term);
+	
+	public Terapeuta findByUsuarioId(Long id);
 
 }

@@ -40,13 +40,13 @@
 									th:alt="${usuario.foto}" />
 
 								<div class="card-body">
-									<h5 class="card-title" th:text="${usuario.apellido}"></h5>
-									<p class="card-text" th:text="${usuario.username}"></p>
+									<h5 class="card-title" th:text="${usuario.apellido} +' '+${usuario.username}"></h5>
+									<p class="card-text" th:text="${usuario.rol}"></p>
 								</div>
 								<div class="card-footer">
-									<a th:href="@{/paciente/listar/} + ${usuario.id}"
-										th:text="'Pacientes'" class="btn btn-primary"></a> <a
-										sec:authorize="hasRole('ROLE_ADMIN')"
+									<a th:href="@{/usuario/editar/} + ${usuario.id}"
+										th:text="'Editar'" class="btn btn-primary"></a> <a
+										sec:authorize="hasRole('ROLE_ADMINISTRADOR')"
 										class="btn btn-danger btn-xs"
 										th:href="@{/usuario/eliminar/} + ${usuario.id}"
 										th:text="'Dar de baja'"

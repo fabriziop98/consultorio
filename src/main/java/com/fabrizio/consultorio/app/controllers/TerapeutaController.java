@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -55,14 +54,14 @@ public class TerapeutaController {
 		
 	}
 	
-	@Secured("ROLE_ADMIN")
+	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR')")
 	@GetMapping("/")
 	public String displayCrearTerapeuta(Model model) {
 		model.addAttribute("terapeuta", new Terapeuta());
 		return "crearTerapeuta";
 	}
 	
-	@Secured("ROLE_ADMIN")
+	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR')")
 	@PostMapping("/crear")
 	public String crearTerapeuta(@Valid Terapeuta terapeuta, BindingResult result, Model model,
 			@RequestParam(name="paciente_id[]", required = false)Long[] pacienteId, @RequestParam("file") MultipartFile foto, RedirectAttributes flash, SessionStatus status) {
@@ -100,7 +99,7 @@ public class TerapeutaController {
 		return "redirect:/terapeuta/listar";
 	}
 	
-	@Secured("ROLE_USER")
+	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR')")
 	@PostMapping(value = "/terapeuta/{id}")
 	public String asignaPaciente(@PathVariable(value = "id") Long id, Map<String, Object> model,@RequestParam(name = "paciente_id[]", required = false) Long[] pacienteId,
 			RedirectAttributes flash) {
@@ -121,7 +120,7 @@ public class TerapeutaController {
 	}
 	
 	
-	
+	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR','ROLE_PACIENTE','ROLE_TERAPEUTA')")
 	@GetMapping(value = "/uploads/{filename:.+}")
 	public ResponseEntity<Resource> verFoto(@PathVariable String filename) {
 //		Resource recurso = uploadFileService.load(filename);
@@ -137,7 +136,7 @@ public class TerapeutaController {
 				.body(recurso);
 	}
 	
-	@Secured("ROLE_ADMIN")
+	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR')")
 	@RequestMapping(value = "/eliminar/{id}")
 	public String eliminar(@PathVariable(value = "id") Long id, RedirectAttributes flash) {
 		if (id>0){
@@ -149,7 +148,7 @@ public class TerapeutaController {
 		return "redirect:/terapeuta/listar";
 	}
 	
-	@Secured("ROLE_ADMIN")
+	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR')")
 	@RequestMapping(value = "/eliminar")
 	public String eliminar(RedirectAttributes flash) {
 

@@ -26,5 +26,7 @@ public interface ITerapeutaService {
 	public Paciente findPacienteById(Long id);
 
 	public List<Terapeuta> findTerapeutaByNombre(String term);
+	
+	public Terapeuta byUsuarioId(Long id);
 
 }

@@ -12,12 +12,12 @@
 				<div class="container">
 				<div class="btn-group">
 					<h4 class="card-title">
-						<a sec:authorize="hasRole('ROLE_ADMIN')"
+						<a sec:authorize="hasRole('ROLE_ADMINISTRADOR')"
 							class="btn btn-primary btn-xs" th:href="@{'/terapeuta/'}"
 							th:text="'Dar de alta terapeuta'"></a>
 					</h4>
 					<h4 class="card-title px-4">
-							<a sec:authorize="hasRole('ROLE_ADMIN')" class="btn btn-primary btn-xs" th:href="@{'/paciente/listar'}"
+							<a sec:authorize="hasRole('ROLE_ADMINISTRADOR')" class="btn btn-primary btn-xs" th:href="@{'/paciente/listar'}"
 								th:text="'Listado de pacientes'"></a>
 						</h4>
 				</div>
@@ -46,7 +46,7 @@
 								<div class="card-footer">
 									<a th:href="@{/paciente/listar/} + ${terapeuta.id}"
 										th:text="'Pacientes'" class="btn btn-primary"></a> <a
-										sec:authorize="hasRole('ROLE_ADMIN')"
+										sec:authorize="hasRole('ROLE_ADMINISTRADOR')"
 										class="btn btn-danger btn-xs"
 										th:href="@{/terapeuta/eliminar/} + ${terapeuta.id}"
 										th:text="'Dar de baja'"

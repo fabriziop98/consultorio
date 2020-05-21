@@ -16,6 +16,6 @@ public interface IPacienteDao extends JpaRepository<Paciente, Long>{
 	
 	public List<Paciente> findByUsernameLikeIgnoreCase(String term);
 	
-//	@Query("select p from paciente p where p.")
+	public Paciente findByUsuarioId(Long id);
 
 }

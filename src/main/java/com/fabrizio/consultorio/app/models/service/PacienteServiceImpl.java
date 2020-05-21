@@ -73,4 +73,9 @@ public class PacienteServiceImpl implements IPacienteService{
 		return terapeuta.getPacientes();
 	}
 
+	@Override
+	public Paciente byUsuarioId(Long id) {
+		return pacienteDao.findByUsuarioId(id);
+	}
+
 }

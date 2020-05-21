@@ -6,7 +6,7 @@ import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,7 +31,7 @@ public class TurnoController {
 	private IPacienteService pacienteService;
 	
 	
-	@Secured("ROLE_ADMIN")
+	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR')")
 	@GetMapping("/listar")
 	public String listarTurnos(Model model, Authentication authentication, HttpServletRequest request, Locale locale) {
 		model.addAttribute("titulo", "Todos los turnos");
@@ -40,7 +40,7 @@ public class TurnoController {
 		
 	}
 	
-	@Secured("ROLE_ADMIN")
+	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR','ROLE_TERAPEUTA','ROLE_PACIENTE')")
 	@GetMapping("/listar/{id}")
 	public String listarTurnosPorPaciente(@PathVariable Long id, Model model, Authentication authentication, HttpServletRequest request, Locale locale) {
 		Paciente paciente = pacienteService.findOne(id);
@@ -52,7 +52,7 @@ public class TurnoController {
 		
 	}
 	
-	@Secured("ROLE_ADMIN")
+	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR')")
 	@GetMapping("/listarAnteriores")
 	public String listarTurnosAnteriores(Model model, Authentication authentication, HttpServletRequest request, Locale locale) {
 		model.addAttribute("titulo", "Todos los turnos pasados.");
@@ -62,7 +62,7 @@ public class TurnoController {
 		
 	}
 	
-	@Secured("ROLE_ADMIN")
+	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR','ROLE_TERAPEUTA','ROLE_PACIENTE')")
 	@GetMapping("/listarAnteriores/{id}")
 	public String listarTurnosAnteriores(@PathVariable Long id, Model model, Authentication authentication, HttpServletRequest request, Locale locale) {
 		Paciente paciente = pacienteService.findOne(id);
@@ -73,7 +73,7 @@ public class TurnoController {
 		
 	}
 	
-	@Secured("ROLE_ADMIN")
+	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR')")
 	@GetMapping("/listarFuturos")
 	public String listarTurnosFuturos(Model model, Authentication authentication, HttpServletRequest request, Locale locale) {
 		
@@ -85,7 +85,7 @@ public class TurnoController {
 		
 	}
 	
-	@Secured("ROLE_ADMIN")
+	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR','ROLE_TERAPEUTA','ROLE_PACIENTE')")
 	@GetMapping("/listarFuturos/{id}")
 	public String listarTurnosFuturos(@PathVariable Long id, Model model, Authentication authentication, HttpServletRequest request, Locale locale) {
 		Paciente paciente = pacienteService.findOne(id);
@@ -98,7 +98,7 @@ public class TurnoController {
 	}
 	
 	
-	@Secured("ROLE_ADMIN")
+	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR')")
 	@RequestMapping(value = "/eliminar/{id}")
 	public String eliminar(@PathVariable(value = "id") Long id, RedirectAttributes flash) {
 		if (id>0){
@@ -109,7 +109,7 @@ public class TurnoController {
 		return "redirect:/turno/listar";
 	}
 	
-	@Secured("ROLE_ADMIN")
+	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR')")
 	@RequestMapping(value = "/eliminar")
 	public String eliminar(RedirectAttributes flash) {
 

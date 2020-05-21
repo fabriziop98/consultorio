@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,9 +31,6 @@ public class UsuarioServiceImpl implements IUsuarioService{
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
-	
-	@Autowired
-	private AuthenticationManagerBuilder builder;
 	
 	
 	@SuppressWarnings("unused")
@@ -66,6 +62,7 @@ public class UsuarioServiceImpl implements IUsuarioService{
 			terapeuta.setFoto(usuario.getFoto());
 			terapeuta.setId(usuario.getId());
 			terapeuta.setApellido(usuario.getApellido());
+			terapeuta.setUsuario(usuario);
 			terapeutaDao.save(terapeuta);
 //			builder.inMemoryAuthentication()
 //			.withUser(usuario.getUsername()).password(usuario.getPassword()).roles(usuario.getRol().getNombre());
@@ -85,6 +82,7 @@ public class UsuarioServiceImpl implements IUsuarioService{
 			paciente.setApellido(usuario.getApellido());
 			paciente.setId(usuario.getId());
 			paciente.setFoto(usuario.getFoto());
+			paciente.setUsuario(usuario);
 			pacienteDao.save(paciente);
 //			builder.inMemoryAuthentication()
 //			.withUser(usuario.getUsername()).password(usuario.getPassword()).roles(usuario.getRol().getNombre());
@@ -131,6 +129,13 @@ public class UsuarioServiceImpl implements IUsuarioService{
 		usuarioDao.deleteAll();
 		
 	}
+
+	@Override
+	public Usuario findByMail(String mail) {
+		return usuarioDao.porMail(mail);
+	}
+	
+	
 
 
 }

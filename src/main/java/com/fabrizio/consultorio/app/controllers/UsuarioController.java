@@ -2,10 +2,6 @@ package com.fabrizio.consultorio.app.controllers;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -17,9 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,20 +23,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fabrizio.consultorio.app.models.entity.Usuario;
-import com.fabrizio.consultorio.app.models.entity.Pdf;
-import com.fabrizio.consultorio.app.models.entity.Rol;
-import com.fabrizio.consultorio.app.models.entity.Terapeuta;
-import com.fabrizio.consultorio.app.models.entity.Turno;
 import com.fabrizio.consultorio.app.models.service.IUsuarioService;
-import com.fabrizio.consultorio.app.models.service.IPdfService;
-import com.fabrizio.consultorio.app.models.service.ITerapeutaService;
-import com.fabrizio.consultorio.app.models.service.ITurnoService;
 import com.fabrizio.consultorio.app.models.service.IUploadFileService;
 
 @Controller
@@ -54,9 +40,6 @@ public class UsuarioController {
 	private IUsuarioService usuarioService;
 	@Autowired
 	private IUploadFileService uploadFileService;
-	
-	@Autowired
-	private ITurnoService turnoService;
 	
 	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR')")
 	@GetMapping("/listar")
@@ -70,7 +53,7 @@ public class UsuarioController {
 			
 	}
 	
-	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR')")
+//	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR')")
 	@GetMapping("/")
 	public String displayCrearUsuario(Model model) {
 		model.addAttribute("usuario", new Usuario());
@@ -78,7 +61,7 @@ public class UsuarioController {
 	}
 	
 	
-	@PreAuthorize("ROLE_ADMINISTRADOR")
+//	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR')")
 	@PostMapping("/crear")
 	public String crearUsuario(@Valid Usuario usuario, BindingResult result, Model model,
 			@RequestParam("file") MultipartFile foto, RedirectAttributes flash, SessionStatus status) {
@@ -137,7 +120,7 @@ public class UsuarioController {
 		return "verUsuario";
 	}
 	
-	@Secured("ROLE_ADMIN")
+	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR')")
 	@RequestMapping(value = "/eliminar/{id}")
 	public String eliminar(@PathVariable(value = "id") Long id, RedirectAttributes flash) {
 		if (id>0){
@@ -149,7 +132,7 @@ public class UsuarioController {
 		return "redirect:/terapeuta/listar";
 	}
 	
-	@Secured("ROLE_ADMIN")
+	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR')")
 	@RequestMapping(value = "/eliminar")
 	public String eliminar(RedirectAttributes flash) {
 
@@ -157,6 +140,22 @@ public class UsuarioController {
 		flash.addFlashAttribute("success", "Todas las terapeutas fueron eliminadas con éxito");
 
 		return "redirect:/receta/listar";
+	}
+	
+	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR','ROLE_PACIENTE','ROLE_TERAPEUTA')")
+	@GetMapping(value = "/uploads/{filename:.+}")
+	public ResponseEntity<Resource> verFoto(@PathVariable String filename) {
+//		Resource recurso = uploadFileService.load(filename);
+		Resource recurso = null;
+		try {
+			recurso = uploadFileService.load(filename);
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+
+		return ResponseEntity.ok()
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + recurso.getFilename() + "\"")
+				.body(recurso);
 	}
 	
 	
