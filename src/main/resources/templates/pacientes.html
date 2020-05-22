@@ -51,7 +51,7 @@
 					
 					<div class="container">
 						<h4 class="card-title">
-							<a class="btn btn-primary btn-xs" th:href="@{'/terapeuta/listar'}"
+							<a sec:authorize="hasRole('ROLE_ADMINISTRADOR')" class="btn btn-primary btn-xs" th:href="@{'/terapeuta/listar'}"
 								th:text="'Volver a terapeutas'"></a>
 						</h4>
 					</div>

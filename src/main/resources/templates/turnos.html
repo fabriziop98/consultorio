@@ -33,23 +33,55 @@
 					<a th:unless="${paciente}"
 						class="btn btn-primary btn-xs" th:href="@{'/turno/listar'}"
 						th:text="'Todos los turnos'"></a>
+						
+					<a th:if="${paciente}"
+						class="btn btn-danger btn-xs"
+						th:href="@{'/turno/listarEliminados/'+${paciente.id}}"
+						th:text="'Todos los turnos eliminados'"></a> 
+					<a th:unless="${paciente}"
+						class="btn btn-danger btn-xs" th:href="@{'/turno/listarEliminados'}"
+						th:text="'Todos los turnos eliminados'"></a>
 					
 					<div class="alert alert-info my-4"
 						th:if="${#lists.isEmpty(turnos)}"
 						th:text="'No hay turnos registrados en la base de datos'"></div>
 					<div class="py-4">
-					<table class="table table-hover">
-					<tbody>
+					<table th:if="${!#lists.isEmpty(turnos)}" class="table table-hover">
+					<thead>
+						<tr class="text-center">
+								<th th:if="${paciente}">Fecha</th>
+								<th th:if="${paciente}">Terapeuta</th>
+								<th th:if="${paciente}"><h4 th:if="${#httpServletRequest.requestURI == '/turno/listarEliminados/'+{paciente.id}}"></h4>Cancelado por motivo:</th>
+								
+								<th th:unless="${paciente}">Fecha</th>
+								<th th:unless="${paciente}">Paciente</th>
+								<th th:unless="${paciente}">Terapeuta</th>
+								<th th:unless="${paciente}"><h4 th:if="${#httpServletRequest.requestURI == '/turno/listarEliminados'}"></h4>Cancelado por motivo:</th>
+							
+							</tr>
+					</thead>
+					<tbody> 
 					<tr th:each="turno: ${turnos}">
-								<td th:if="${paciente}" 
-								th:text="${#dates.format(turno.fechaTurno, 'dd/MMMM/yyyy HH:mm')}"></td>
-								<td th:unless="${paciente}" 
-								th:text="${#dates.format(turno.fechaTurno, 'dd/MMMM/yyyy HH:mm')} +' - '+${turno.paciente.username}+' '+${turno.paciente.apellido}"></td>
-								<td sec:authorize="hasRole('ROLE_ADMIN')"><a
-									class="btn btn-danger btn-xs"
+								<td class="text-center" th:if="${paciente}"
+								th:text="${#dates.format(turno.fechaTurno, 'dd/MMMM/yyyy HH:mm')}">
+								<td class="text-center" th:if="${paciente}"
+								th:text="${turno.terapeuta.username}+' '+${turno.terapeuta.apellido}">
+								
+								<td class="text-center" th:unless="${paciente}" 
+								th:text="${#dates.format(turno.fechaTurno, 'dd/MMMM/yyyy HH:mm')}">
+								<td class="text-center" th:unless="${paciente}"
+								th:text="${turno.paciente.username}+' '+${turno.paciente.apellido}">
+								<td class="text-center" th:unless="${paciente}"
+								th:text="${turno.terapeuta.username}+' '+${turno.terapeuta.apellido}">
+								
+								<td class="text-center" th:if="${turno.eliminado}"
+								th:text="${turno.observacion}"></td>
+								
+								<td class="text-center" sec:authorize="hasRole('ROLE_ADMINISTRADOR')"><a
+									th:if="${!turno.eliminado}" class="btn btn-danger btn-xs"
 									th:href="@{'/turno/eliminar/'+${turno.id}}"
 									th:text='Eliminar'
-									onclick="return confirm('¿Estás seguro que quieres eliminar?');"></a>
+									></a>
 								</td>
 							</tr>
 					</tbody>
@@ -68,7 +100,7 @@
 
 				</div>
 			</div>
-		</div>
+		</div></div>
 	</div>
 	<footer th:replace="layout/layout :: footer"></footer>
 </body>

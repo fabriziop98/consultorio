@@ -53,7 +53,7 @@ public class UsuarioController {
 			
 	}
 	
-//	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR')")
+	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR')")
 	@GetMapping("/")
 	public String displayCrearUsuario(Model model) {
 		model.addAttribute("usuario", new Usuario());
@@ -61,15 +61,10 @@ public class UsuarioController {
 	}
 	
 	
-//	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR')")
+	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR')")
 	@PostMapping("/crear")
 	public String crearUsuario(@Valid Usuario usuario, BindingResult result, Model model,
 			@RequestParam("file") MultipartFile foto, RedirectAttributes flash, SessionStatus status) {
-//		if (result.hasErrors()) {
-//			model.addAttribute("titulo", "Crear usuario");
-//			return "crearUsuario";
-//		}
-		
 		
 		if(foto.isEmpty()) {
 			usuario.setFoto("usuario.png");

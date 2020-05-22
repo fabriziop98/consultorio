@@ -49,7 +49,7 @@
 					th:href="@{'/turno/listar/'+${paciente.id}}" th:text="'Ver todos los turnos'"></a></li>
 <!-- 					 ? ${#dates.format(turno.fechaTurno, 'dd-MM-yyyy HH:mm')}18:00" -->
 					 
-				<li class="list-group-item"><a class="btn btn-secondary btn-xs"
+				<li class="list-group-item"><a sec:authorize="hasAnyRole('ROLE_ADMINISTRADOR','ROLE_TERAPEUTA')" class="btn btn-secondary btn-xs"
 					th:href="@{'/paciente/pdf/'+${paciente.id}}" th:text="'Subir PDF'"></a>
 					<a class="btn btn-success btn-xs"
 					th:href="@{'/paciente/listadoPdf/'+${paciente.id}}"

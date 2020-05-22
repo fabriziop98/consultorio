@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -22,14 +23,19 @@ public class Turno implements Comparable<Turno>{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-//	@NotNull
-//	HACERLO UNICO AL TURNO
 	@Column(name = "fecha_turno")
 	@DateTimeFormat(pattern = "M/d/yyyy hh:mm aa")
 	private Date fechaTurno;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Paciente paciente;
+	
+	@OneToOne
+	private Terapeuta terapeuta;
+	
+	private String observacion;
+	
+	private boolean eliminado;
 	
 	public Long getId() {
 		return id;
@@ -53,6 +59,30 @@ public class Turno implements Comparable<Turno>{
 
 	public void setPaciente(Paciente paciente) {
 		this.paciente = paciente;
+	}
+	
+	public Terapeuta getTerapeuta() {
+		return terapeuta;
+	}
+
+	public void setTerapeuta(Terapeuta terapeuta) {
+		this.terapeuta = terapeuta;
+	}
+
+	public String getObservacion() {
+		return observacion;
+	}
+
+	public void setObservacion(String observacion) {
+		this.observacion = observacion;
+	}
+	
+	public boolean isEliminado() {
+		return eliminado;
+	}
+
+	public void setEliminado(boolean eliminado) {
+		this.eliminado = eliminado;
 	}
 
 	@Override

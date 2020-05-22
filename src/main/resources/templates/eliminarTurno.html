@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/layout :: head"></head>
+<body>
+	<header th:replace="layout/layout :: header"></header>
+	<div class="container py-4">
+	
+		<div class="card bg-light">
+		<h1 class="card-header" th:text="${titulo}"></h1>
+			<div class="card-body">
+				<div th:object="${turno}" th:remove="tag">
+						<ul th:if="${#fields.hasErrors('*')}" class="alert alert-danger">
+							<li th:each="err: ${#fields.errors('*')}" th:text="${err}"></li>
+						</ul>
+				</div>
+				<form th:action="@{/turno/eliminar}" th:object="${turno}"
+					method="POST" enctype="multipart/form-data">
+					<input type="hidden" th:field="*{id}" /> 
+					<input type="hidden" th:field="*{terapeuta}"/> 
+					<input type="hidden" th:field="*{paciente}"/> 
+					<input type="hidden" th:field="*{fechaTurno}"/> 
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">Motivo</label>
+						<div class="col-sm">
+							<input type="text" th:field="*{observacion}" class="form-control"/> 
+						</div>
+					</div>
+
+					<div class="form-group">
+						<div class="col-sm-6">
+							<input onclick="return confirm('¿Estás seguro que quieres eliminar el turno?');" type="submit" value="Eliminar turno"
+								class="btn btn-primary" />
+						</div>
+					</div>
+
+				</form>
+
+			</div>
+
+		</div>
+
+	</div>
+
+	<footer th:replace="layout/layout :: footer"></footer>
+</body>
+</html>

@@ -14,11 +14,17 @@ xmlns:th="http://www.thymeleaf.org"
 			<div class="card-body">
 
 				<form th:action="@{'/paciente/turno/'+${paciente.id}}"
-					th:object="${paciente}" method="POST">
+					th:object="${turno}" method="POST">
 
-					<div class="form-group">
-					<input name="turnos" id="dateTimePicker" placeholder="Selecciona una fecha"></div>
-
+						<select th:field="*{terapeuta}" name="terapeuta" class="custom-select" required>
+							<option th:if="${not #lists.isEmpty(terapeutas)}" th:value="'null'">Elige un Terapeuta</option>
+							<option th:if="${#lists.isEmpty(terapeutas)}" th:value="'null'">El paciente no tiene terapeutas</option>
+							<option th:if="${terapeutas}" th:each="terapeuta : ${terapeutas}"  th:value="${terapeuta.id}" th:text="${terapeuta.username}"></option>
+						</select>
+					
+					<div class="form-group py-3">
+					<input name="turnos" id="dateTimePicker" placeholder="Elige una fecha"></div>
+					
 					<div class="form-group">
 						<div class="col-sm">
 							<input type="submit" value="Asignar turno"
