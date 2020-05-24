@@ -12,7 +12,7 @@
 				<div class="container">
 					<h4 class="card-title">
 						<a sec:authorize="hasRole('ROLE_ADMINISTRADOR')"
-							class="btn btn-primary btn-xs" th:href="@{'/paciente/'}"
+							class="btn btn-primary btn-xs" th:href="@{'/usuario/'}"
 							th:text="'Dar de alta paciente'"></a>
 					</h4>
 				</div>
@@ -26,11 +26,8 @@
 						<div th:if="${paciente.fechaBaja==null}"
 							th:each="paciente: ${pacientes}" class="col mb-4">
 							<div class="card h-100 text-center " style="width: 18rem;">
-								<img th:object="${paciente}"
-									th:if="${#strings.length(paciente.foto)>0}"
-									class="card-img-top"
-									th:src="@{'/paciente/uploads/' + ${paciente.foto}}"
-									th:alt="${paciente.foto}" />
+								<img th:if="${paciente.foto} != null"
+                                         th:src="@{'/paciente/foto/'+${paciente.id}}" >
 
 								<div class="card-body">
 									<h5 class="card-title" th:text="${paciente.apellido}"></h5>

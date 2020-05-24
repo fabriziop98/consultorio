@@ -72,10 +72,12 @@ public class UploadFileServiceImpl implements IUploadFileService {
 		return false;
 	}
 	
+	@Override
 	public Path pdfPath(String filename){
 		return Paths.get("archivos").resolve(filename).toAbsolutePath();
 	}
 	
+	@Override
 	public Path getPath(String filename) {
 		return Paths.get("uploads").resolve(filename).toAbsolutePath();
 	}

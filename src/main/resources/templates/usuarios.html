@@ -12,14 +12,10 @@
 				<div class="container">
 				<div class="btn-group">
 					<h4 class="card-title">
-						<a sec:authorize="hasRole('ROLE_ADMIN')"
+						<a sec:authorize="hasRole('ROLE_ADMINISTRADOR')"
 							class="btn btn-primary btn-xs" th:href="@{'/usuario/'}"
 							th:text="'Dar de alta usuario'"></a>
 					</h4>
-					<h4 class="card-title px-4">
-							<a sec:authorize="hasRole('ROLE_ADMIN')" class="btn btn-primary btn-xs" th:href="@{'/paciente/listar'}"
-								th:text="'Listado de pacientes'"></a>
-						</h4>
 				</div>
 				</div>
 				
@@ -29,15 +25,22 @@
 				</div>
 
 				<div class="container py-4">
+				<div class="py-1">
+				<a class="btn btn-primary btn-xs"
+						th:href="@{/paciente/listar}"
+						th:text="'Pacientes'"></a> 
+						
+						<a class="btn btn-primary btn-xs"
+						th:href="@{/terapeuta/listar}"
+						th:text="'Terapeutas'"></a> </div>
+						
 					<div class="row row-cols-1 row-cols-md-3">
 						<div th:if="${usuario.fechaBaja==null}"
 							th:each="usuario: ${usuarios}" class="col mb-4">
 							<div class="card h-100 text-center " style="width: 18rem;">
-								<img th:object="${usuario}"
-									th:if="${#strings.length(usuario.foto)>0}"
-									class="card-img-top"
-									th:src="@{'/usuario/uploads/' + ${usuario.foto}}"
-									th:alt="${usuario.foto}" />
+
+								<img th:if="${usuario.foto} != null"
+                                         th:src="@{'/usuario/foto/'+${usuario.id}}" >
 
 								<div class="card-body">
 									<h5 class="card-title" th:text="${usuario.apellido} +' '+${usuario.username}"></h5>

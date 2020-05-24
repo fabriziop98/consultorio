@@ -10,6 +10,7 @@ import com.fabrizio.consultorio.app.models.dao.IPacienteDao;
 import com.fabrizio.consultorio.app.models.dao.ITerapeutaDao;
 import com.fabrizio.consultorio.app.models.entity.Paciente;
 import com.fabrizio.consultorio.app.models.entity.Terapeuta;
+import com.fabrizio.consultorio.app.models.entity.Usuario;
 
 @Service
 public class TerapeutaServiceImpl implements ITerapeutaService {
@@ -48,7 +49,8 @@ public class TerapeutaServiceImpl implements ITerapeutaService {
 	@Override
 	public void darDeBaja(Terapeuta terapeuta) {
 		terapeuta.setFechaBaja(new Date());
-		
+		Usuario u = terapeuta.getUsuario();
+		u.setFechaBaja(new Date());
 		terapeutaDao.save(terapeuta);
 		
 	}

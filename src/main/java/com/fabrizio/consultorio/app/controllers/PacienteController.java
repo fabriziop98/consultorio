@@ -1,6 +1,8 @@
 package com.fabrizio.consultorio.app.controllers;
 
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.Date;
@@ -14,6 +16,8 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -351,5 +355,57 @@ public class PacienteController {
 	}
 	
 	
+	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR','ROLE_PACIENTE','ROLE_TERAPEUTA')")
+	@GetMapping("/foto/{id}")
+	public ResponseEntity<byte[]> abrirFoto(@PathVariable(name = "id") Long id) {
+		final HttpHeaders headers = new HttpHeaders();
+
+		Paciente paciente = pacienteService.findOne(id);
+
+		if (paciente.getFoto() != null) {
+
+			String path = paciente.getFoto();
+
+			File file = new File(path);
+			String extension = getFileExtension(file);
+
+			if (extension.equals(".jpeg")) {
+				MediaType media = MediaType.parseMediaType("image/jpeg");
+				headers.setContentType(media);
+			} else if (extension.equals(".png")) {
+				headers.setContentType(MediaType.IMAGE_PNG);
+			} else {
+				headers.setContentType(MediaType.IMAGE_JPEG);
+			}
+
+			return new ResponseEntity<>(readFileToByteArray(file), headers, HttpStatus.OK);
+		} else {
+			return null;
+		}
+
+	}
+
+	private String getFileExtension(File file) {
+		String name = file.getName();
+		int lastIndexOf = name.lastIndexOf(".");
+		if (lastIndexOf == -1) {
+			return "";
+		}
+		return name.substring(lastIndexOf);
+	}
+	
+	private static byte[] readFileToByteArray(File file) {
+		FileInputStream fis;
+		byte[] bArray = new byte[(int) file.length()];
+		try {
+			fis = new FileInputStream(file);
+			fis.read(bArray);
+			fis.close();
+
+		} catch (IOException ioExp) {
+			ioExp.printStackTrace();
+		}
+		return bArray;
+	}
 	
 }

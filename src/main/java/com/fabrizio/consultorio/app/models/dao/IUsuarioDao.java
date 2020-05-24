@@ -15,4 +15,10 @@ public interface IUsuarioDao extends JpaRepository<Usuario, Long>{
 	public Usuario porMail(String mail);
 	
 	public List<Usuario> findByUsernameLikeIgnoreCase(String term);
+	
+	@Query("SELECT u FROM Usuario u WHERE u.rol = TERAPEUTA AND u.fechaBaja = null")
+	public List<Usuario> findByUsuarioTerapeuta();
+	
+	@Query("SELECT u FROM Usuario u WHERE u.rol = PACIENTE AND u.fechaBaja = null")
+	public List<Usuario> findByUsuarioPaciente();
 }

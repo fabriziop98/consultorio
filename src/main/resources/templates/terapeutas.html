@@ -13,7 +13,7 @@
 				<div class="btn-group">
 					<h4 class="card-title">
 						<a sec:authorize="hasRole('ROLE_ADMINISTRADOR')"
-							class="btn btn-primary btn-xs" th:href="@{'/terapeuta/'}"
+							class="btn btn-primary btn-xs" th:href="@{'/usuario/'}"
 							th:text="'Dar de alta terapeuta'"></a>
 					</h4>
 					<h4 class="card-title px-4">
@@ -33,11 +33,8 @@
 						<div th:if="${terapeuta.fechaBaja==null}"
 							th:each="terapeuta: ${terapeutas}" class="col mb-4">
 							<div class="card h-100 text-center " style="width: 18rem;">
-								<img th:object="${terapeuta}"
-									th:if="${#strings.length(terapeuta.foto)>0}"
-									class="card-img-top"
-									th:src="@{'/terapeuta/uploads/' + ${terapeuta.foto}}"
-									th:alt="${terapeuta.foto}" />
+								<img th:if="${terapeuta.foto} != null"
+                                         th:src="@{'/terapeuta/foto/'+${terapeuta.id}}" >
 
 								<div class="card-body">
 									<h5 class="card-title" th:text="${terapeuta.apellido}"></h5>

@@ -7,12 +7,14 @@
 		<div class="card bg-light">
 			<div class="card-body">
 				<div th:object="${usuario}" th:remove="tag">
-						<ul th:if="${#fields.hasErrors('*')}" class="alert alert-danger">
-							<li th:each="err: ${#fields.errors('*')}" th:text="${err}"></li>
-						</ul>
-				</div>
-				<form th:action="@{/usuario/crear}" th:object="${usuario}"
+					<ul th:if="${#fields.hasErrors('*')}" class="alert alert-danger">
+						<li th:each="err: ${#fields.errors('*')}" th:text="${err}"></li>
+					</ul>
+				<form th:action="${usuario.username} ? @{'/usuario/editar/'+${usuario.id}} : @{/usuario/crear}" th:object="${usuario}"
 					method="POST" enctype="multipart/form-data">
+					
+					<input th:if="${usuario.username}" type="hidden" th:field="*{id}"/>
+					<input th:if="${usuario.username}" type="hidden" th:field="*{fechaAlta}"/>
 					<div class="form-group row">
 						<label class="col-sm-2 col-form-label">Nombre</label>
 						<div class="col-sm">
@@ -36,7 +38,7 @@
 					<div class="form-group row">
 						<label class="col-sm-2 col-form-label">Correo Electrónico</label>
 						<div class="col-sm">
-							<input type="text" th:field="*{mail}" class="form-control"
+							<input th:if="${usuario.username}" type="text" th:field="*{mail}" class="form-control"
 								th:errorclass="'form-control alert-danger'" /> <small
 								class="form-text text-danger"
 								th:if="${#fields.hasErrors('mail')}" th:errors="*{mail}"></small>
@@ -46,9 +48,9 @@
 						<label class="col-sm-2 col-form-label">Contraseña</label>
 						<div class="col-sm">
 							<input type="password" th:field="*{password}"
-								class="form-control" name="password" id="password" onkeyup='check();' 
-								th:errorclass="'form-control alert-danger'"/> <small
-								class="form-text text-danger"
+								class="form-control" name="password" id="password"
+								onkeyup='check();' th:errorclass="'form-control alert-danger'" />
+							<small class="form-text text-danger"
 								th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></small>
 						</div>
 
@@ -65,16 +67,22 @@
 
 					</div>
 
-					<div class="form-group row">
-						<label for="file" class="col-sm-2 col-form-label">Foto</label>
-						<div class="col-sm">
-							<input type="file" name="file" class="form-control" />
-						</div>
+					<div class="form-group">
+						<p>Foto de perfil</p>
+						<input type="file" id="subirFoto" name="fotoOriginal"
+							accept=".jpg,.jpeg,.png" hidden />
+						<button type="button" class="btnfoto" id="botonFoto"
+							onclick="upload()">
+							<img th:src="@{/images/iconos/camera.png}" alt="Subir Foto">
+							Subir una foto
+						</button>
+						<div id="mascara"></div>
+						<input type="hidden" id="fotoCrop" name="file" />
 					</div>
-					
-					<div class="form-group row">
+
+					<div th:unless="${usuario.username}" class="form-group row">
 						<select th:field="*{rol}" class="custom-select" required>
-							<option th:value="USUARIO">Elige un Rol</option>
+							<option th:value="NULL">Elige un Rol</option>
 							<option th:value="ADMINISTRADOR">Administrador</option>
 							<option th:value="TERAPEUTA">Terapeuta</option>
 							<option th:value="PACIENTE">Paciente</option>
@@ -84,19 +92,77 @@
 
 					<div class="form-group">
 						<div class="col-sm-6">
-							<input type="submit" value="Crear Usuario"
-								class="btn btn-primary" />
+							<button class="btn btn-primary" type="submit" id="btnEnviar">
+								Continuar</button>
 						</div>
 					</div>
+
 
 				</form>
 
 			</div>
+			
+		</div>
 
 		</div>
 
 	</div>
-
 	<footer th:replace="layout/layout :: footer"></footer>
+	<script>
+		$(function() {
+
+			var $uploadCrop;
+
+			function readFile(input) {
+				if (input.files && input.files[0]) {
+					var reader = new FileReader();
+					reader.onload = function(e) {
+
+						$uploadCrop.croppie('bind', {
+							url : e.target.result
+						});
+					}
+					reader.readAsDataURL(input.files[0]);
+				}
+
+				$uploadCrop = $('#mascara').croppie({
+					viewport : {
+						width : 288,
+						height : 288,
+						type : 'square'
+					},
+					boundary : {
+						width : 350,
+						height : 350
+					}
+				});
+
+			}
+
+			$('#subirFoto').on('change', function() {
+				readFile(this);
+			});
+
+			$('#btnEnviar').on('click', function(event) {
+				var x = $('#subirFoto').val();
+				if (x != "") {
+					$uploadCrop.croppie('result', {
+						size : 'viewport',
+					}).then(function(resp) {
+						$('#fotoCrop').val(resp);
+
+					});
+				}
+
+			});
+
+		});
+	</script>
+	<script type="text/javascript">
+		function upload() {
+			document.getElementById('subirFoto').click();
+		}
+	</script>
+
 </body>
 </html>

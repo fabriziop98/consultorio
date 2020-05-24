@@ -1,5 +1,7 @@
 package com.fabrizio.consultorio.app.controllers;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.List;
@@ -12,6 +14,8 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -24,7 +28,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.support.SessionStatus;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fabrizio.consultorio.app.models.entity.Usuario;
@@ -38,6 +41,8 @@ public class UsuarioController {
 
 	@Autowired
 	private IUsuarioService usuarioService;
+	
+	
 	@Autowired
 	private IUploadFileService uploadFileService;
 	
@@ -64,38 +69,33 @@ public class UsuarioController {
 	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR')")
 	@PostMapping("/crear")
 	public String crearUsuario(@Valid Usuario usuario, BindingResult result, Model model,
-			@RequestParam("file") MultipartFile foto, RedirectAttributes flash, SessionStatus status) {
-		
-		if(foto.isEmpty()) {
-			usuario.setFoto("usuario.png");
-		}
-		
-		if(!foto.isEmpty()) {
-			if(usuario.getId()!=null && usuario.getId() > 0 && usuario.getFoto() != null
-					&& usuario.getFoto().length() >0) {
-				uploadFileService.delete(usuario.getFoto());
-			}
-			String uniqueFilename = null;
-			try {
-				uniqueFilename = uploadFileService.copy(foto);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			flash.addAttribute("info", "Se ha subido correctamente la foto de perfil de "+usuario.getUsername()+".");
-			usuario.setFoto(uniqueFilename);
-		}
-		
-		flash.addFlashAttribute("success", "Usuario creado con éxito.");
-		try {
-			usuarioService.save(usuario);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
+			@RequestParam(required = false, value = "file") String foto, RedirectAttributes flash, SessionStatus status) throws Exception {
+		usuario.setFoto(foto);
+		usuarioService.save(usuario);
 		status.setComplete();
 		return "redirect:/usuario/listar";
 	}
 	
+	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR')")
+	@GetMapping("/editar/{id}")
+	public String displayEditarUsuario(@PathVariable Long id, Model model) {
+		Usuario usuario = usuarioService.findOne(id);
+		model.addAttribute("usuario", usuario);
+		return "crearUsuario";
+	}
+	
+	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR')")
+	@PostMapping("/editar/{id}")
+	public String editarUsuario(@Valid Usuario usuario, @RequestParam(required = false, value = "file") String foto) {
+		try {
+			usuario.setFoto(foto);
+			usuarioService.editar(usuario);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return "redirect:/usuario/listar";
+	}
+
 	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR','ROLE_TERAPEUTA','ROLE_PACIENTE')")
 	@GetMapping(value = "/ver/{id}")
 	public String ver(@PathVariable(value = "id") Long id,  Map<String, Object> model, RedirectAttributes flash) {
@@ -106,11 +106,6 @@ public class UsuarioController {
 		}
 		model.put("usuario", usuario);
 		model.put("titulo", "Detalle usuario: " + usuario.getUsername() +" "+ usuario.getApellido());
-//		if(usuario.getRol().equals(Rol.PACIENTE)) {
-//			model.put("nombreTerapeuta", usuario.getTerapeutas().toString().replace("[", "").replace("]", ""));
-//			model.put("turnos", turnoService.listarSorted(turnoService.listarFuturos(usuario)));
-//		}
-		
 		
 		return "verUsuario";
 	}
@@ -140,7 +135,6 @@ public class UsuarioController {
 	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR','ROLE_PACIENTE','ROLE_TERAPEUTA')")
 	@GetMapping(value = "/uploads/{filename:.+}")
 	public ResponseEntity<Resource> verFoto(@PathVariable String filename) {
-//		Resource recurso = uploadFileService.load(filename);
 		Resource recurso = null;
 		try {
 			recurso = uploadFileService.load(filename);
@@ -154,4 +148,67 @@ public class UsuarioController {
 	}
 	
 	
+	
+	@GetMapping("/foto/{id}")
+	public ResponseEntity<byte[]> abrirFoto(@PathVariable(name = "id") Long id) {
+		final HttpHeaders headers = new HttpHeaders();
+
+		Usuario usuario = usuarioService.findOne(id);
+
+		if (usuario.getFoto() != null) {
+
+			String path = usuario.getFoto();
+
+			File file = new File(path);
+			String extension = getFileExtension(file);
+
+			if (extension.equals(".jpeg")) {
+				MediaType media = MediaType.parseMediaType("image/jpeg");
+				headers.setContentType(media);
+			} else if (extension.equals(".png")) {
+				headers.setContentType(MediaType.IMAGE_PNG);
+			} else {
+				headers.setContentType(MediaType.IMAGE_JPEG);
+			}
+
+			return new ResponseEntity<>(readFileToByteArray(file), headers, HttpStatus.OK);
+		} else {
+			return null;
+		}
+
+	}
+
+	private String getFileExtension(File file) {
+		String name = file.getName();
+		int lastIndexOf = name.lastIndexOf(".");
+		if (lastIndexOf == -1) {
+			return "";
+		}
+		return name.substring(lastIndexOf);
+	}
+	
+	private static byte[] readFileToByteArray(File file) {
+		FileInputStream fis;
+		byte[] bArray = new byte[(int) file.length()];
+		try {
+			fis = new FileInputStream(file);
+			fis.read(bArray);
+			fis.close();
+
+		} catch (IOException ioExp) {
+			ioExp.printStackTrace();
+		}
+		return bArray;
+	}
+	
+	
+	
 }
+
+
+
+
+
+
+
+

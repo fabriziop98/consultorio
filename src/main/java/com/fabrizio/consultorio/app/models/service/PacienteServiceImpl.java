@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.fabrizio.consultorio.app.models.dao.IPacienteDao;
 import com.fabrizio.consultorio.app.models.entity.Paciente;
 import com.fabrizio.consultorio.app.models.entity.Terapeuta;
+import com.fabrizio.consultorio.app.models.entity.Usuario;
 
 @Service
 public class PacienteServiceImpl implements IPacienteService{
@@ -51,7 +52,8 @@ public class PacienteServiceImpl implements IPacienteService{
 	@Transactional
 	public void darDeBaja(Paciente paciente) {
 		paciente.setFechaBaja(new Date());
-		
+		Usuario u = paciente.getUsuario();
+		u.setFechaBaja(new Date());
 		pacienteDao.save(paciente);
 		
 	}

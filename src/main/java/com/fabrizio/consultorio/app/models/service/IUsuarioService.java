@@ -10,6 +10,8 @@ public interface IUsuarioService {
 	
 	public void save(Usuario usuario) throws Exception;
 	
+	public void editar(Usuario usuario) throws Exception;
+	
 	public List<Usuario> findByNombre(String term);
 	
 	public Usuario findByMail(String mail);

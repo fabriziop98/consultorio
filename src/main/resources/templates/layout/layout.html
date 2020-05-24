@@ -6,6 +6,7 @@
 <title th:text="'Fonoaudiología'"></title>
 <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}" />
 <link rel="stylesheet" type="text/css" th:href="@{/css/jquery-ui.min.css}" />
+ <link rel="stylesheet" th:href="@{/css/croppie.css}" />
 </head>
 <body>
 	<header th:fragment="header">
@@ -86,15 +87,16 @@
 			Usuario logeado: <span sec:authentication="name"></span> | Roles: <span
 				sec:authentication="principal.authorities"></span>
 		</p>
-		
+		<a href="mailto:fabriziop@live.com.ar" class="contf">Contactanos</a>
 		<p>&reg; Fabrizio Prátici Mateu</p>
+		
 		 <script src="https://code.jquery.com/jquery-1.12.3.min.js"></script>
     <script src="https://kendo.cdn.telerik.com/2018.2.620/js/kendo.all.min.js"></script>
 		<script th:src="@{/js/confirmpassword.js}"></script>
 		<script th:src="@{/js/popper.min.js}"></script>
 		<script th:src="@{/js/bootstrap.min.js}"></script>
 		<script th:src="@{/js/jquery-ui.min.js}"></script>
-
+		<script th:src="@{/js/croppie.js}"></script>
 	</footer>
 </body>
 </html>

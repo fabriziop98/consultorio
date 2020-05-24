@@ -1,9 +1,15 @@
 package com.fabrizio.consultorio.app.models.service;
 
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -16,6 +22,7 @@ import com.fabrizio.consultorio.app.models.entity.Paciente;
 import com.fabrizio.consultorio.app.models.entity.Rol;
 import com.fabrizio.consultorio.app.models.entity.Terapeuta;
 import com.fabrizio.consultorio.app.models.entity.Usuario;
+import com.fabrizio.util.FileUtil;
 
 @Service
 public class UsuarioServiceImpl implements IUsuarioService{
@@ -31,7 +38,6 @@ public class UsuarioServiceImpl implements IUsuarioService{
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
-	
 	
 	@SuppressWarnings("unused")
 	@Autowired(required=false)
@@ -49,6 +55,30 @@ public class UsuarioServiceImpl implements IUsuarioService{
 		if (usuarioDao.porMail(usuario.getMail()) != null) {
 			throw new Exception();
 		}
+		String foto = usuario.getFoto();
+		
+		String uniqueFilename = UUID.randomUUID().toString();
+		if (!foto.isEmpty()) {
+			File archivo = new File(FileUtil.RUTA_IMAGENES +uniqueFilename+"_"+ usuario.getUsername());
+			String pathFoto = archivo.getPath();
+			usuario.setFoto(pathFoto);
+
+			try (FileOutputStream out = new FileOutputStream(archivo)) {
+				boolean guardarArchivo = archivo.exists() || archivo.createNewFile();
+
+				if (guardarArchivo) {
+					foto = foto.split(",")[1];
+					byte[] data = Base64.getDecoder().decode(foto.getBytes(StandardCharsets.UTF_8));
+					IOUtils.write(data, out);
+				}
+
+			} catch (Exception e) {
+				System.out.println("Error al guardar la foto de usuario."+ e);
+			}
+		} else {
+			usuario.setFoto(FileUtil.RUTA_IMAGENES+"fotoDefault");
+		}
+		
 		usuario.setFechaAlta(new Date());
 		
 		switch(usuario.getRol()) {
@@ -64,14 +94,10 @@ public class UsuarioServiceImpl implements IUsuarioService{
 			terapeuta.setApellido(usuario.getApellido());
 			terapeuta.setUsuario(usuario);
 			terapeutaDao.save(terapeuta);
-//			builder.inMemoryAuthentication()
-//			.withUser(usuario.getUsername()).password(usuario.getPassword()).roles(usuario.getRol().getNombre());
 			break;
 		case ADMINISTRADOR:
 			usuario.setRol(Rol.ADMINISTRADOR);
 			break;
-//			builder.inMemoryAuthentication()
-//			.withUser(usuario.getUsername()).password(usuario.getPassword()).roles("ADMIN");
 		case PACIENTE:
 			usuario.setRol(Rol.PACIENTE);
 			Paciente paciente = new Paciente();
@@ -84,21 +110,74 @@ public class UsuarioServiceImpl implements IUsuarioService{
 			paciente.setFoto(usuario.getFoto());
 			paciente.setUsuario(usuario);
 			pacienteDao.save(paciente);
-//			builder.inMemoryAuthentication()
-//			.withUser(usuario.getUsername()).password(usuario.getPassword()).roles(usuario.getRol().getNombre());
 			break;
 		case USUARIO:
-//			builder.inMemoryAuthentication()
-//			.withUser(usuario.getUsername()).password(usuario.getPassword()).roles(usuario.getRol().getNombre());
 			break;
 		default:
 			usuario.setRol(Rol.USUARIO);
-//			builder.inMemoryAuthentication()
-//			.withUser(usuario.getUsername()).password(usuario.getPassword()).roles(usuario.getRol().getNombre());
 			break;		
 		}
 		usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
 		usuarioDao.save(usuario);
+	}
+	
+	@Override
+	public void editar(Usuario usuario) throws Exception {
+		String foto = usuario.getFoto();
+		usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
+		Usuario u = usuarioDao.getOne(usuario.getId());
+		String uniqueFilename = UUID.randomUUID().toString();
+		if (!foto.isEmpty()) {
+			File archivo = new File(FileUtil.RUTA_IMAGENES +uniqueFilename+"_"+ usuario.getUsername());
+			String pathFoto = archivo.getPath();
+			usuario.setFoto(pathFoto);
+
+			try (FileOutputStream out = new FileOutputStream(archivo)) {
+				boolean guardarArchivo = archivo.exists() || archivo.createNewFile();
+
+				if (guardarArchivo) {
+					foto = foto.split(",")[1];
+					byte[] data = Base64.getDecoder().decode(foto.getBytes(StandardCharsets.UTF_8));
+					IOUtils.write(data, out);
+				}
+
+			} catch (Exception e) {
+				System.out.println("Error al guardar la foto de usuario."+ e);
+			}
+		} else {
+			usuario.setFoto(u.getFoto());
+		}
+		usuario.setRol(u.getRol());
+		
+		if(u.getRol().equals(Rol.TERAPEUTA)) {
+			Terapeuta terapeuta = terapeutaDao.findByUsuarioId(usuario.getId());
+			terapeuta.setFechaAlta(usuario.getFechaAlta());
+			terapeuta.setUsername(usuario.getUsername());
+			terapeuta.setPassword(passwordEncoder.encode(usuario.getPassword()));
+			terapeuta.setMail(usuario.getMail());
+			terapeuta.setFoto(usuario.getFoto());
+			terapeuta.setApellido(usuario.getApellido());
+			terapeuta.setUsuario(usuario);
+			terapeuta.setPacientes(terapeuta.getPacientes());
+			terapeutaDao.save(terapeuta);
+		}
+		if(u.getRol().equals(Rol.PACIENTE)) {
+			Paciente paciente = pacienteDao.findByUsuarioId(usuario.getId());
+			paciente.setFechaAlta(usuario.getFechaAlta());
+			paciente.setUsername(usuario.getUsername());
+			paciente.setPassword(passwordEncoder.encode(usuario.getPassword()));
+			paciente.setMail(usuario.getMail());
+			paciente.setApellido(usuario.getApellido());
+			paciente.setFoto(usuario.getFoto());
+			paciente.setUsuario(usuario);
+			paciente.setTerapeutas(paciente.getTerapeutas());
+			paciente.setTurnos(paciente.getTurnos());
+			paciente.setPdf(paciente.getPdf());
+			pacienteDao.save(paciente);
+		}
+		
+		u = usuario;
+		usuarioDao.save(u);
 	}
 
 	@Override
@@ -116,6 +195,16 @@ public class UsuarioServiceImpl implements IUsuarioService{
 	@Transactional
 	public void darDeBaja(Usuario usuario) {
 		usuario.setFechaBaja(new Date());
+		Terapeuta t = new Terapeuta();
+		t = terapeutaDao.findByUsuarioId(usuario.getId());
+		if(t!=null) {
+			t.setFechaBaja(new Date());
+		}
+		Paciente p = new Paciente();
+		p = pacienteDao.findByUsuarioId(usuario.getId());
+		if(p!=null) {
+			p.setFechaBaja(new Date());
+		}
 		usuarioDao.save(usuario);
 	}
 
@@ -134,8 +223,6 @@ public class UsuarioServiceImpl implements IUsuarioService{
 	public Usuario findByMail(String mail) {
 		return usuarioDao.porMail(mail);
 	}
-	
-	
 
 
 }
