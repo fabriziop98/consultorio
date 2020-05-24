@@ -14,4 +14,6 @@ public interface ITerapeutaDao extends JpaRepository<Terapeuta, Long>{
 	
 	public Terapeuta findByUsuarioId(Long id);
 
+	public List<Terapeuta> findByFechaBajaIsNull();
+
 }

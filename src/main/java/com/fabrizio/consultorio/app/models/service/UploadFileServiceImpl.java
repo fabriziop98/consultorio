@@ -49,11 +49,13 @@ public class UploadFileServiceImpl implements IUploadFileService {
 			log.info("rootPath: " + rutaPdf);
 			Files.copy(file.getInputStream(), rutaPdf);
 		} else {
-			Path rootPath = getPath(uniqueFilename);
+			throw new IOException();
 			
-			log.info("rootPath: " + rootPath);
-
-			Files.copy(file.getInputStream(), rootPath);
+//			Path rootPath = getPath(uniqueFilename);
+//			
+//			log.info("rootPath: " + rootPath);
+//
+//			Files.copy(file.getInputStream(), rootPath);
 		}
 	
 

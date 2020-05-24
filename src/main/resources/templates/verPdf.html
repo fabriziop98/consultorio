@@ -9,10 +9,11 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 			<div class="card-body">
 				<form th:action="@{'/paciente/pdf/'+${paciente.id}}"
 					th:object="${paciente}" method="POST" enctype="multipart/form-data">
+					<input type="hidden" name="idPaciente" id="idPaciente" th:field="*{id}"/>
 					<div class="form-group row">
 						<label class="col-sm-2 col-form-label">Nombre paciente</label>
 						<div class="col-sm-6">
-							<input disabled="disabled" type="text" th:field="*{username}"
+							<input name="username" disabled="disabled" type="text" th:field="*{username}"
 								class="form-control" th:errorclass="'form-control alert-danger'" />
 							<small class="form-text text-danger"
 								th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></small>
@@ -34,9 +35,9 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 									</div>
 									<div class="card-footer">
 										 <a
-											sec:authorize="hasRole('ROLE_ADMIN')"
+											sec:authorize="hasRole('ROLE_ADMINISTRADOR')"
 											class="btn btn-danger btn-xs"
-											th:href="@{/paciente/pdf/eliminar/} + ${pdf.id}"
+											th:href="@{'/paciente/pdf/eliminar/' + ${pdf.id} +'/'+ ${paciente.id}}"
 											th:text="'Eliminar informe'"
 											onclick="return confirm('¿Estás seguro que quieres eliminar el informe?');"></a>
 									</div>

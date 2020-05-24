@@ -8,9 +8,10 @@
 <link rel="stylesheet" type="text/css" href="/css/modal.css" />
 <head th:replace="layout/layout :: head"></head>
 <header th:replace="layout/layout :: header"></header>
+	
 
 
-<div class="container py-4">
+	<div class="container py-4">
 	<div class="card bg-light">
 
 		<div class="card-header" th:text="${titulo}"></div>
@@ -90,6 +91,20 @@
 	});
 </script>
 <footer th:replace="layout/layout :: footer"></footer>
+	<script type="text/javascript">
+	function validarDatosCompletos(){
+		var dateTimePicker = document.getElementById("dateTimePicker").value;
+		var boton = document.getElementById("btnEnviar");
+		
+		if (dateTimePicker==""){
+			boton.innerText = 'Llena todos los campos';
+			boton.disabled = true;		
+		}else{
+			boton.innerText = 'Guardar usuario';
+			boton.disabled = false;		
+		}
+	}
+</script>
 </body>
 
 </html>

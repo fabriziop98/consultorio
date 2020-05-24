@@ -148,6 +148,7 @@ public class TurnoServiceImpl implements ITurnoService {
 			t.setFechaTurno(format.parse(dateTimePicker));
 		} catch (ParseException e) {
 			e.printStackTrace();
+			throw new Exception();
 		}
 		paciente.addTurno(t);
 		t.setPaciente(paciente);

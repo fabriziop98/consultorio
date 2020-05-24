@@ -27,6 +27,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -87,11 +88,6 @@ public class PacienteController {
 	@PostMapping("/crear")
 	public String crearPaciente(@Valid Paciente paciente, BindingResult result, Model model,
 			@RequestParam("file") MultipartFile foto, RedirectAttributes flash, SessionStatus status) {
-//		if (result.hasErrors()) {
-//			model.addAttribute("titulo", "Crear terapeuta");
-//			return "crearTerapeuta";
-//		}
-		
 		
 		if(foto.isEmpty()) {
 			model.addAttribute("titulo", "Crear Paciente");
@@ -148,9 +144,11 @@ public class PacienteController {
 		} catch (Exception e) {
 			model.addAttribute("titulo", "Asignar turno");
 			model.addAttribute("error", "Error: Ha ocurrido un error al crear el turno");
+			flash.addFlashAttribute("error", "Error: Ha ocurrido un error al crear el turno");
 			e.printStackTrace();
 			return "redirect:/paciente/ver/{id}";
 		}
+		flash.addFlashAttribute("success", "Turno asignado: "+turnoString+", con terapeuta: "+turno.getTerapeuta().getUsername()+" "+turno.getTerapeuta().getApellido());
 		status.setComplete();
 		return "redirect:/paciente/ver/{id}";
 	}
@@ -163,84 +161,44 @@ public class PacienteController {
 		return "subirPdf";
 	}
 	
-	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR','ROLE_TERAPEUTA')")
-	@PostMapping("/pdf/{id}")
-	public String subirPdf(@PathVariable Long id, Model model, @RequestParam("file") MultipartFile archivo, RedirectAttributes flash, SessionStatus status) {
-		Paciente paciente = pacienteService.findOne(id);
-		Pdf pdf = new Pdf();
-		
-		
-		if(archivo.isEmpty()) {
-			model.addAttribute("titulo", "Subir Pdf");
-			model.addAttribute("error", "Error: El pdf no puede ser nulo.");
-			return "subirPdf";
-		}
-		
-		if(!archivo.isEmpty()) {
-			String uniqueFilename = null;
-			try {
-				uniqueFilename = uploadFileService.copy(archivo);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			flash.addAttribute("info", "Se ha subido correctamente el pdf: "+archivo.getName());
-			pdf.setNombre(uniqueFilename);
-			paciente.addPdf(pdf);
-			pdf.setFechaSubida(new Date());
-			pdf.setEliminado(false);
-		}
-		pacienteService.save(paciente);
-		status.setComplete();
-		
-		return "redirect:/paciente/ver/{id}";
-	}
-	
-	
-	
 	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR')")
 	@GetMapping("/form/{id}")
-	public String displayAsignarTerapeuta(@PathVariable(value = "id") Long id, Map<String, Object> model,/* @RequestParam(name = "item_id[]", required = false) Long[] itemId,*/  Model modelo , RedirectAttributes flash) {
+	public String displayAsignarTerapeuta(@PathVariable(value = "id") Long id, Map<String, Object> model, Model modelo , RedirectAttributes flash) {
 		Paciente paciente = pacienteService.findOne(id);
 		modelo.addAttribute("pacientes", paciente);
+		List<Terapeuta> terapeutas = terapeutaService.listarDisponibles(paciente);
 		
 		if (paciente == null) {
 			flash.addFlashAttribute("error", "El cliente no existe en la base de datos");
 			return "redirect:/paciente/listar";
 		}
+		model.put("terapeutas", terapeutas);
 		model.put("paciente", paciente);
 		model.put("titulo", "Terapeuta para paciente: " + paciente.getUsername());
-		
-		pacienteService.save(paciente);
 		
 		return "asignarTerapeuta";
 	}
 	
 	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR')")
 	@PostMapping("/form/{id}")
-	public String asignarTerapeuta(@PathVariable(value = "id") Long id, Model model,
-			@RequestParam(name = "item_id[]", required = false) Long[] itemId, 
+	public String asignarTerapeuta(@PathVariable(value = "id") Long id, Paciente pacienteModelo, Model model,
 			RedirectAttributes flash, SessionStatus status) {
 		
-		Paciente pacientes = pacienteService.findOne(id);
+		model.addAttribute("pacientes", pacienteModelo);
 		
-		pacientes = pacienteService.findOne(id);
-		model.addAttribute("pacientes", pacientes);
-		
-		if (itemId == null || itemId.length == 0) {
+		if (pacienteModelo.getTerapeutas() == null || pacienteModelo.getTerapeutas().isEmpty()) {
 			model.addAttribute("titulo", "Asignar terapeuta");
 //			el error se conecta al th:errorclass
-			model.addAttribute("error", "Error: El terapeuta es nulo");
+			flash.addFlashAttribute("error", "Error: El terapeuta es nulo");
 			return "asignarTerapeuta";
 		}
 		
-		
-		for (int i = 0; i < itemId.length; i++) {
-			Terapeuta terapeuta = terapeutaService.findTerapeutaById(itemId[i]);
-			pacientes.addTerapeuta(terapeuta);
+		try {
+			pacienteService.asignarTerapeuta(pacienteModelo, id);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		
-		pacienteService.save(pacientes);
-		flash.addAttribute("success", "Terapeuta asignado con éxito");
+		flash.addFlashAttribute("success", "Terapeuta asignado con éxito");
 		
 		
 		
@@ -255,11 +213,6 @@ public class PacienteController {
 		model.put("pacientes", pacientes);
 		modelo.getAttribute("dateTimePicker");
 		return "pacientes";
-	}
-	
-	@GetMapping(value = "/cargar-terapeuta/{term}", produces = { "application/json" })
-	public @ResponseBody List<Terapeuta> cargarTerapeuta(@PathVariable String term) {
-		return terapeutaService.findTerapeutaByNombre(term);
 	}
 	
 	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR','ROLE_PACIENTE','ROLE_TERAPEUTA')")
@@ -281,29 +234,6 @@ public class PacienteController {
 		return "verPaciente";
 	}
 	
-	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR','ROLE_PACIENTE','ROLE_TERAPEUTA')")
-	@GetMapping("/listadoPdf/{id}")
-	public String verPdfPaciente(@PathVariable Long id, Model model) {
-		Paciente paciente = pacienteService.findOne(id);
-		model.addAttribute("paciente", paciente);
-		return "verPdf";
-	}
-	
-	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR','ROLE_PACIENTE','ROLE_TERAPEUTA')")
-	@GetMapping(value = "/listado/pdf/{filename:.+}")
-	public ResponseEntity<Resource> verPdf(@PathVariable String filename) {
-		Resource recurso = null;
-		try {
-			System.out.println("filename: "+filename);
-			recurso = uploadFileService.load(filename);
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		}
-
-		return ResponseEntity.ok()
-				.body(recurso);
-	}
-	
 	
 	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR','ROLE_PACIENTE','ROLE_TERAPEUTA')")
 	@GetMapping(value = "/uploads/{filename:.+}")
@@ -320,40 +250,74 @@ public class PacienteController {
 				.body(recurso);
 	}
 	
-	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR')")
-	@RequestMapping(value = "/eliminar/{id}")
-	public String eliminar(@PathVariable(value = "id") Long id, RedirectAttributes flash) {
-		if (id>0){
-			Paciente paciente = pacienteService.findOne(id);
-			pacienteService.darDeBaja(paciente);
-			flash.addFlashAttribute("success", "Terapeuta: "+paciente.getApellido()+" dado de baja.");
-			
+	
+	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR','ROLE_TERAPEUTA')")
+	@PostMapping("/pdf/{id}")
+	public String subirPdf(@PathVariable Long id, Model model, @RequestParam("file") MultipartFile archivo, RedirectAttributes flash, SessionStatus status) {
+		Paciente paciente = pacienteService.findOne(id);
+		Pdf pdf = new Pdf();
+
+		if(archivo.isEmpty()) {
+			model.addAttribute("titulo", "Subir Pdf");
+			model.addAttribute("error", "Error: El pdf no puede ser nulo.");
+			return "subirPdf";
 		}
-		return "redirect:/terapeuta/listar";
+		
+		if(!archivo.isEmpty()) {
+			String uniqueFilename = null;
+			try {
+				uniqueFilename = uploadFileService.copy(archivo);
+			} catch (IOException e) {
+				flash.addFlashAttribute("error", "El archivo que intentó subir no es un formato permitido.");
+				e.printStackTrace();
+				return "redirect:/paciente/pdf/{id}";
+			}
+			flash.addFlashAttribute("info", "Se ha subido correctamente el pdf: "+archivo.getOriginalFilename());
+			pdf.setNombre(uniqueFilename);
+			paciente.addPdf(pdf);
+			pdf.setFechaSubida(new Date());
+			pdf.setEliminado(false);
+		}
+		pacienteService.save(paciente);
+		status.setComplete();
+		
+		return "redirect:/paciente/ver/{id}";
+	}
+	
+	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR','ROLE_PACIENTE','ROLE_TERAPEUTA')")
+	@GetMapping("/listadoPdf/{id}")
+	public String verPdfPaciente(@PathVariable Long id, Model model) {
+		Paciente paciente = pacienteService.findOne(id);
+		model.addAttribute("paciente", paciente);
+		return "verPdf";
 	}
 	
 	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR')")
-	@RequestMapping(value = "/eliminar")
-	public String eliminar(RedirectAttributes flash) {
-
-		pacienteService.deleteAll();
-		flash.addFlashAttribute("success", "Todas las terapeutas fueron eliminadas con éxito");
-
-		return "redirect:/receta/listar";
-	}
-	
-	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR')")
-	@RequestMapping(value = "/pdf/eliminar/{id}")
-	public String eliminarPdf(@PathVariable(value = "id") Long id, RedirectAttributes flash) {
+	@RequestMapping(value = "/pdf/eliminar/{idPdf}/{idPaciente}")
+	public String eliminarPdf(@PathVariable(value = "idPdf") Long id,@PathVariable(value = "idPaciente") Long idPaciente,  RedirectAttributes flash, Model model) {
 		if (id>0){
 			Pdf pdf = pdfService.findOne(id);
 			pdfService.darDeBaja(pdf);
-			flash.addFlashAttribute("success", "Informe: "+pdf.getNombre()+" eliminado.");
-			
+			flash.addFlashAttribute("success", "Informe: "+(pdf.getNombre()).substring(pdf.getNombre().lastIndexOf("_") + 1)+" eliminado.");
+			System.out.println(model.getAttribute("paciente"));
 		}
-		return "redirect:/terapeuta/listar";
+		return "redirect:/paciente/listadoPdf/"+idPaciente;
 	}
 	
+	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR','ROLE_PACIENTE','ROLE_TERAPEUTA')")
+	@GetMapping(value = "/listado/pdf/{filename:.+}")
+	public ResponseEntity<Resource> verPdf(@PathVariable String filename) {
+		Resource recurso = null;
+		try {
+			System.out.println("filename: "+filename);
+			recurso = uploadFileService.load(filename);
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+
+		return ResponseEntity.ok()
+				.body(recurso);
+	}
 	
 	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR','ROLE_PACIENTE','ROLE_TERAPEUTA')")
 	@GetMapping("/foto/{id}")
@@ -406,6 +370,29 @@ public class PacienteController {
 			ioExp.printStackTrace();
 		}
 		return bArray;
+	}
+	
+	
+	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR')")
+	@RequestMapping(value = "/eliminar")
+	public String eliminar(RedirectAttributes flash) {
+
+		pacienteService.deleteAll();
+		flash.addFlashAttribute("success", "Todas las terapeutas fueron eliminadas con éxito");
+
+		return "redirect:/receta/listar";
+	}
+	
+	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR')")
+	@RequestMapping(value = "/eliminar/{id}")
+	public String eliminar(@PathVariable(value = "id") Long id, RedirectAttributes flash) {
+		if (id>0){
+			Paciente paciente = pacienteService.findOne(id);
+			pacienteService.darDeBaja(paciente);
+			flash.addFlashAttribute("success", "Terapeuta: "+paciente.getApellido()+" dado de baja.");
+			
+		}
+		return "redirect:/terapeuta/listar";
 	}
 	
 }

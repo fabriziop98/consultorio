@@ -80,4 +80,17 @@ public class PacienteServiceImpl implements IPacienteService{
 		return pacienteDao.findByUsuarioId(id);
 	}
 
+	@Override
+	public void asignarTerapeuta(Paciente pacienteModelo, Long id) throws Exception{
+		if(id== null) {
+			throw new Exception();
+		}
+		Paciente paciente = findOne(id);
+		for(Terapeuta t : pacienteModelo.getTerapeutas()) {
+			paciente.addTerapeuta(t);
+		}
+		
+		pacienteDao.save(paciente);
+	}
+
 }

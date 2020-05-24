@@ -10,99 +10,101 @@
 					<ul th:if="${#fields.hasErrors('*')}" class="alert alert-danger">
 						<li th:each="err: ${#fields.errors('*')}" th:text="${err}"></li>
 					</ul>
-				<form th:action="${usuario.username} ? @{'/usuario/editar/'+${usuario.id}} : @{/usuario/crear}" th:object="${usuario}"
-					method="POST" enctype="multipart/form-data">
-					
-					<input th:if="${usuario.username}" type="hidden" th:field="*{id}"/>
-					<input th:if="${usuario.username}" type="hidden" th:field="*{fechaAlta}"/>
-					<div class="form-group row">
-						<label class="col-sm-2 col-form-label">Nombre</label>
-						<div class="col-sm">
-							<input type="text" th:field="*{username}" class="form-control"
-								th:errorclass="'form-control alert-danger'" /> <small
-								class="form-text text-danger"
-								th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></small>
-						</div>
-					</div>
+					<form name="formulario"
+						th:action="${usuario.username} ? @{'/usuario/editar/'+${usuario.id}} : @{/usuario/crear}"
+						th:object="${usuario}" method="POST" enctype="multipart/form-data">
 
-					<div class="form-group row">
-						<label class="col-sm-2 col-form-label">Apellido</label>
-						<div class="col-sm">
-							<input type="text" th:field="*{apellido}" class="form-control"
-								th:errorclass="'form-control alert-danger'" /> <small
-								class="form-text text-danger"
-								th:if="${#fields.hasErrors('apellido')}" th:errors="*{apellido}"></small>
-						</div>
-					</div>
-
-					<div class="form-group row">
-						<label class="col-sm-2 col-form-label">Correo Electrónico</label>
-						<div class="col-sm">
-							<input th:if="${usuario.username}" type="text" th:field="*{mail}" class="form-control"
-								th:errorclass="'form-control alert-danger'" /> <small
-								class="form-text text-danger"
-								th:if="${#fields.hasErrors('mail')}" th:errors="*{mail}"></small>
-						</div>
-					</div>
-					<div class="form-group row">
-						<label class="col-sm-2 col-form-label">Contraseña</label>
-						<div class="col-sm">
-							<input type="password" th:field="*{password}"
-								class="form-control" name="password" id="password"
-								onkeyup='check();' th:errorclass="'form-control alert-danger'" />
-							<small class="form-text text-danger"
-								th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></small>
+						<input th:if="${usuario.username}" type="hidden" th:field="*{id}" />
+						<input th:if="${usuario.username}" type="hidden" th:field="*{fechaAlta}" />
+						<div class="form-group row">
+							<label class="col-sm-2 col-form-label">Nombre</label>
+							<div class="col-sm">
+								<input required onkeyup="validarDatosCompletos();" id="username" name="username" type="text" th:field="*{username}" class="form-control"
+									th:errorclass="'form-control alert-danger'" /> <small
+									class="form-text text-danger"
+									th:if="${#fields.hasErrors('username')}"
+									th:errors="*{username}"></small>
+							</div>
 						</div>
 
-					</div>
-					<div class="form-group row">
-						<br> <label class="col-sm-2 col-form-label">Confirmar
-							contraseña</label>
-						<div class="col-sm">
-							<input class="form-control" type="password"
-								name="confirm_password" id="confirm_password" onkeyup='check();' />
+						<div class="form-group row">
+							<label class="col-sm-2 col-form-label">Apellido</label>
+							<div class="col-sm">
+								<input required onkeyup="validarDatosCompletos();" name="apellido" type="text" th:field="*{apellido}" class="form-control"
+									th:errorclass="'form-control alert-danger'" /> <small
+									class="form-text text-danger"
+									th:if="${#fields.hasErrors('apellido')}"
+									th:errors="*{apellido}"></small>
+							</div>
 						</div>
-						<span id='message'></span>
 
-
-					</div>
-
-					<div class="form-group">
-						<p>Foto de perfil</p>
-						<input type="file" id="subirFoto" name="fotoOriginal"
-							accept=".jpg,.jpeg,.png" hidden />
-						<button type="button" class="btnfoto" id="botonFoto"
-							onclick="upload()">
-							<img th:src="@{/images/iconos/camera.png}" alt="Subir Foto">
-							Subir una foto
-						</button>
-						<div id="mascara"></div>
-						<input type="hidden" id="fotoCrop" name="file" />
-					</div>
-
-					<div th:unless="${usuario.username}" class="form-group row">
-						<select th:field="*{rol}" class="custom-select" required>
-							<option th:value="NULL">Elige un Rol</option>
-							<option th:value="ADMINISTRADOR">Administrador</option>
-							<option th:value="TERAPEUTA">Terapeuta</option>
-							<option th:value="PACIENTE">Paciente</option>
-							<option th:value="USUARIO">Usuario</option>
-						</select>
-					</div>
-
-					<div class="form-group">
-						<div class="col-sm-6">
-							<button class="btn btn-primary" type="submit" id="btnEnviar">
-								Continuar</button>
+						<div class="form-group row">
+							<label  class="col-sm-2 col-form-label">Correo Electrónico</label>
+							<div class="col-sm">
+								<input required onkeyup="validarDatosCompletos();" name="email" type="email" th:field="*{mail}" class="form-control"
+									th:errorclass="'form-control alert-danger'" />
+							</div>
 						</div>
-					</div>
+						<div class="form-group row">
+							<label class="col-sm-2 col-form-label">Contraseña</label>
+							<div class="col-sm">
+								<input required onkeyup="validarDatosCompletos(); check();" type="password" th:field="*{password}"
+									class="form-control" name="password" id="password"
+									th:errorclass="'form-control alert-danger'" />
+								<small class="form-text text-danger"
+									th:if="${#fields.hasErrors('password')}"
+									th:errors="*{password}"></small>
+							</div>
+
+						</div>
+						<div class="form-group row">
+							<br> <label class="col-sm-2 col-form-label">Confirmar
+								contraseña</label>
+							<div class="col-sm">
+								<input required onkeyup="validarDatosCompletos(); check();" class="form-control" type="password"
+									name="confirm_password" id="confirm_password"/>
+							</div>
+							<span id='message'></span>
 
 
-				</form>
+						</div>
+
+						<div class="form-group">
+							<p>Foto de perfil</p>
+							<input type="file" id="subirFoto" name="fotoOriginal"
+								accept=".jpg,.jpeg,.png" hidden />
+							<button type="button" class="btnfoto" id="botonFoto"
+								onclick="upload()">
+								<img th:src="@{/images/iconos/camera.png}" alt="Subir Foto">
+								Subir una foto
+							</button>
+							<div id="mascara"></div>
+							<input type="hidden" id="fotoCrop" name="file" />
+						</div>
+
+						<div th:unless="${usuario.username}" class="form-group row">
+							<select name="rol" th:field="*{rol}" class="custom-select" required>
+								<option th:value="NULL">Elige un Rol</option>
+								<option th:value="ADMINISTRADOR">Administrador</option>
+								<option th:value="TERAPEUTA">Terapeuta</option>
+								<option th:value="PACIENTE">Paciente</option>
+								<option th:value="USUARIO">Usuario</option>
+							</select>
+						</div>
+
+						<div class="form-group">
+							<div class="col-sm-6">
+								<button onkeyup="validarDatosCompletos();" class="btn btn-primary" type="submit" id="btnEnviar" disabled="disabled"
+									>Guardar usuario</button>
+							</div>
+						</div>
+
+
+					</form>
+
+				</div>
 
 			</div>
-			
-		</div>
 
 		</div>
 
@@ -164,5 +166,22 @@
 		}
 	</script>
 
+	<script type="text/javascript">
+	function validarDatosCompletos(){
+		var username = document.getElementById("username").value;
+		var email = document.getElementById("mail").value;
+		var pass = document.getElementById("password").value;
+		var comnfirmarPass = document.getElementById("confirm_password").value;
+		var boton = document.getElementById("btnEnviar");
+		
+		if (username.length == 0 || pass.length == 0 || comnfirmarPass.length == 0 || email	.length == 0){
+			boton.innerText = 'Llena todos los campos';
+			boton.disabled = true;		
+		}else{
+			boton.innerText = 'Guardar usuario';
+			boton.disabled = false;		
+		}
+	}
+</script>
 </body>
 </html>

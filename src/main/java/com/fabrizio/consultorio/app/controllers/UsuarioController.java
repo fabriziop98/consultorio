@@ -73,6 +73,7 @@ public class UsuarioController {
 		usuario.setFoto(foto);
 		usuarioService.save(usuario);
 		status.setComplete();
+		flash.addFlashAttribute("success", "Usuario "+usuario.getUsername()+" "+usuario.getApellido()+" creado con éxito.");
 		return "redirect:/usuario/listar";
 	}
 	

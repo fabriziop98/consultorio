@@ -12,6 +12,8 @@ public interface ITerapeutaService {
 	public void save(Terapeuta terapeuta);
 
 	public List<Terapeuta> findByNombre(String term);
+	
+	public List<Terapeuta> listarActivos();
 
 	public void detele(Terapeuta terapeuta);
 
@@ -28,5 +30,7 @@ public interface ITerapeutaService {
 	public List<Terapeuta> findTerapeutaByNombre(String term);
 	
 	public Terapeuta byUsuarioId(Long id);
+	
+	public List<Terapeuta> listarDisponibles(Paciente paciente);
 
 }

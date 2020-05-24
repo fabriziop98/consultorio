@@ -8,21 +8,15 @@
 <a href="#popup1" class="btn">Iniciar Sesión</a>
 <div id="popup1" class="popup">
 	<a href="#" class="close">&times;</a>
-	<body>
 	<div class="container py-4">
 		<div class="card bg-light">
 			<div class="card-body">
-<!-- 				<div th:object="${paciente}" th:remove="tag"> -->
-<!-- 					<ul th:if="${#fields.hasErrors('*')}" class="alert alert-danger"> -->
-<!-- 						<li th:each="err: ${#fields.errors('*')}" th:text="${err}"></li> -->
-<!-- 					</ul> -->
-<!-- 				</div> -->
 				<form th:action="@{'/paciente/form/'+${paciente.id}}" th:object="${paciente}"
 					method="POST" enctype="multipart/form-data">
 					<div class="form-group row">
-						<label class="col-sm-2 col-form-label">Nombre paciente</label>
+						<label class="col-sm-2 col-form-label">Nombasdfasdfre paciente</label>
 						<div class="col-sm-6">
-							<input disabled="disabled" type="text" th:field="*{username}"  class="form-control"
+							<input onkeyup="validarDatosCompletos();" disabled="disabled" type="text" th:field="*{username}"  class="form-control"
 								th:errorclass="'form-control alert-danger'" /> <small
 								class="form-text text-danger"
 								th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></small>
@@ -31,7 +25,7 @@
 
 
 					<div class="input-group mb-3">
-						<input autocomplete="off" type="text" name="buscar_terapeuta" id="buscar_terapeuta"
+						<input asdfasdfa sd autocomplete="on" type="text" name="buscar_terapeuta" id="buscar_terapeuta"
 							class="form-control"
 							placeholder="Empieza a escribir el nombre de una terapeuta"
 							aria-label="Recipient's username"
@@ -57,8 +51,8 @@
 
 					<div class="form-group">
 						<div class="col-sm-6">
-							<input type="submit" value="Asignar terapeuta"
-								class="btn btn-primary" />
+							<input type="submit" id="btnEnviar" value="Asignar terapeuta"
+								class="btn btn-primary" disabled="disabled"/>
 						</div>
 					</div>
 
@@ -72,12 +66,24 @@
 	<footer th:replace="layout/layout :: footer"></footer>
 	<script th:replace="js/autocomplete-terapeuta :: javascript"></script>
 
-</body>
 	
 	
 	
 </div>
 
-
+<script type="text/javascript">
+	function validarDatosCompletos(){
+		var buscar_terapeuta = document.getElementById("buscar_terapeuta").value;
+		var boton = document.getElementById("btnEnviar");
+		
+		if (buscar_terapeuta.length == 0 ){
+			boton.innerText = 'Llena todos los campos';
+			boton.disabled = true;		
+		}else{
+			boton.innerText = 'Asignar terapeuta';
+			boton.disabled = false;		
+		}
+	}
+</script>
 
 <a href="#" class="close-popup"></a></html> </modal>

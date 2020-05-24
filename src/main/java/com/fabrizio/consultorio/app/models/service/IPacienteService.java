@@ -23,5 +23,7 @@ public interface IPacienteService {
 	public void deleteAll();
 
 	public List<Paciente> findByTerapeutaId(Long id);
+	
+	public void asignarTerapeuta(Paciente paciente, Long id) throws Exception;
 
 }

@@ -3,6 +3,7 @@ package com.fabrizio.consultorio.app.models.service;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.collections4.ListUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -84,6 +85,17 @@ public class TerapeutaServiceImpl implements ITerapeutaService {
 	@Override
 	public Terapeuta byUsuarioId(Long id) {
 		return terapeutaDao.findByUsuarioId(id);
+	}
+
+	@Override
+	public List<Terapeuta> listarActivos() {
+		return terapeutaDao.findByFechaBajaIsNull();
+	}
+
+	@Override
+	public List<Terapeuta> listarDisponibles(Paciente paciente) {
+		List<Terapeuta> terapeutasDisponibles = ListUtils.subtract(listarActivos(), paciente.getTerapeutas());
+		return terapeutasDisponibles;
 	}
 
 }
