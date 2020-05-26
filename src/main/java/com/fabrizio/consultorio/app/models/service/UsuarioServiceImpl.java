@@ -17,10 +17,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fabrizio.consultorio.app.models.dao.IPacienteDao;
 import com.fabrizio.consultorio.app.models.dao.ITerapeutaDao;
+import com.fabrizio.consultorio.app.models.dao.ITurnoDao;
 import com.fabrizio.consultorio.app.models.dao.IUsuarioDao;
 import com.fabrizio.consultorio.app.models.entity.Paciente;
 import com.fabrizio.consultorio.app.models.entity.Rol;
 import com.fabrizio.consultorio.app.models.entity.Terapeuta;
+import com.fabrizio.consultorio.app.models.entity.Turno;
 import com.fabrizio.consultorio.app.models.entity.Usuario;
 import com.fabrizio.util.FileUtil;
 
@@ -29,6 +31,9 @@ public class UsuarioServiceImpl implements IUsuarioService{
 	
 	@Autowired
 	private IUsuarioDao usuarioDao;
+	
+	@Autowired
+	private ITurnoDao turnoDao;
 	
 	@Autowired
 	private ITerapeutaDao terapeutaDao;
@@ -123,9 +128,16 @@ public class UsuarioServiceImpl implements IUsuarioService{
 	
 	@Override
 	public void editar(Usuario usuario) throws Exception {
+		
 		String foto = usuario.getFoto();
 		usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
 		Usuario u = usuarioDao.getOne(usuario.getId());
+		if(usuario.getMail()!=u.getMail()) {
+			if (usuarioDao.porMail(usuario.getMail()) != null) {
+				throw new Exception();
+			}
+		}
+		
 		String uniqueFilename = UUID.randomUUID().toString();
 		if (!foto.isEmpty()) {
 			File archivo = new File(FileUtil.RUTA_IMAGENES +uniqueFilename+"_"+ usuario.getUsername());
@@ -204,6 +216,9 @@ public class UsuarioServiceImpl implements IUsuarioService{
 		p = pacienteDao.findByUsuarioId(usuario.getId());
 		if(p!=null) {
 			p.setFechaBaja(new Date());
+			for(Turno turno : p.getTurnos()) {
+				turnoDao.delete(turno);
+			}
 		}
 		usuarioDao.save(usuario);
 	}

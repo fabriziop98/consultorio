@@ -20,7 +20,8 @@ body {
   background-repeat: no-repeat;
 }
 h1,h2,a,p {
-  font-family: helvetica, sans-serif;
+/*   font-family: helvetica, sans-serif; */
+     font-family: "Helvetica Neue",sans-serif;
 }
 h1 {
   font-size: 3em;

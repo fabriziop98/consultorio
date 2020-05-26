@@ -1,81 +1,75 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
 	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+	
+	
 <head th:fragment="head">
+
 <meta charset="UTF-8" />
 <title th:text="'Fonoaudiología'"></title>
-<link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}" />
-<link rel="stylesheet" type="text/css" th:href="@{/css/jquery-ui.min.css}" />
- <link rel="stylesheet" th:href="@{/css/croppie.css}" />
+<link rel="stylesheet" type="text/css" href="/css/modal.css" />
+<link rel="stylesheet" type="text/css" th:href="@{/css/map.css}" />
+<link rel="stylesheet" th:href="@{/css/jquery-ui.min.css}" />
+<link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
+<link rel="stylesheet" th:href="@{/css/navbar.css}" />
+<link rel="stylesheet" th:href="@{/css/croppie.css}" />
+<style type="text/css">
+
+</style>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+<link rel="shortcut icon" th:href="@{/images/logoCorto.png}"/>
 </head>
 <body>
-	<header th:fragment="header">
-		<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-			<a class="navbar-brand" th:href="@{/inicio/}">Fonoaudiología Marcela Mateu</a>
-			<button class="navbar-toggler" type="button" data-toggle="collapse"
-				data-target="#navbarNav" aria-controls="navbarNav"
-				aria-expanded="false" aria-label="Toggle navigation">
-				<span class="navbar-toggler-icon"></span>
-			</button>
-			<div class="collapse navbar-collapse" id="navbarNav">
-				<ul class="navbar-nav">
-					<li class="nav-item active"><a class="nav-link"
-						th:href="@{/inicio/}"> <span class="sr-only">(current)</span>
-					</a></li>
+		<div class="wrapper">
+		<header th:fragment="header">
+			<nav>
+				<div class="menu-icon">
+					<i class="fa fa-bars fa-2x"></i>
+				</div>
+				<a th:href="@{/inicio/}" class="logo">Fonoaudiología Marcela
+					Mateu</a>
+				<div class="menu">
+					<ul>
 
-
-				</ul>
-			</div>
-			<ul class="nav navbar-nav navbar-right">
-				<!-- 				el li sec: es para si esta logeado no mustere el iniciar sesion -->
-				<li sec:authorize="!isAuthenticated()"><a
-					class="btn btn-outline-primary" th:href="@{/login}">Iniciar
-						Sesión</a></li>
-
-				<li sec:authorize="isAuthenticated()" class="dropdown"><a
-					class="btn btn-outline-primary dropdown-toggle" href="#"
-					role="button" id="dropdownMenuLink" data-toggle="dropdown"
-					aria-haspopup="true" aria-expanded="false"> <span
-						sec:authentication="name"></span>
-				</a>
-
-					<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-						<form id="logoutForm" th:action="@{/logout}" method="POST">
-							<button class="dropdown-item"
-								onclick="document.getElementById('logoutForm').submit"
-								type="submit">Salir</button>
-						</form>
-					</div></li>
-			</ul>
-
-			<!-- 				menu desplegable -->
-			<!-- 				<li class="nav-item dropdown show mx-2"><a -->
-			<!-- 					class="btn btn-outline-primary dropdown-toggle" href="#" -->
-			<!-- 					role="button" id="dropdownLenguaje" data-toggle="dropdown" -->
-			<!-- 					aria-haspopup="true" aria-expanded="false"> <span -->
-			<!-- 						th:text="#{text.locale.language}"></span> -->
-			<!-- 				</a> -->
-			<!-- 					<div class="dropdown-menu" aria-labelledby="dropdownMenuLink"> -->
-			<!-- 						<a class="dropdown-item" th:href="@{/locale(lang=es_ES)}" -->
-			<!-- 							th:text="#{text.locale.es}">ES</a> <a class="dropdown-item" -->
-			<!-- 							th:href="@{/locale(lang=en_US)}" th:text="#{text.locale.en}">EN</a> -->
-			<!-- 						<a class="dropdown-item" th:href="@{/locale(lang=de_DE)}" -->
-			<!-- 							th:text="#{text.locale.de}">DE</a> -->
-			<!-- 					</div></li> -->
-			<!-- 			</ul> -->
-
-		</nav>
-
-		<div class="alert alert-success" th:if="${success != null}"
-			th:text="${success}"></div>
-		<div class="alert alert-danger" th:if="${error != null}"
-			th:text="${error}"></div>
-		<div class="alert alert-warning" th:if="${warning != null}"
-			th:text="${warning}"></div>
-		<div class="alert alert-info" th:if="${info != null}"
-			th:text="${info}"></div>
+						<li sec:authorize="hasAnyRole('ROLE_PACIENTE')"><a
+							th:href="@{'/paciente/ver/'+${usuarioId}}">Mi perfil</a></li>
+						<li sec:authorize="hasAnyRole('ROLE_TERAPEUTA')"><a
+							th:href="@{'/paciente/listar/'+${usuarioId}}">Mis pacientes</a></li>
+						<li sec:authorize="hasRole('ROLE_ADMINISTRADOR')"><a
+							th:href="@{/terapeuta/listar}">Terapeutas</a></li>
+						<li sec:authorize="hasRole('ROLE_ADMINISTRADOR')"><a
+							th:href="@{/turno/listar}">Turnos</a></li>
+						<li sec:authorize="hasRole('ROLE_ADMINISTRADOR')"><a
+							th:href="@{/usuario/}">Usuarios</a></li>
+						<li sec:authorize="isAuthenticated()" class="dropdown"><a
+							href="#" th:replace="/modal/logout :: modal" role="button"> <span
+								sec:authentication="name" ></span>
+						</a>
+						</li>
+					</ul>
+				</div>
+				<div class="alert alert-success" th:if="${success != null}"
+				th:text="${success}"></div>
+			<div class="alert alert-danger" th:if="${error != null}"
+				th:text="${error}"></div>
+			<div class="alert alert-warning" th:if="${warning != null}"
+				th:text="${warning}"></div>
+			<div class="alert alert-info" th:if="${info != null}"
+				th:text="${info}"></div>
+			</nav>
+			
+		</header>
+		<div class="content"></div>
+	</div>
+		
 	</header>
-
 	<footer th:fragment="footer" class="container">
 		<hr />
 		<!-- 		INSERTAR IMAGEN -->
@@ -89,14 +83,34 @@
 		</p>
 		<a href="mailto:fabriziop@live.com.ar" class="contf">Contactanos</a>
 		<p>&reg; Fabrizio Prátici Mateu</p>
-		
-		 <script src="https://code.jquery.com/jquery-1.12.3.min.js"></script>
-    <script src="https://kendo.cdn.telerik.com/2018.2.620/js/kendo.all.min.js"></script>
+
+		<script src="https://code.jquery.com/jquery-1.12.3.min.js"></script>
+		<script
+			src="https://kendo.cdn.telerik.com/2018.2.620/js/kendo.all.min.js"></script>
 		<script th:src="@{/js/confirmpassword.js}"></script>
 		<script th:src="@{/js/popper.min.js}"></script>
 		<script th:src="@{/js/bootstrap.min.js}"></script>
 		<script th:src="@{/js/jquery-ui.min.js}"></script>
 		<script th:src="@{/js/croppie.js}"></script>
+		<script>
+			$(document).ready(function() {
+				$(".menu-icon").on("click", function() {
+					$("nav ul").toggleClass("showing");
+				});
+			});
+
+			// Scrolling Effect
+
+			$(window).on("scroll", function() {
+				if ($(window).scrollTop()) {
+					$('nav').addClass('black');
+				}
+
+				else {
+					$('nav').removeClass('black');
+				}
+			})
+		</script>
 	</footer>
 </body>
 </html>

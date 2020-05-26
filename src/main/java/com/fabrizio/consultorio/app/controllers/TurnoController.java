@@ -123,13 +123,14 @@ public class TurnoController {
 	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR')")
 	@GetMapping(value = "/eliminar/{id}")
 	public String eliminar(@PathVariable(value = "id") Long id, Model model, RedirectAttributes flash) {
-		if (id>0){
-			Turno turno = turnoService.findOne(id);
-			turnoService.darDeBaja(turno);
-			model.addAttribute("titulo", "Eliminar turno de: "+turno.getPaciente().getUsername()+" "+turno.getPaciente().getApellido());
-			flash.addFlashAttribute("info", "Eliminar turno de: "+turno.getPaciente().getUsername()+" "+turno.getPaciente().getApellido());
-			model.addAttribute("turno", turno);
+		if (id<0){
+			
 		}
+		Turno turno = turnoService.findOne(id);
+		turnoService.darDeBaja(turno);
+		model.addAttribute("titulo", "Eliminar turno de: "+turno.getPaciente().getUsername()+" "+turno.getPaciente().getApellido());
+		flash.addFlashAttribute("info", "Eliminar turno de: "+turno.getPaciente().getUsername()+" "+turno.getPaciente().getApellido());
+		model.addAttribute("turno", turno);
 		return "eliminarTurno";
 	}
 	
@@ -138,7 +139,7 @@ public class TurnoController {
 	public String eliminar(@Valid Turno turno, Model model, RedirectAttributes flash) {
 			flash.addFlashAttribute("success", "Turno de: "+turno.getPaciente().getUsername()+" "+turno.getPaciente().getApellido()+" eliminado.");
 			turnoService.darDeBaja(turno);
-		return "redirect:/turno/listar";
+		return "redirect:/turno/listarEliminados/"+turno.getPaciente().getId();
 	}
 	
 	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR')")

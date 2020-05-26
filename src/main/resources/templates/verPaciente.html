@@ -3,15 +3,31 @@
 	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 
+
 <!-- <link rel="stylesheet" -->
 <!-- 	href="https://kendo.cdn.telerik.com/2018.2.620/styles/kendo.bootstrap-v4.min.css"> -->
 <link rel="stylesheet" type="text/css" href="/css/modal.css" />
-<head th:replace="layout/layout :: head"></head>
+<head th:replace="layout/layout :: head">
+<script type="text/javascript">
+	function validarDatosCompletos() {
+		var dateTimePicker = document.getElementById("dateTimePicker").value;
+		var boton = document.getElementById("btnEnviar");
+
+		if (dateTimePicker == "") {
+			boton.innerText = 'Llena todos los campos';
+			boton.disabled = true;
+		} else {
+			boton.innerText = 'Guardar usuario';
+			boton.disabled = false;
+		}
+	}
+</script>
+</head>
 <header th:replace="layout/layout :: header"></header>
-	
 
 
-	<div class="container py-4">
+
+<div class="container py-4">
 	<div class="card bg-light">
 
 		<div class="card-header" th:text="${titulo}"></div>
@@ -22,40 +38,37 @@
 					<h4 class="card-title">
 
 
+
+
+
 						<!-- 						<a sec:authorize="hasRole('ROLE_ADMINISTRADOR')" -->
 						<!-- 							class="btn btn-primary btn-xs" -->
-						<!-- 							th:replace="/modal/asignarTerapeuta :: modal"></a> -->
-
-
-						<a sec:authorize="hasRole('ROLE_ADMINISTRADOR')"
-							class="btn btn-primary btn-xs"
-							th:href="@{'/paciente/form/'+${paciente.id}}"
-							th:text="'Asignar terapeuta'"></a>
+						<!-- 							th:href="@{'/paciente/form/'+${paciente.id}}" -->
+						<!-- 							th:text="'Asignar terapeuta'"></a> -->
 					</h4>
 				</div>
 			</div>
 
-			<img th:if="${paciente.foto} != null" class="img-thumbnail rounded float-left" style="max-width: 21%;"
-                                         th:src="@{'/paciente/foto/'+${paciente.id}}" >
+			<img th:if="${paciente.foto} != null"
+				class="img-thumbnail rounded float-left" style="max-width: 21%;"
+				th:src="@{'/paciente/foto/'+${paciente.id}}">
 			<ul class="list-group">
-				<li class="list-group-item" th:text="${paciente.username} + ' ' + ${paciente.apellido}"></li>
 				<li class="list-group-item"
 					th:utext="'Terapeuta(s): '+${nombreTerapeuta}"></li>
 				<li class="list-group-item"><p th:each="turno : ${turnos}"
-					th:text="'Próximo turno: '+ ${#dates.format(turno, 'dd/MM/yyyy HH:mm')}"></p>
+						th:text="'Próximo turno: '+ ${#dates.format(turno, 'dd/MM/yyyy HH:mm')}"></p>
 					<a class="btn btn-success btn-xs"
-					th:href="@{'/turno/listar/'+${paciente.id}}" th:text="'Ver todos los turnos'"></a></li>
-<!-- 					 ? ${#dates.format(turno.fechaTurno, 'dd-MM-yyyy HH:mm')}18:00" -->
-					 
-				<li class="list-group-item"><a sec:authorize="hasAnyRole('ROLE_ADMINISTRADOR','ROLE_TERAPEUTA')" class="btn btn-secondary btn-xs"
+					th:href="@{'/turno/listar/'+${paciente.id}}"
+					th:text="'Ver todos los turnos'"></a></li>
+				<!-- 					 ? ${#dates.format(turno.fechaTurno, 'dd-MM-yyyy HH:mm')}18:00" -->
+
+				<li class="list-group-item"><a
+					sec:authorize="hasAnyRole('ROLE_ADMINISTRADOR','ROLE_TERAPEUTA')"
+					class="btn btn-secondary btn-xs"
 					th:href="@{'/paciente/pdf/'+${paciente.id}}" th:text="'Subir PDF'"></a>
 					<a class="btn btn-success btn-xs"
 					th:href="@{'/paciente/listadoPdf/'+${paciente.id}}"
 					th:text="'Ver informes'"></a></li>
-
-
-
-
 			</ul>
 
 
@@ -65,18 +78,14 @@
 			<div class="container">
 				<div class="btn-group">
 					<h4 class="card-title">
-						<a class="btn btn-primary btn-xs" th:href="@{'/'}"
-							th:text="'Volver al inicio'"></a>
+						<a class="btn btn-primary btn-xs" th:href="@{'/paciente/listar'}"
+							th:text="'Volver al pacientes'"></a>
 					</h4>
-					<!-- 					<ul class="nav navbar-nav navbar-right px-4 "> -->
-					<!-- 				<li><modal -->
-					<!-- 						th:replace="/modal/login :: modal"></modal></li> -->
-					<!-- 			</ul> -->
-
 					<h4 class="card-title px-4">
-						<a sec:authorize="hasRole('ROLE_ADMINISTRADOR')" class="card-title"
-							th:replace="/modal/asignarTurno :: modal"></a>
-					</h4>
+					<a sec:authorize="hasRole('ROLE_ADMINISTRADOR')" class="card-title px-4"
+						th:replace="/modal/asignarTurno :: modal"></a></h4> <a
+						sec:authorize="hasRole('ROLE_ADMINISTRADOR')" class="card-title"
+						th:replace="/modal/asignarTerapeuta :: modal"></a>
 				</div>
 			</div>
 		</div>
@@ -91,19 +100,34 @@
 	});
 </script>
 <footer th:replace="layout/layout :: footer"></footer>
-	<script type="text/javascript">
-	function validarDatosCompletos(){
+<script type="text/javascript">
+	function validarDatosCompletos() {
 		var dateTimePicker = document.getElementById("dateTimePicker").value;
 		var boton = document.getElementById("btnEnviar");
-		
-		if (dateTimePicker==""){
+
+		if (dateTimePicker == "") {
 			boton.innerText = 'Llena todos los campos';
-			boton.disabled = true;		
-		}else{
+			boton.disabled = true;
+		} else {
 			boton.innerText = 'Guardar usuario';
-			boton.disabled = false;		
+			boton.disabled = false;
 		}
 	}
+</script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js"
+	integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk="
+	crossorigin="anonymous"></script>
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css"
+	integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg="
+	crossorigin="anonymous" />
+<script>
+	$(document).ready(function() {
+		$('select').selectize({
+			sortField : 'text'
+		});
+	});
 </script>
 </body>
 

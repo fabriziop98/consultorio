@@ -51,13 +51,23 @@
 						<tr class="text-center">
 								<th th:if="${paciente}">Fecha</th>
 								<th th:if="${paciente}">Terapeuta</th>
-								<th th:if="${paciente}"><h4 th:if="${#httpServletRequest.requestURI == '/turno/listarEliminados/'+{paciente.id}}"></h4>Cancelado por motivo:</th>
+								<th th:if="${paciente}">
+								<h7 th:if="${#httpServletRequest.requestURI == '/turno/listarEliminados/__${paciente.id}__'}">Cancelado por motivo:</h7>
+								<h7 th:if="${#httpServletRequest.requestURI == '/turno/listarFuturos/__${paciente.id}__'}">Acción:</h7>
+								<h7 th:if="${#httpServletRequest.requestURI == '/turno/listarAnteriores/__${paciente.id}__'}">Acción:</h7>
+								<h7 th:if="${#httpServletRequest.requestURI == '/turno/listar/__${paciente.id}__'}">Acción:</h7>
+								</th>
+								
 								
 								<th th:unless="${paciente}">Fecha</th>
 								<th th:unless="${paciente}">Paciente</th>
 								<th th:unless="${paciente}">Terapeuta</th>
-								<th th:unless="${paciente}"><h4 th:if="${#httpServletRequest.requestURI == '/turno/listarEliminados'}"></h4>Cancelado por motivo:</th>
-							
+								<th th:unless="${paciente}">
+								<h7 th:if="${#httpServletRequest.requestURI == '/turno/listarEliminados'}">Cancelado por motivo:</h7>
+								<h7 th:if="${#httpServletRequest.requestURI == '/turno/listarFuturos'}">Acción:</h7>
+								<h7 th:if="${#httpServletRequest.requestURI == '/turno/listarAnteriores'}">Acción:</h7>
+								<h7 th:if="${#httpServletRequest.requestURI == '/turno/listar'}">Acción:</h7>
+								</th>
 							</tr>
 					</thead>
 					<tbody> 
@@ -77,12 +87,13 @@
 								<td class="text-center" th:if="${turno.eliminado}"
 								th:text="${turno.observacion}"></td>
 								
-								<td class="text-center" sec:authorize="hasRole('ROLE_ADMINISTRADOR')"><a
+								<td th:if="${paciente}" class="text-center" sec:authorize="hasRole('ROLE_ADMINISTRADOR')"><a
 									th:if="${!turno.eliminado}" class="btn btn-danger btn-xs"
 									th:href="@{'/turno/eliminar/'+${turno.id}}"
 									th:text='Eliminar'
 									></a>
 								</td>
+								
 							</tr>
 					</tbody>
 					</table>

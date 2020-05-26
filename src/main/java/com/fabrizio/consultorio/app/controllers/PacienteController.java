@@ -27,10 +27,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -116,23 +114,6 @@ public class PacienteController {
 		return "redirect:/paciente/listar";
 	}
 	
-	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR','ROLE_TERAPEUTA')")
-	@GetMapping("/turno/{id}")
-	public String displayAsignarTurno(@PathVariable(value = "id") Long id, Map<String, Object> model, Model modelo , RedirectAttributes flash) {
-		Paciente paciente = pacienteService.findOne(id);
-		
-		if (paciente == null) {
-			flash.addFlashAttribute("error", "El paciente no existe en la base de datos");
-			return "redirect:/paciente/listar";
-		}
-		
-		model.put("paciente", paciente);
-		model.put("titulo", "Turno para paciente: " + paciente.getUsername());
-		
-		pacienteService.save(paciente);
-		
-		return "asignarTurno";
-	}
 	
 	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR','ROLE_TERAPEUTA')")
 	@PostMapping("/turno/{id}")
@@ -161,23 +142,6 @@ public class PacienteController {
 		return "subirPdf";
 	}
 	
-	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR')")
-	@GetMapping("/form/{id}")
-	public String displayAsignarTerapeuta(@PathVariable(value = "id") Long id, Map<String, Object> model, Model modelo , RedirectAttributes flash) {
-		Paciente paciente = pacienteService.findOne(id);
-		modelo.addAttribute("pacientes", paciente);
-		List<Terapeuta> terapeutas = terapeutaService.listarDisponibles(paciente);
-		
-		if (paciente == null) {
-			flash.addFlashAttribute("error", "El cliente no existe en la base de datos");
-			return "redirect:/paciente/listar";
-		}
-		model.put("terapeutas", terapeutas);
-		model.put("paciente", paciente);
-		model.put("titulo", "Terapeuta para paciente: " + paciente.getUsername());
-		
-		return "asignarTerapeuta";
-	}
 	
 	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR')")
 	@PostMapping("/form/{id}")
@@ -225,9 +189,11 @@ public class PacienteController {
 		}
 		Turno turno = new Turno();
 		List<Terapeuta> terapeutas = paciente.getTerapeutas();
+		List<Terapeuta> terapeutasDisponibles = terapeutaService.listarDisponibles(paciente);
 		model.put("turno", turno);
 		model.put("paciente", paciente);
 		model.put("terapeutas", terapeutas);
+		model.put("terapeutasDisponibles", terapeutasDisponibles);
 		model.put("titulo", "Detalle paciente: " + paciente.getUsername() +" "+ paciente.getApellido());
 		model.put("nombreTerapeuta", paciente.getTerapeutas().toString().replace("[", "").replace("]", ""));
 		model.put("turnos", turnoService.listarSorted(turnoService.listarFuturos(paciente)));

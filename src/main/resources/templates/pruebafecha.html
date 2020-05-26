@@ -1,62 +1,107 @@
 
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
+<link rel="stylesheet" type="text/css" href="/css/modal.css" />
+<link rel="stylesheet" type="text/css" th:href="@{/css/map.css}" />
+<link rel="stylesheet" th:href="@{/css/jquery-ui.min.css}" />
+<link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
+<link rel="stylesheet" th:href="@{/css/navbar.css}" />
+<link rel="stylesheet" th:href="@{/css/croppie.css}" />
+<style type="text/css">
+div {
+	z-index: -1;
+}
 
-    <title></title>
+.tales {
+	width: 100%;
+}
 
-    <link rel="stylesheet" type="text/css" media="screen" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-    <link href="./css/prettify-1.0.css" rel="stylesheet">
-    <link href="./css/base.css" rel="stylesheet">
-    <link href="//cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/e8bddc60e73c1ec2475f827be36e1957af72e2ea/build/css/bootstrap-datetimepicker.css" rel="stylesheet">
+.carousel-inner {
+	width: 100%;
+	max-height: 200px !important;
+}
 
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
-    <![endif]-->
-    <script type="text/javascript" src="//code.jquery.com/jquery-2.1.1.min.js"></script>
-    <script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+.logo {
+	z-index: 1;
+}
+</style>
 
-    <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.js"></script>
-
-
-    <script src="//cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/e8bddc60e73c1ec2475f827be36e1957af72e2ea/src/js/bootstrap-datetimepicker.js"></script>
-
-
-
-
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
 </head>
-
 <body>
+	<div class="wrapper">
+		<header>
+			<nav>
+				<div class="menu-icon">
+					<i class="fa fa-bars fa-2x"></i>
+				</div>
+				<div class="logo">LOGO</div>
+				<div class="menu">
+					<ul>
+						<li><a href="#">Home</a></li>
+						<li><a href="#">About</a></li>
+						<li><a href="#">Blog</a></li>
+						<li><a href="#">Contact</a></li>
+					</ul>
+				</div>
+			</nav>
+		</header>
+		<div class="content"></div>
+	</div>
+	<script>
+		$(document).ready(function() {
+			$(".menu-icon").on("click", function() {
+				$("nav ul").toggleClass("showing");
+			});
+		});
 
+		// Scrolling Effect
 
+		$(window).on("scroll", function() {
+			if ($(window).scrollTop()) {
+				$('nav').addClass('black');
+			}
 
+			else {
+				$('nav').removeClass('black');
+			}
+		})
+	</script>
 
-<div class="container">
-    <div class="row">
-        <div class='col-sm-6'>
-            <div class="form-group">
-                <div class='input-group date' id='datetimepicker2'>
-                    <input type='text' class="form-control" />
-                    <span class="input-group-addon">
-                        <span class="glyphicon glyphicon-calendar"></span>
-                    </span>
-                </div>
-            </div>
-        </div>
-        <script type="text/javascript">
-            $(function () {
-                $('#datetimepicker2').datetimepicker({
-                    locale: 'es'
-                });
-            });
-        </script>
-    </div>
-</div>
+		
+	<script>
+		$(document).ready(function() {
+			$(".menu-icon").on("click", function() {
+				$("nav ul").toggleClass("showing");
+			});
+		});
 
+		// Scrolling Effect
 
+		$(window).on("scroll", function() {
+			if ($(window).scrollTop()) {
+				$('nav').addClass('black');
+			}
 
-
-
+			else {
+				$('nav').removeClass('black');
+			}
+		})
+	</script>
+	
+	<div class="container">
+		<div id="bottom"></div>
+		<map th:replace="/map/map :: mapa"></map>
+	</div>
+	
+	<footer th:replace="layout/layout :: footer"></footer>
 </body>
+</html>

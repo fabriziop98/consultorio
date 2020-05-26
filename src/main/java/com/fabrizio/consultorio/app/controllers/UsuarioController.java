@@ -69,9 +69,15 @@ public class UsuarioController {
 	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR')")
 	@PostMapping("/crear")
 	public String crearUsuario(@Valid Usuario usuario, BindingResult result, Model model,
-			@RequestParam(required = false, value = "file") String foto, RedirectAttributes flash, SessionStatus status) throws Exception {
+			@RequestParam(required = false, value = "file") String foto, RedirectAttributes flash, SessionStatus status) {
 		usuario.setFoto(foto);
-		usuarioService.save(usuario);
+		try {
+			usuarioService.save(usuario);
+		} catch (Exception e) {
+			e.printStackTrace();
+			flash.addFlashAttribute("error", "Ocurrió un error al intentar crear el usuario.");
+			return "redirect:/usuario/";
+		}
 		status.setComplete();
 		flash.addFlashAttribute("success", "Usuario "+usuario.getUsername()+" "+usuario.getApellido()+" creado con éxito.");
 		return "redirect:/usuario/listar";
@@ -87,13 +93,16 @@ public class UsuarioController {
 	
 	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR')")
 	@PostMapping("/editar/{id}")
-	public String editarUsuario(@Valid Usuario usuario, @RequestParam(required = false, value = "file") String foto) {
+	public String editarUsuario(@Valid Usuario usuario, @RequestParam(required = false, value = "file") String foto, RedirectAttributes flash) {
 		try {
 			usuario.setFoto(foto);
 			usuarioService.editar(usuario);
 		} catch (Exception e) {
 			e.printStackTrace();
+			flash.addFlashAttribute("error", "Ocurrió un error al intentar editar el usuario.");
+			return "redirect:/usuario/listar";
 		}
+		flash.addFlashAttribute("success", "Usuario editado con éxito.");
 		return "redirect:/usuario/listar";
 	}
 

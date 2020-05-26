@@ -1,61 +1,36 @@
+<modal th:fragment="modal"
+xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
-<modal th:fragment="modal"> 
+	<link rel="stylesheet"
+		href="https://kendo.cdn.telerik.com/2018.2.620/styles/kendo.bootstrap-v4.min.css">
 
 
-<html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="layout/layout :: head"></head>
-
-<a href="#popup1" class="btn">Iniciar Sesión</a>
-<div id="popup1" class="popup">
-	<a href="#" class="close">&times;</a>
-	<div class="container py-4">
-		<div class="card bg-light">
+	<a href="#popup3" class="btn btn-primary">Asignar terapeuta</a>
+	<div id="popup3" class="popup">
+		<div class="card border-primary text-center">
+			<div class="card-header" th:text="'Paciente: '+${paciente.username} +' '+${paciente.apellido}"></div>
 			<div class="card-body">
-				<form th:action="@{'/paciente/form/'+${paciente.id}}" th:object="${paciente}"
-					method="POST" enctype="multipart/form-data">
-					<div class="form-group row">
-						<label class="col-sm-2 col-form-label">Nombasdfasdfre paciente</label>
-						<div class="col-sm-6">
-							<input onkeyup="validarDatosCompletos();" disabled="disabled" type="text" th:field="*{username}"  class="form-control"
-								th:errorclass="'form-control alert-danger'" /> <small
-								class="form-text text-danger"
-								th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></small>
-						</div>
+
+				<form th:action="@{'/paciente/form/'+${paciente.id}}"
+					th:object="${paciente}" method="POST">
+
+						<div class="form-group">
 					</div>
-
-
-					<div class="input-group mb-3">
-						<input asdfasdfa sd autocomplete="on" type="text" name="buscar_terapeuta" id="buscar_terapeuta"
-							class="form-control"
-							placeholder="Empieza a escribir el nombre de una terapeuta"
-							aria-label="Recipient's username"
-							aria-describedby="button-addon2">
-					</div>
-
-
-					<div class="container py-1">
-						<table th:replace="plantilla-items :: itemsTerapeuta"></table>
-
-						<table id="mostrarItemTerapeuta"
-							class="table table-sm table-striped table-hover">
-							<thead>
-								<tr>
-									<th>Terapeuta</th>
-								</tr>
-							</thead>
-							<tbody>
-							</tbody>
-						</table>
-					</div>
-
-
+					<select required th:field="*{terapeutas}" name="terapeutaId" id="">
+						<option selected th:value="null"
+							th:text="'Selecciona un terapeuta'">El paciente no tiene
+							terapeutas</option>
+						<option th:each="terapeuta : ${terapeutasDisponibles}"
+							th:value="${terapeuta.id}"
+							th:text="${terapeuta.username}+' '+${terapeuta.apellido}"></option>
+					</select>
 					<div class="form-group">
-						<div class="col-sm-6">
-							<input type="submit" id="btnEnviar" value="Asignar terapeuta"
-								class="btn btn-primary" disabled="disabled"/>
+						<div class="col-sm">
+							<input type="submit" value="Asignar terapeuta"
+								class="btn btn-primary"/>
 						</div>
 					</div>
-
 
 				</form>
 			</div>
@@ -63,27 +38,7 @@
 	</div>
 
 
-	<footer th:replace="layout/layout :: footer"></footer>
-	<script th:replace="js/autocomplete-terapeuta :: javascript"></script>
-
+	</body><a href="#" class="close-popup"></a> 
 	
-	
-	
-</div>
 
-<script type="text/javascript">
-	function validarDatosCompletos(){
-		var buscar_terapeuta = document.getElementById("buscar_terapeuta").value;
-		var boton = document.getElementById("btnEnviar");
-		
-		if (buscar_terapeuta.length == 0 ){
-			boton.innerText = 'Llena todos los campos';
-			boton.disabled = true;		
-		}else{
-			boton.innerText = 'Asignar terapeuta';
-			boton.disabled = false;		
-		}
-	}
-</script>
-
-<a href="#" class="close-popup"></a></html> </modal>
+</modal>

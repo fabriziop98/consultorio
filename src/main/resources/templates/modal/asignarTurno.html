@@ -8,7 +8,6 @@ xmlns:th="http://www.thymeleaf.org"
 
 	<a href="#popup1" class="btn btn-primary">Asignar turno</a>
 	<div id="popup1" class="popup">
-		<a href="#" class="close">&times;</a>
 		<div class="card border-primary text-center">
 			<div class="card-header" th:text="'Paciente: '+${paciente.username} +' '+${paciente.apellido}"></div>
 			<div class="card-body">
@@ -16,7 +15,7 @@ xmlns:th="http://www.thymeleaf.org"
 				<form th:action="@{'/paciente/turno/'+${paciente.id}}"
 					th:object="${turno}" method="POST">
 
-						<select required th:field="*{terapeuta}" name="terapeuta" class="custom-select" >
+						<select required th:field="*{terapeuta}" name="terapeuta" >
 							<option th:if="${not #lists.isEmpty(terapeutas)}" th:value="null">Elige un Terapeuta</option>
 							<option th:if="${#lists.isEmpty(terapeutas)}" th:value="null">El paciente no tiene terapeutas</option>
 							<option th:if="${terapeutas}" th:each="terapeuta : ${terapeutas}"  th:value="${terapeuta.id}" th:text="${terapeuta.username}"></option>
