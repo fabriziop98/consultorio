@@ -1,0 +1,149 @@
+
+.tales {
+	width: 100%;
+}
+
+.carousel-inner {
+	width: 100%;
+	max-height: 200px !important;
+}
+
+.logo {
+	z-index: 1;
+}
+
+	header {
+      width: 100%;
+      height: 100vh;
+      background-color: white;
+      background: url(/images/nino.jpg)  no-repeat 50% 50%;
+      background-size: cover;
+}
+
+
+
+</style>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<!------ Include the above in your HEAD tag ---------->
+<style>
+a:hover{
+   text-decoration: none;
+}
+
+.my-flip-inner-wrapper {
+   perspective: 150rem;
+   -moz-perspective: 150rem;
+   position: relative;   
+}
+.my-flip-side {
+    display: block;
+    height: 500px;
+    top: 0;
+    right: 0;
+    left: 0;
+    box-shadow: 0 1.5rem 4rem rgba(0, 0, 0, 0.15);    
+    transition: all .8s ease;    
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;   
+}
+
+.my-flip-back {
+   transform: rotateY(180deg);
+   color: #fff;
+   position: absolute;
+   z-index: -1;
+   box-shadow: 0 1.5rem 4rem rgba(0, 0, 0, 0.15);
+   padding: 46px;   
+}
+
+.my-flip-back-1 {
+   background: linear-gradient(to right bottom, #ffb900, #ff7730);
+}
+
+.my-flip-back-2 {
+   background: linear-gradient(to right bottom, #000428, #004e92);
+}
+
+.my-flip-back-3 {
+   background: linear-gradient(to right bottom, #2998ff, #5643fa);
+}
+
+.my-flip-inner-wrapper:hover .my-flip-front {
+   transform: rotateY(-180deg);
+}
+
+.my-flip-inner-wrapper:hover .my-flip-back {
+   transform: rotateY(0);
+}
+.my-flip-image {
+   height: 15rem;
+   background-blend-mode: screen;
+   clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+}
+.my-flip-image img{
+   width: 100%;
+   height: 100%;
+   background-blend-mode: screen;
+   object-fit: cover;   
+}
+.my-flip-heading {
+    margin: 0 0 15px;
+}
+.my-flip-details {
+   padding: 2rem;
+}
+.my-flip-details p {
+   font-size: 15px;
+   margin: 0;
+   line-height: 2;
+   color: #848484;
+}
+.my-flip-back-inner ul {
+   list-style: none;  
+   margin: 0 0 1.5rem;
+   padding: 0;
+}
+.my-flip-back-text  ul li {
+   text-align: center;
+   color:#fff;
+   font-size: 1rem;
+   padding: 0.8rem 0;
+}
+.my-flip-back-inner ul li:not(:last-child) {
+   border-bottom: 1px solid #ffffff;
+}
+.my-flip-price {
+   color: #fff;
+   text-align: center;
+   margin-bottom: 1rem;
+}
+.my-flip-price h3 {
+    font-size: 3rem;
+    font-weight: 300;
+}
+.my-flip-btn-box {
+    text-align: center;
+}
+.my-flip-btn{
+   text-transform: uppercase;
+   padding: 1rem 1.8rem;
+   font-size: 1rem;
+   background-color: #fff;
+   color: #000;
+   border-radius: 10rem;
+   display: inline-block;
+   transition: all .2s;
+   color: initial;
+   position: relative;
+}
+.my-flip-btn:hover {
+   transform: translateY(-4px);
+   box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.2);
+   color: #000;
+}
