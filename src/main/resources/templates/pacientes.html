@@ -1,69 +1,100 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
 	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<link rel="stylesheet" th:href="@{/css/cardsInmovil.css}" />
+
 <head th:replace="layout/layout :: head">
+</head>
 <body>
 	<header th:replace="layout/layout :: header"></header>
 
-	<div class="container py-4">
-		<div class="card bg-light">
-			<h1 class="card-header" th:text="${titulo}"></h1>
-			<div class="card-body">
-				<div class="container">
-					<h4 class="card-title">
-						<a sec:authorize="hasRole('ROLE_ADMINISTRADOR')"
-							class="btn btn-primary btn-xs" th:href="@{'/usuario/'}"
-							th:text="'Dar de alta paciente'"></a>
-					</h4>
-				</div>
-				<div class="alert alert-info my-4"
-					th:if="${#lists.isEmpty(pacientes)}"
-					th:text="'No hay pacientes registrados en la base de datos'">
-				</div>
 
-				<div class="container py-4">
-					<div class="row row-cols-1 row-cols-md-3">
-						<div th:if="${paciente.fechaBaja==null}"
-							th:each="paciente: ${pacientes}" class="col mb-4">
-							<div class="card h-100 text-center " style="width: 18rem;">
-								<img th:if="${paciente.foto} != null"
-                                         th:src="@{'/paciente/foto/'+${paciente.id}}" >
 
-								<div class="card-body">
-									<h5 class="card-title" th:text="${paciente.apellido}"></h5>
-									<p class="card-text" th:text="${paciente.username}"></p>
+	<div class="container">
+		<center sec:authorize="hasRole('ROLE_ADMINISTRADOR')" class="mt-4 mb-4">
+			<h2 style="color:#80541e; font-family:proxima-nova;" th:text="${titulo}"></h2>
+		</center>
+		
+		<center sec:authorize="hasRole('ROLE_TERAPEUTA')"class="mt-4 mb-4">
+			<h2  style="color:#80541e; font-family:proxima-nova;"  th:text="'Mis '+ ${titulo}"></h2>
+		</center>
+		<div class="container">
+			<h4 class="card-title">
+				<a sec:authorize="hasRole('ROLE_ADMINISTRADOR')"
+					class="button button-success centered" th:href="@{'/usuario/'}"
+					th:text="'Dar de alta paciente'"></a>
+			</h4>
+		</div>
+		<div class="alert alert-info my-4"
+			th:if="${#lists.isEmpty(pacientes)}"
+			th:text="'No hay pacientes registrados en la base de datos'"></div>
+		<section class="section-tours">
+			<div class="row">
+				<div th:if="${paciente.fechaBaja==null}"
+					th:each="paciente: ${pacientes}" class="col-lg-4 mb-4">
+					<div class="my-flip-container">
+						<div class="my-flip-inner my-flip-right">
+							<div class="my-flip-inner-wrapper">
+								<div sec:authorize="hasRole('ROLE_ADMINISTRADOR')" style="height: 500x;" class="my-flip-side my-flip-front">
+									<div class="my-flip-image my-flip-image--1">
+										<img th:if="${paciente.foto} != null"
+											th:src="@{'/paciente/foto/'+${paciente.id}}">
+									</div>
+									<div class="my-flip-details">
+										<h4 style="color:#5d5d5e; font-family:proxima-nova;" class="my-flip-heading" th:text="${paciente.username}+' '+${paciente.apellido}"></h4>
+										<div class="my-flip-text text-center">
+											<p ></p>
+											<a  th:href="@{/paciente/ver/} + ${paciente.id}"
+												style="margin: 10%;" th:text="'Detalle'" class="button button-primary"></a>
+												
+												 <a
+												sec:authorize="hasRole('ROLE_ADMINISTRADOR')"
+												class="button button-danger"
+												th:href="@{/paciente/eliminar/} + ${paciente.id}"
+												th:text="'Dar de baja'"
+												onclick="return confirm('¿Estás seguro que quieres dar de baja?');"></a>
+										</div>
+									</div>
 								</div>
-								<div class="card-footer">
-									<a th:href="@{/paciente/ver/} + ${paciente.id}"
-										th:text="'Detalle'" class="btn btn-primary"></a> <a
-										sec:authorize="hasRole('ROLE_ADMINISTRADOR')"
-										class="btn btn-danger btn-xs"
-										th:href="@{/paciente/eliminar/} + ${paciente.id}"
-										th:text="'Dar de baja'"
-										onclick="return confirm('¿Estás seguro que quieres dar de baja?');"></a>
+								
+								
+								<div sec:authorize="hasRole('ROLE_TERAPEUTA')" style="height: 450x;" class="my-flip-side my-flip-front">
+									<div class="my-flip-image my-flip-image--1">
+										<img th:if="${paciente.foto} != null"
+											th:src="@{'/paciente/foto/'+${paciente.id}}">
+									</div>
+									<div class="my-flip-details">
+										<h4 style="color:#5d5d5e; font-family:proxima-nova;" class="my-flip-heading" th:text="${paciente.username}+' '+${paciente.apellido}"></h4>
+										<div class="my-flip-text text-center">
+											<p ></p>
+											<a  th:href="@{/paciente/ver/} + ${paciente.id}"
+												style="margin: 10%;" th:text="'Detalle'" class="button button-primary"></a>
+												
+										</div>
+									</div>
 								</div>
 							</div>
 						</div>
 					</div>
-					
-					<div class="container">
-						<h4 class="card-title">
-							<a sec:authorize="hasRole('ROLE_ADMINISTRADOR')" class="btn btn-primary btn-xs" th:href="@{'/terapeuta/listar'}"
-								th:text="'Volver a terapeutas'"></a>
-						</h4>
-					</div>
-					
-					<div class="container">
-						<h4 class="card-title">
-							<a class="btn btn-primary btn-xs" th:href="@{'/'}"
-								th:text="'Volver al inicio'"></a>
-						</h4>
-					</div>
 				</div>
+				
+				
+				<div class="container">
+					<h4 class="card-title">
+						<a sec:authorize="hasRole('ROLE_ADMINISTRADOR')"
+							class="button button-primary centered" th:href="@{'/terapeuta/listar'}"
+							th:text="'Volver a terapeutas'"></a>
+					</h4>
+				</div>
+
 			</div>
-		</div>
+		</section>
+		<div id="bottom"></div>
 	</div>
-	<footer th:replace="layout/layout :: footer"></footer>
+<footer th:replace="layout/layout :: footer"></footer>
+
+
 </body>
 
 </html>

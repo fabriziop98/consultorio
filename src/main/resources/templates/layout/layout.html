@@ -7,6 +7,8 @@
 
 <meta charset="UTF-8" />
 <title th:text="'Fonoaudiología'"></title>
+<!-- <link rel="stylesheet" th:href="@{/css/cards.css}"/> -->
+<link rel="stylesheet" th:href="@{/css/botones.css}" />
 <link rel="stylesheet" type="text/css" href="/css/modal.css" />
 <link rel="stylesheet" type="text/css" th:href="@{/css/map.css}" />
 <link rel="stylesheet" th:href="@{/css/jquery-ui.min.css}" />
@@ -33,7 +35,7 @@
 				<a th:href="@{/inicio/}"><img class="logo" th:src="@{/images/logoCompleto.png}"></img></a>
 				<div class="menu">
 					<ul>
-
+						
 						<li sec:authorize="hasAnyRole('ROLE_PACIENTE')"><a
 							th:href="@{'/paciente/ver/'+${usuarioId}}">Mi perfil</a></li>
 						<li sec:authorize="hasAnyRole('ROLE_TERAPEUTA')"><a
@@ -51,6 +53,7 @@
 						</li>
 					</ul>
 				</div>
+				<div id="mensajeAlerta">
 				<div class="alert alert-success" th:if="${success != null}"
 				th:text="${success}"></div>
 			<div class="alert alert-danger" th:if="${error != null}"
@@ -58,7 +61,7 @@
 			<div class="alert alert-warning" th:if="${warning != null}"
 				th:text="${warning}"></div>
 			<div class="alert alert-info" th:if="${info != null}"
-				th:text="${info}"></div>
+				th:text="${info}"></div></div>
 			</nav>
 			
 		</header>
@@ -106,6 +109,11 @@
 					$('nav').removeClass('black');
 				}
 			})
+			
+			$(function () { 
+  	  var duration = 3000; // 3 seconds
+    	setTimeout(function () { $('#mensajeAlerta').hide(); }, duration);
+		});
 		</script>
 	</footer>
 </body>

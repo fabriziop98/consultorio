@@ -87,7 +87,7 @@
 								<td class="text-center" th:if="${turno.eliminado}"
 								th:text="${turno.observacion}"></td>
 								
-								<td th:if="${paciente}" class="text-center" sec:authorize="hasRole('ROLE_ADMINISTRADOR')"><a
+								<td class="text-center" sec:authorize="hasRole('ROLE_ADMINISTRADOR')"><a
 									th:if="${!turno.eliminado}" class="btn btn-danger btn-xs"
 									th:href="@{'/turno/eliminar/'+${turno.id}}"
 									th:text='Eliminar'

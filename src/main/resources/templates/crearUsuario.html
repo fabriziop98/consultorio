@@ -73,7 +73,7 @@
 							<p>Foto de perfil</p>
 							<input type="file" id="subirFoto" name="fotoOriginal"
 								accept=".jpg,.jpeg,.png" hidden />
-							<button type="button" class="btnfoto" id="botonFoto"
+							<button type="button" id="botonFoto"
 								onclick="upload()">
 								<img th:src="@{/images/iconos/camera.png}" alt="Subir Foto">
 								Subir una foto
@@ -82,7 +82,7 @@
 							<input type="hidden" id="fotoCrop" name="file" />
 						</div>
 
-						<div th:unless="${usuario.username}" class="form-group row">
+						<div class="form-group" th:unless="${usuario.username}">
 							<select name="rol" th:field="*{rol}" class="custom-select" required>
 								<option th:value="NULL">Elige un Rol</option>
 								<option th:value="ADMINISTRADOR">Administrador</option>
@@ -92,7 +92,7 @@
 							</select>
 						</div>
 
-						<div class="form-group">
+						<div class="form-group" >
 							<div class="col-sm-6">
 								<button onkeyup="validarDatosCompletos();" class="btn btn-primary" type="submit" id="btnEnviar" disabled="disabled"
 									>Guardar usuario</button>

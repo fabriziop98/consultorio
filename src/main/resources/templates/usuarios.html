@@ -1,74 +1,80 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
 	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+	<link rel="stylesheet" th:href="@{/css/cardsInmovil.css}" />
 <head th:replace="layout/layout :: head">
 <body>
 	<header th:replace="layout/layout :: header"></header>
-
-	<div class="container py-4">
-		<div class="card bg-light">
-			<h1 class="card-header" th:text="${titulo}"></h1>
-			<div class="card-body">
-				<div class="container">
-				<div class="btn-group">
-					<h4 class="card-title">
-						<a sec:authorize="hasRole('ROLE_ADMINISTRADOR')"
-							class="btn btn-primary btn-xs" th:href="@{'/usuario/'}"
-							th:text="'Dar de alta usuario'"></a>
-					</h4>
-				</div>
-				</div>
-				
-				<div class="alert alert-info my-4"
+	
+	<div class="container">
+		
+		<center class="mt-4 mb-4">
+			<h2  style="color:#80541e; font-family:proxima-nova;"  th:text="${titulo}"></h2>
+		</center>
+			<h4 class="card-title">
+				<a sec:authorize="hasRole('ROLE_ADMINISTRADOR')"
+					class="button button-success centered" th:href="@{'/usuario/'}"
+					th:text="'Dar de alta usuario'"></a>
+			</h4>
+		
+		<div class="alert alert-info my-4"
 					th:if="${#lists.isEmpty(usuarios)}"
 					th:text="'No hay usuarios registrados en la base de datos'">
 				</div>
-
-				<div class="container py-4">
 				<div class="py-1">
-				<a class="btn btn-primary btn-xs"
+				<a class="button button-primary button-xs"
 						th:href="@{/paciente/listar}"
 						th:text="'Pacientes'"></a> 
 						
-						<a class="btn btn-primary btn-xs"
+						<a class="button button-primary button-xs"
 						th:href="@{/terapeuta/listar}"
 						th:text="'Terapeutas'"></a> </div>
-						
-					<div class="row row-cols-1 row-cols-md-3">
-						<div th:if="${usuario.fechaBaja==null}"
-							th:each="usuario: ${usuarios}" class="col mb-4">
-							<div class="card h-100 text-center " style="width: 18rem;">
-
-								<img th:if="${usuario.foto} != null"
-                                         th:src="@{'/usuario/foto/'+${usuario.id}}" >
-
-								<div class="card-body">
-									<h5 class="card-title" th:text="${usuario.apellido} +' '+${usuario.username}"></h5>
-									<p class="card-text" th:text="${usuario.rol}"></p>
+		<section class="section-tours my-4">
+			<div class="row">
+				<div th:if="${usuario.fechaBaja==null}"
+					th:each="usuario: ${usuarios}" class="col-lg-4 mb-4">
+					<div class="my-flip-container">
+						<div class="my-flip-inner my-flip-right">
+							<div class="my-flip-inner-wrapper">
+								<div sec:authorize="hasRole('ROLE_ADMINISTRADOR')" style="height: 500x;" class="my-flip-side my-flip-front">
+									<div class="my-flip-image my-flip-image--1">
+										<img th:if="${usuario.foto} != null"
+											th:src="@{'/usuario/foto/'+${usuario.id}}">
+									</div>
+									<div class="my-flip-details">
+										<h4 style="color:#5d5d5e; font-family:proxima-nova;" class="my-flip-heading" th:text="${usuario.username}+' '+${usuario.apellido}"></h4>
+										<div class="card-body">
+									<p class="centered" th:text="${usuario.rol}"></p>
 								</div>
-								<div class="card-footer">
-									<a th:href="@{/usuario/editar/} + ${usuario.id}"
-										th:text="'Editar'" class="btn btn-primary"></a> <a
-										sec:authorize="hasRole('ROLE_ADMINISTRADOR')"
-										class="btn btn-danger btn-xs"
-										th:href="@{/usuario/eliminar/} + ${usuario.id}"
-										th:text="'Dar de baja'"
-										onclick="return confirm('¿Estás seguro que quieres dar de baja?');"></a>
+										<div class="my-flip-text text-center">
+											<p ></p>
+											<a th:href="@{/usuario/editar/} + ${usuario.id}"
+												style="margin: 10%;" th:text="'Editar'" class="button button-primary"></a>
+												
+												 <a
+												sec:authorize="hasRole('ROLE_ADMINISTRADOR')"
+												class="button button-danger"
+												th:href="@{/usuario/eliminar/} + ${usuario.id}"
+												th:text="'Dar de baja'"
+												onclick="return confirm('¿Estás seguro que quieres dar de baja?');"></a>
+										</div>
+									</div>
 								</div>
+								
+								
 							</div>
 						</div>
 					</div>
-
-					<div class="container">
+				</div><div class="container">
 						<h4 class="card-title">
-							<a class="btn btn-primary btn-xs" th:href="@{'/'}"
+							<a class="button button-primary button-xs" th:href="@{'/'}"
 								th:text="'Volver al inicio'"></a>
 						</h4>
-					</div>
-				</div>
+					</div></section>
+
+
 			</div>
-		</div>
-	</div>
+	
 	<footer th:replace="layout/layout :: footer"></footer>
 </body>
 

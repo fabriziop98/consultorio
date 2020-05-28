@@ -1,171 +1,252 @@
-<title>Fonoaudiología</title>
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+
+
 <link rel="stylesheet" type="text/css" href="/css/modal.css" />
-<link rel="stylesheet" type="text/css" th:href="@{/css/map.css}" />
-<link rel="stylesheet" th:href="@{/css/jquery-ui.min.css}" />
-<link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
-<link rel="stylesheet" th:href="@{/css/navbar.css}" />
-<link rel="shortcut icon" th:href="@{/images/logoCorto.png}"/>
-<link rel="stylesheet" th:href="@{/css/cards.css}"/>
+<head th:replace="layout/layout :: head">
+<script type="text/javascript">
+	function validarDatosCompletos() {
+		var dateTimePicker = document.getElementById("dateTimePicker").value;
+		var boton = document.getElementById("btnEnviar");
+
+		if (dateTimePicker == "") {
+			boton.innerText = 'Llena todos los campos';
+			boton.disabled = true;
+		} else {
+			boton.innerText = 'Guardar usuario';
+			boton.disabled = false;
+		}
+	}
+</script>
+</head>
+<header th:replace="layout/layout :: header"></header>
+
+
+
+<link
+	href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css"
+	rel="stylesheet" id="bootstrap-css">
+	<script
+	src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script
+	src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+
+<!------ Include the above in your HEAD tag ---------->
+
+	<style>
+.my_profile {
+	float: left;
+	width: 100%;
+	margin: 20px 0;
+}
+
+.pro_left_ii .nav-tabs>li.active>a {
+	background: #f22258;
+	border: none;
+	color: #fff;
+	border: 1px solid #f22258;
+}
+
+.pro_left_ii  .nav-tabs>li>a {
+	border: 1px solid #e3e3e3;
+}
+
+.my_profile .media-body, .my_profile h4, .my_profileh5 {
+	display: inherit;
+	width: 100%;
+}
+</style>
+
 <div class="container">
-   <center class="mt-4 mb-4">
-      <h2>Flip Card</h2>
-   </center>
-   <section class="section-tours">
-      <div class="row">
-         <div class="col-lg-4 mb-4">
-            <div class="my-flip-container">
-               <div class="my-flip-inner my-flip-right">
-                  <div class="my-flip-inner-wrapper">
-                     <div class="my-flip-side my-flip-front">
-                        <div class="my-flip-image my-flip-image--1">
-                           <img src="https://picsum.photos/600/400?random=5">                                 
-                        </div>
-                        <div class="my-flip-details">
-                           <h4 class="my-flip-heading">My Flip Title</h4>
-                           <div class="my-flip-text">
-                              <p>Lorem ipsum dolor sit amet adipisicing elit sed do eiusmod tempor incididunt labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip</p>
-                           </div>
-                        </div>
-                     </div>
-                     <div class="my-flip-side my-flip-back my-flip-back-1">
-                        <div class="my-flip-back-inner">
-                           <div class="my-flip-price">
-                              <h3>$129</h3>
-                           </div>
-                           <div class="my-flip-back-text">
-                              <ul>
-                                 <li>All Widgets</li>
-                                 <li>Unlimited Section</li>
-                                 <li>300 Line Icon</li>
-                                 <li>Support 24x7</li>
-                                 <li>Updates for 1 year</li>
-                              </ul>
-                           </div>
-                           <div class="my-flip-btn-box"><a href="#0" class="my-flip-btn">Book Now</a></div>
-                        </div>
-                     </div>
-                  </div>
-               </div>
-            </div>
-         </div>
-         <div class="col-lg-4 mb-4">
-            <div class="my-flip-container">
-               <div class="my-flip-inner my-flip-right">
-                  <div class="my-flip-inner-wrapper">
-                     <div class="my-flip-side my-flip-front">
-                        <div class="my-flip-image my-flip-image--2">
-                           <img src="https://picsum.photos/600/400?random=6">                
-                        </div>
-                        <div class="my-flip-details">
-                           <h4 class="my-flip-heading">My Flip Title</h4>
-                           <div class="my-flip-text">
-                              <p>Lorem ipsum dolor sit amet adipisicing elit sed do eiusmod tempor incididunt labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip</p>
-                           </div>
-                        </div>
-                     </div>
-                     <div class="my-flip-side my-flip-back my-flip-back-2">
-                        <div class="my-flip-back-inner">
-                           <div class="my-flip-price">
-                              <h3>$149</h3>
-                           </div>
-                           <div class="my-flip-back-text">
-                              <ul>
-                                 <li>All Widgets</li>
-                                 <li>Unlimited Section</li>
-                                 <li>400 Line Icon</li>
-                                 <li>Support 24x7</li>
-                                 <li>Updates for 2 year</li>
-                              </ul>
-                           </div>
-                           <div class="my-flip-btn-box"><a href="#0" class="my-flip-btn">Book Now</a></div>
-                        </div>
-                     </div>
-                  </div>
-               </div>
-            </div>
-         </div>
-         <div class="col-lg-4 mb-4">
-            <div class="my-flip-container">
-               <div class="my-flip-inner my-flip-right">
-                  <div class="my-flip-inner-wrapper">
-                     <div class="my-flip-side my-flip-front">
-                        <div class="my-flip-image my-flip-image--3">
-                           <img src="https://picsum.photos/600/400?random=7">                               
-                        </div>
-                        <div class="my-flip-details">
-                           <h4 class="my-flip-heading">My Flip Title</h4>
-                           <div class="my-flip-text">
-                              <p>Lorem ipsum dolor sit amet adipisicing elit sed do eiusmod tempor incididunt labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip</p>
-                           </div>
-                        </div>
-                     </div>
-                     <div class="my-flip-side my-flip-back my-flip-back-3">
-                        <div class="my-flip-back-inner">
-                           <div class="my-flip-price">
-                              <h3>$169</h3>
-                           </div>
-                           <div class="my-flip-back-text">
-                              <ul>
-                                 <li>All Widgets</li>
-                                 <li>Unlimited Section</li>
-                                 <li>500+ Line Icon</li>
-                                 <li>Support 24x7</li>
-                                 <li>Lifetime Update</li>
-                              </ul>
-                           </div>
-                           <div class="my-flip-btn-box"><a href="#0" class="my-flip-btn">Book Now</a></div>
-                        </div>
-                     </div>
-                  </div>
-               </div>
-            </div>
-         </div>
-      </div>
-   </section>
-   <div class="container">
-		<map th:replace="/map/map :: mapa"></map>
+	<div class="my_profile">
+		<div class="col-md-3">
+			<div class="well" style="background: #fff;">
+				<div class="media text-center">
+					<div class="media-center media-bottom">
+
+						<img
+							src="https://img1a.flixcart.com/www/linchpin/fk-cp-zion/img/profile-pic-male_2fd3e8.svg"
+							class="media-object" style="width: 60px; margin: 0 auto;">
+					</div>
+					<div class="media-body">
+
+						<h5 style="width: 100%">User name</h5>
+						<br>
+						<h4 style="width: 100%" class="media-heading">Welcome to
+							Project</h4>
+					</div>
+				</div>
+			</div>
+
+			<div class="well pro_left_ii" style="background: #fff;">
+				<ul class="nav nav-tabs  nav-stacked">
+					<li class="active"><a data-toggle="tab" href="#home">MY
+							ORDERS</a></li>
+					<li><a data-toggle="tab" href="#menu1">ACCOUNT SETTINGS</a></li>
+					<li><a data-toggle="tab" href="#menu2">Logout</a></li>
+				</ul>
+
+			</div>
+
+
+		</div>
+		<div class="col-md-9">
+			<div class="tab-content">
+				<div id="home" class="tab-pane fade in active">
+					<div class="well" style="background: #fff;">
+						<h4>Order Details</h4>
+						<hr>
+						<table class="table table-hover shopping-cart-wrap">
+							<thead class="text-muted">
+								<tr>
+									<th scope="col" width="120">Product</th>
+									<th scope="col">Product Details</th>
+									<th scope="col" width="100">Quantity</th>
+
+									<th scope="col">Price</th>
+								</tr>
+							</thead>
+							<tbody>
+
+								<tr>
+									<td>
+										<figure class="media">
+											<div class="img-wrap">
+												<img style="max-height: 70px;"
+													src="https://rukminim1.flixcart.com/image/312/312/jog2nbk0/mobile/e/x/b/mi-redmi-e7t-na-original-imafazxdh2bd6hep.jpeg?q=70"
+													class="img-thumbnail img-sm">
+											</div>
+										</figure>
+									</td>
+									<td>
+										<figcaption class="media-body">
+											<h4 class="title text-truncate" style="margin-bottom: 7px;">Product
+												name goes here</h4>
+
+											<dl class="param param-inline small">
+												<dt>Color: Orange color</dt>
+											</dl>
+
+										</figcaption>
+									</td>
+									<td><input class="form-control" type="text" value="2">
+									</td>
+									<td>
+										<div class="price-wrap">
+											<var class="price">USD 45</var>
+											<small class="text-muted">(USD15 each)</small>
+										</div> <!-- price-wrap .// -->
+									</td>
+
+								</tr>
+
+
+								<tr>
+									<td>
+										<figure class="media">
+											<div class="img-wrap">
+												<img style="max-height: 70px;"
+													src="https://rukminim1.flixcart.com/image/312/312/jog2nbk0/mobile/e/x/b/mi-redmi-e7t-na-original-imafazxdh2bd6hep.jpeg?q=70"
+													class="img-thumbnail img-sm">
+											</div>
+										</figure>
+									</td>
+									<td>
+										<figcaption class="media-body">
+											<h4 class="title text-truncate" style="margin-bottom: 7px;">Product
+												name goes here</h4>
+
+											<dl class="param param-inline small">
+												<dt>Color: Orange color</dt>
+											</dl>
+
+										</figcaption>
+									</td>
+									<td><input class="form-control" type="text" value="2">
+									</td>
+									<td>
+										<div class="price-wrap">
+											<var class="price">USD 45</var>
+											<small class="text-muted">(USD15 each)</small>
+										</div> <!-- price-wrap .// -->
+									</td>
+
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<!-- card.// -->
+				</div>
+				<div id="menu1" class="tab-pane fade">
+					<div class="well" style="background: #fff;">
+						<h4>Change Password</h4>
+						<hr>
+						<label>Current Password</label>
+						<div class="form-group pass_show">
+							<input type="password" value="" class="form-control"
+								placeholder="Current Password">
+						</div>
+						<label>New Password</label>
+						<div class="form-group pass_show">
+							<input type="password" value="" class="form-control"
+								placeholder="New Password">
+						</div>
+						<label>Confirm Password</label>
+						<div class="form-group pass_show">
+							<input type="password" value="" class="form-control"
+								placeholder="Confirm Password">
+						</div>
+						<hr>
+						<div class="form-group pass_show">
+							<input type="submit" class="btn btn-info" value="submit">
+						</div>
+
+					</div>
+				</div>
+				<!--div id="menu2" class="tab-pane fade">
+						<h3>Menu 2</h3>
+						<p>Some content in menu 2.</p>
+					  </div-->
+			</div>
+		</div>
+
 	</div>
 	
-	<script>
-		$(document).ready(function() {
-			$(".menu-icon").on("click", function() {
-				$("nav ul").toggleClass("showing");
-			});
-		});
-
-		// Scrolling Effect
-
-		$(window).on("scroll", function() {
-			if ($(window).scrollTop()) {
-				$('nav').addClass('black');
-			}
-
-			else {
-				$('nav').removeClass('black');
-			}
-		})
-	</script>
-
-
-	<script>
-		$(document).ready(function() {
-			$(".menu-icon").on("click", function() {
-				$("nav ul").toggleClass("showing");
-			});
-		});
-
-		// Scrolling Effect
-
-		$(window).on("scroll", function() {
-			if ($(window).scrollTop()) {
-				$('nav').addClass('black');
-			}
-
-			else {
-				$('nav').removeClass('black');
-			}
-		})
-	</script>
-
-	<footer th:replace="layout/layout :: footer"></footer>
 </div>
+<footer th:replace="layout/layout :: footer"></footer>
+<script type="text/javascript">
+	function validarDatosCompletos() {
+		var dateTimePicker = document.getElementById("dateTimePicker").value;
+		var boton = document.getElementById("btnEnviar");
+
+		if (dateTimePicker == "") {
+			boton.innerText = 'Llena todos los campos';
+			boton.disabled = true;
+		} else {
+			boton.innerText = 'Guardar usuario';
+			boton.disabled = false;
+		}
+	}
+</script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js"
+	integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk="
+	crossorigin="anonymous"></script>
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css"
+	integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg="
+	crossorigin="anonymous" />
+<script>
+	$(document).ready(function() {
+		$('select').selectize({
+			sortField : 'text'
+		});
+	});
+</script>
+</body>
+
+</html>
+
+</html>
