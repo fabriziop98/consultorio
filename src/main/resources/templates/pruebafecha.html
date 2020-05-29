@@ -1,252 +1,149 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
 	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-
-
-
-<link rel="stylesheet" type="text/css" href="/css/modal.css" />
 <head th:replace="layout/layout :: head">
-<script type="text/javascript">
-	function validarDatosCompletos() {
-		var dateTimePicker = document.getElementById("dateTimePicker").value;
-		var boton = document.getElementById("btnEnviar");
+<body>
+	
 
-		if (dateTimePicker == "") {
-			boton.innerText = 'Llena todos los campos';
-			boton.disabled = true;
-		} else {
-			boton.innerText = 'Guardar usuario';
-			boton.disabled = false;
-		}
-	}
-</script>
-</head>
-<header th:replace="layout/layout :: header"></header>
-
-
-
-<link
-	href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css"
-	rel="stylesheet" id="bootstrap-css">
-	<script
-	src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script
-	src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
 
 <!------ Include the above in your HEAD tag ---------->
-
-	<style>
-.my_profile {
-	float: left;
-	width: 100%;
-	margin: 20px 0;
-}
-
-.pro_left_ii .nav-tabs>li.active>a {
-	background: #f22258;
-	border: none;
-	color: #fff;
-	border: 1px solid #f22258;
-}
-
-.pro_left_ii  .nav-tabs>li>a {
-	border: 1px solid #e3e3e3;
-}
-
-.my_profile .media-body, .my_profile h4, .my_profileh5 {
-	display: inherit;
-	width: 100%;
-}
-</style>
-
+<header th:replace="layout/layout :: header"></header>
 <div class="container">
-	<div class="my_profile">
-		<div class="col-md-3">
-			<div class="well" style="background: #fff;">
-				<div class="media text-center">
-					<div class="media-center media-bottom">
-
-						<img
-							src="https://img1a.flixcart.com/www/linchpin/fk-cp-zion/img/profile-pic-male_2fd3e8.svg"
-							class="media-object" style="width: 60px; margin: 0 auto;">
-					</div>
-					<div class="media-body">
-
-						<h5 style="width: 100%">User name</h5>
-						<br>
-						<h4 style="width: 100%" class="media-heading">Welcome to
-							Project</h4>
-					</div>
-				</div>
-			</div>
-
-			<div class="well pro_left_ii" style="background: #fff;">
-				<ul class="nav nav-tabs  nav-stacked">
-					<li class="active"><a data-toggle="tab" href="#home">MY
-							ORDERS</a></li>
-					<li><a data-toggle="tab" href="#menu1">ACCOUNT SETTINGS</a></li>
-					<li><a data-toggle="tab" href="#menu2">Logout</a></li>
-				</ul>
-
-			</div>
-
-
-		</div>
-		<div class="col-md-9">
-			<div class="tab-content">
-				<div id="home" class="tab-pane fade in active">
-					<div class="well" style="background: #fff;">
-						<h4>Order Details</h4>
-						<hr>
-						<table class="table table-hover shopping-cart-wrap">
-							<thead class="text-muted">
-								<tr>
-									<th scope="col" width="120">Product</th>
-									<th scope="col">Product Details</th>
-									<th scope="col" width="100">Quantity</th>
-
-									<th scope="col">Price</th>
-								</tr>
-							</thead>
-							<tbody>
-
-								<tr>
-									<td>
-										<figure class="media">
-											<div class="img-wrap">
-												<img style="max-height: 70px;"
-													src="https://rukminim1.flixcart.com/image/312/312/jog2nbk0/mobile/e/x/b/mi-redmi-e7t-na-original-imafazxdh2bd6hep.jpeg?q=70"
-													class="img-thumbnail img-sm">
-											</div>
-										</figure>
-									</td>
-									<td>
-										<figcaption class="media-body">
-											<h4 class="title text-truncate" style="margin-bottom: 7px;">Product
-												name goes here</h4>
-
-											<dl class="param param-inline small">
-												<dt>Color: Orange color</dt>
-											</dl>
-
-										</figcaption>
-									</td>
-									<td><input class="form-control" type="text" value="2">
-									</td>
-									<td>
-										<div class="price-wrap">
-											<var class="price">USD 45</var>
-											<small class="text-muted">(USD15 each)</small>
-										</div> <!-- price-wrap .// -->
-									</td>
-
-								</tr>
-
-
-								<tr>
-									<td>
-										<figure class="media">
-											<div class="img-wrap">
-												<img style="max-height: 70px;"
-													src="https://rukminim1.flixcart.com/image/312/312/jog2nbk0/mobile/e/x/b/mi-redmi-e7t-na-original-imafazxdh2bd6hep.jpeg?q=70"
-													class="img-thumbnail img-sm">
-											</div>
-										</figure>
-									</td>
-									<td>
-										<figcaption class="media-body">
-											<h4 class="title text-truncate" style="margin-bottom: 7px;">Product
-												name goes here</h4>
-
-											<dl class="param param-inline small">
-												<dt>Color: Orange color</dt>
-											</dl>
-
-										</figcaption>
-									</td>
-									<td><input class="form-control" type="text" value="2">
-									</td>
-									<td>
-										<div class="price-wrap">
-											<var class="price">USD 45</var>
-											<small class="text-muted">(USD15 each)</small>
-										</div> <!-- price-wrap .// -->
-									</td>
-
-								</tr>
-							</tbody>
-						</table>
-					</div>
-					<!-- card.// -->
-				</div>
-				<div id="menu1" class="tab-pane fade">
-					<div class="well" style="background: #fff;">
-						<h4>Change Password</h4>
-						<hr>
-						<label>Current Password</label>
-						<div class="form-group pass_show">
-							<input type="password" value="" class="form-control"
-								placeholder="Current Password">
-						</div>
-						<label>New Password</label>
-						<div class="form-group pass_show">
-							<input type="password" value="" class="form-control"
-								placeholder="New Password">
-						</div>
-						<label>Confirm Password</label>
-						<div class="form-group pass_show">
-							<input type="password" value="" class="form-control"
-								placeholder="Confirm Password">
-						</div>
-						<hr>
-						<div class="form-group pass_show">
-							<input type="submit" class="btn btn-info" value="submit">
-						</div>
-
-					</div>
-				</div>
-				<!--div id="menu2" class="tab-pane fade">
-						<h3>Menu 2</h3>
-						<p>Some content in menu 2.</p>
-					  </div-->
-			</div>
-		</div>
-
+	<div class="row">
+        <div class="span12">
+    		<div class="menu">
+                <div class="accordion">
+            		<div class="accordion-group">
+            			<div class="accordion-heading country">
+            				<a class="accordion-toggle button button-primary" data-toggle="collapse" href="#country1">Country</a>
+            			</div>
+            			<div id="country1" class="accordion-body collapse">
+            				<div class="accordion-inner">
+            					<table class="table table-striped table-condensed">
+            						<thead>
+            							<tr>
+            								<th>Site</th>
+            								<th>Clients</th>
+            								<th>Primary</th>
+            								<th>Secondary</th>
+            								<th>DP</th>
+            								<th>BDP</th>
+            								<th>Status</th>
+            							</tr>
+            						</thead>   
+            						<tbody>
+            							<tr>
+            								<td>Site-1</td>
+            								<td>123</td>
+            								<td>-</td>
+            								<td>-</td>
+            								<td>-</td>
+            								<td>-</td>
+            								<td>OK</td>
+            							</tr>
+            							<tr>
+            								<td>Site-2</td>
+            								<td>321</td>
+            								<td>-</td>
+            								<td>-</td>
+            								<td>-</td>
+            								<td>-</td>
+            								<td>OK</td>
+            							</tr>
+            						</tbody>
+            					</table>
+            				</div>
+            			</div>
+            			<div class="accordion-heading country">
+            				<a class="accordion-toggle button button-primary" data-toggle="collapse" href="#country2">Country</a>
+            			</div>
+            			<div id="country2" class="accordion-body collapse">
+            				<div class="accordion-inner">
+            					<table class="table table-striped table-condensed">
+            						<thead>
+            							<tr>
+            								<th>Site</th>
+            								<th>Clients</th>
+            								<th>Primary</th>
+            								<th>Secondary</th>
+            								<th>DP</th>
+            								<th>BDP</th>
+            								<th>Status</th>
+            							</tr>
+            						</thead>   
+            						<tbody>
+            							<tr>
+            								<td>Site-1</td>
+            								<td>123</td>
+            								<td>-</td>
+            								<td>-</td>
+            								<td>-</td>
+            								<td>-</td>
+            								<td>OK</td>
+            							</tr>
+            							<tr>
+            								<td>Site-2</td>
+            								<td>321</td>
+            								<td>-</td>
+            								<td>-</td>
+            								<td>-</td>
+            								<td>-</td>
+            								<td>OK</td>
+            							</tr>
+            						</tbody>
+            					</table>
+            				</div>
+            			</div>
+            			<div class="accordion-heading country">
+            				<a class="accordion-toggle button button-primary" data-toggle="collapse" href="#country3">Country</a>
+            			</div>
+            			<div id="country3" class="accordion-body collapse">
+            				<div class="accordion-inner">
+            					<table class="table table-striped table-condensed">
+            						<thead>
+            							<tr>
+            								<th>Site</th>
+            								<th>Clients</th>
+            								<th>Primary</th>
+            								<th>Secondary</th>
+            								<th>DP</th>
+            								<th>BDP</th>
+            								<th>Status</th>
+            							</tr>
+            						</thead>   
+            						<tbody>
+            							<tr>
+            								<td>Site-1</td>
+            								<td>123</td>
+            								<td>-</td>
+            								<td>-</td>
+            								<td>-</td>
+            								<td>-</td>
+            								<td>OK</td>
+            							</tr>
+            							<tr>
+            								<td>Site-2</td>
+            								<td>321</td>
+            								<td>-</td>
+            								<td>-</td>
+            								<td>-</td>
+            								<td>-</td>
+            								<td>OK</td>
+            							</tr>
+            						</tbody>
+            					</table>
+            				</div>
+            			</div>
+            		</div>
+            	</div>
+            </div>
+        </div>
 	</div>
-	
 </div>
 <footer th:replace="layout/layout :: footer"></footer>
-<script type="text/javascript">
-	function validarDatosCompletos() {
-		var dateTimePicker = document.getElementById("dateTimePicker").value;
-		var boton = document.getElementById("btnEnviar");
-
-		if (dateTimePicker == "") {
-			boton.innerText = 'Llena todos los campos';
-			boton.disabled = true;
-		} else {
-			boton.innerText = 'Guardar usuario';
-			boton.disabled = false;
-		}
-	}
-</script>
-<script
-	src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js"
-	integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk="
-	crossorigin="anonymous"></script>
-<link rel="stylesheet"
-	href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css"
-	integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg="
-	crossorigin="anonymous" />
-<script>
-	$(document).ready(function() {
-		$('select').selectize({
-			sortField : 'text'
-		});
-	});
-</script>
 </body>
-
-</html>
 
 </html>

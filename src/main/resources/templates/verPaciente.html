@@ -2,95 +2,193 @@
 <html xmlns:th="http://www.thymeleaf.org"
 	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
+<link
+	href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css"
+	rel="stylesheet" id="bootstrap-css">
+<link rel="stylesheet" th:href="@{/css/cardsPdf.css}" />
+<head th:replace="layout/layout :: head"></head>
+
+<link
+	href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css"
+	rel="stylesheet" id="bootstrap-css">
+<script
+	src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script
+	src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+
+<style>
+.my_profile {
+	float: left;
+	width: 100%;
+	margin: 20px 0;
+}
+
+.pro_left_ii .nav-tabs>li.active>a {
+	background: #80541e;
+	border: none;
+	color: #fff;
+	border: 1px solid #80541e;
+}
+
+.pro_left_ii  .nav-tabs>li>a {
+	border: 1px solid #e3e3e3;
+}
+
+.my_profile .media-body, .my_profile h4, .my_profileh5 {
+	width: 100%;
+}
+</style>
 
 
-<!-- <link rel="stylesheet" -->
-<!-- 	href="https://kendo.cdn.telerik.com/2018.2.620/styles/kendo.bootstrap-v4.min.css"> -->
-<link rel="stylesheet" type="text/css" href="/css/modal.css" />
-<head th:replace="layout/layout :: head">
-<script type="text/javascript">
-	function validarDatosCompletos() {
-		var dateTimePicker = document.getElementById("dateTimePicker").value;
-		var boton = document.getElementById("btnEnviar");
-
-		if (dateTimePicker == "") {
-			boton.innerText = 'Llena todos los campos';
-			boton.disabled = true;
-		} else {
-			boton.innerText = 'Guardar usuario';
-			boton.disabled = false;
-		}
-	}
-</script>
-</head>
 <header th:replace="layout/layout :: header"></header>
 
 
 
-<div class="container py-4">
-	<div class="card bg-light">
 
-		<div class="card-header" th:text="${titulo}"></div>
-		<div class="card-body">
+<div class="container">
+	<div class="my_profile">
+		<div class="col-md-3">
+			<div class="well" style="background: #fff;">
+				<div class="media text-center">
+					<div class="media-center media-bottom">
 
-			<div class="container">
-				<div class="btn-group">
-					<h4 class="card-title">
-
-
-
-
-
-						<!-- 						<a sec:authorize="hasRole('ROLE_ADMINISTRADOR')" -->
-						<!-- 							class="btn btn-primary btn-xs" -->
-						<!-- 							th:href="@{'/paciente/form/'+${paciente.id}}" -->
-						<!-- 							th:text="'Asignar terapeuta'"></a> -->
-					</h4>
+						<img th:if="${paciente.foto} != null"
+							th:src="@{'/paciente/foto/'+${paciente.id}}" class="media-object"
+							style="width: 90px; margin: 0 auto;">
+					</div>
+					<div class="media-body">
+						<ul class="nav nav-tabs  nav-stacked"
+							style="width: 100%; display: block;">
+							<li style="font-size: 180%;"
+								th:text="${paciente.username}+' '+${paciente.apellido}"></li>
+							<br>
+							<li class="active">Paciente</li>
+						</ul>
+					</div>
 				</div>
 			</div>
 
-			<img th:if="${paciente.foto} != null"
-				class="img-thumbnail rounded float-left" style="max-width: 21%;"
-				th:src="@{'/paciente/foto/'+${paciente.id}}">
-			<ul class="list-group">
-				<li class="list-group-item"
-					th:utext="'Terapeuta(s): '+${nombreTerapeuta}"></li>
-				<li class="list-group-item"><p th:each="turno : ${turnos}"
-						th:text="'Próximo turno: '+ ${#dates.format(turno, 'dd/MM/yyyy HH:mm')}"></p>
-					<a class="btn btn-success btn-xs"
-					th:href="@{'/turno/listar/'+${paciente.id}}"
-					th:text="'Ver todos los turnos'"></a></li>
-				<!-- 					 ? ${#dates.format(turno.fechaTurno, 'dd-MM-yyyy HH:mm')}18:00" -->
+			<div class="well pro_left_ii" style="background: #fff;">
+				<ul class="nav nav-tabs  nav-stacked"
+					style="width: 100%; display: block;">
+					<li class="active"><a data-toggle="tab" href="#home">TERAPEUTAS</a></li>
+					<li><a data-toggle="tab" href="#menu1">TURNOS/CITAS</a></li>
+					<li><a data-toggle="tab" href="#menu2">INFORMES</a></li>
+				</ul>
 
-				<li class="list-group-item"><a
-					sec:authorize="hasAnyRole('ROLE_ADMINISTRADOR','ROLE_TERAPEUTA')"
-					class="btn btn-secondary btn-xs"
-					th:href="@{'/paciente/pdf/'+${paciente.id}}" th:text="'Subir PDF'"></a>
-					<a class="btn btn-success btn-xs"
-					th:href="@{'/paciente/listadoPdf/'+${paciente.id}}"
-					th:text="'Ver informes'"></a></li>
-			</ul>
+			</div>
 
 
 		</div>
-		<div class="card-body">
+		<div class="col-md-9">
+			<div class="tab-content">
+				<div id="home" class="tab-pane fade in active">
+					<div class="form-group pass_show">
+						<a sec:authorize="hasRole('ROLE_ADMINISTRADOR')"
+							th:replace="/modal/asignarTerapeuta :: modal"></a>
+					</div>
+					<div class="well" style="background: #fff;">
+						<h4>Terapeuta(s)</h4>
+						<hr th:each="terapeuta : ${paciente.terapeutas}"
+							th:text="${terapeuta.username}+' '+${terapeuta.apellido} ">
+						<label></label>
+					</div>
+				</div>
+				<div id="menu1" class="tab-pane fade">
 
-			<div class="container">
-				<div class="btn-group">
-					<h4 class="card-title">
-						<a class="btn btn-primary btn-xs" th:href="@{'/paciente/listar'}"
-							th:text="'Volver al pacientes'"></a>
-					</h4>
-					<h4 class="card-title px-4">
-					<a sec:authorize="hasRole('ROLE_ADMINISTRADOR')" class="card-title px-4"
-						th:replace="/modal/asignarTurno :: modal"></a></h4> <a
-						sec:authorize="hasRole('ROLE_ADMINISTRADOR')" class="card-title"
-						th:replace="/modal/asignarTerapeuta :: modal"></a>
+					<div class="form-group pass_show">
+						<a sec:authorize="hasRole('ROLE_ADMINISTRADOR')"
+							class="card-title px-4" th:replace="/modal/asignarTurno :: modal"></a>
+					</div>
+					<div class="well" style="background: #fff;">
+
+						<h4>Turnos</h4>
+						<hr th:each="turno : ${turnos}"
+							th:text="'Próximo turno: '+ ${#dates.format(turno, 'dd/MM/yyyy HH:mm')}">
+
+						<label></label>
+
+
+					</div>
+					<div class="form-group pass_show">
+						<a class="button button-primary"
+							th:href="@{'/turno/listar/'+${paciente.id}}"
+							th:text="'Ver todos los turnos'"></a>
+					</div>
+
+
+				</div>
+				<div id="menu2" class="tab-pane fade">
+					<div class="form-group pass_show">
+						<a sec:authorize="hasRole('ROLE_ADMINISTRADOR')"
+							class="button button-success"
+							th:href="@{'/paciente/pdf/'+${paciente.id}}"
+							th:text="'Subir informe'"></a>
+					</div>
+
+					<section class="section-tours">
+					<input type="hidden" name="idPaciente" id="idPaciente"
+							th:field="*{id}" />
+						<div class="row">
+							<div th:if="${pdf.eliminado!=true}"
+									th:each="pdf : ${paciente.pdf}" class="col-lg-4 mb-4">
+								<div class="my-flip-container">
+									<div class="my-flip-inner my-flip-right">
+										<div class="my-flip-inner-wrapper">
+											<div 
+												style="height: 500x;" class="my-flip-side my-flip-front">
+												<div class="my-flip-image my-flip-image--1">
+													<img th:if="${#strings.endsWith(pdf.nombre,'pdf')}" th:src="@{/images/pdf.png}">
+													<img th:if="${#strings.endsWith(pdf.nombre,'doc')}" th:src="@{/images/doc.jpg}">
+												</div>
+												<div class="my-flip-details">
+													<h4 style="color: #5d5d5e; font-family: proxima-nova;"
+														class="my-flip-heading"
+														></h4>
+													<div class="my-flip-text text-center">
+														<p></p>
+														<a th:if="${#strings.endsWith(pdf.nombre,'pdf')}" th:href="@{'/paciente/listado/pdf/' + ${pdf.nombre}(format=pdf)}"
+													th:text="${#strings.substringAfter(pdf.nombre,'___')}"
+													target="_blank"
+															class="button button-primary"></a>
+															<a th:if="${#strings.endsWith(pdf.nombre,'doc')}" th:href="@{'/paciente/listado/pdf/' + ${pdf.nombre}(format=doc)}"
+													th:text="${#strings.substringAfter(pdf.nombre,'___')}"
+													target="_blank"
+															class="button button-primary"></a>
+															<a
+															sec:authorize="hasRole('ROLE_ADMINISTRADOR')"
+															class="button button-danger" style="margin: 10%;" 
+															th:href="@{'/paciente/pdf/eliminar/' + ${pdf.id} +'/'+ ${paciente.id}}"
+												th:text="'Eliminar informe'"
+															onclick="return confirm('¿Estás seguro que quieres dar de baja?');"></a>
+													</div>
+												</div>
+											</div>
+
+
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="container">
+								<h4 class="card-title">
+									<a class="button button-primary" th:href="@{'/'}"
+										th:text="'Volver al inicio'"></a>
+								</h4>
+							</div>
+						</div>
+					</section>
+					
+
 				</div>
 			</div>
+
 		</div>
+
 	</div>
 </div>
+
+
 <script src="https://code.jquery.com/jquery-1.12.3.min.js"></script>
 <script
 	src="https://kendo.cdn.telerik.com/2018.2.620/js/kendo.all.min.js"></script>

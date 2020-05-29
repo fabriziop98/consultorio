@@ -5,41 +5,187 @@
 <body>
 	<header th:replace="layout/layout :: header"></header>
 
+
+
+
+
+
+<div class="container">
+<h1 class="card-header" th:text="${titulo}"></h1>
+	<div class="row">
+        <div class="span12">
+    		<div class="menu">
+                <div class="accordion">
+            		<div class="accordion-group">
+            			<div class="accordion-heading country">
+            				<a 
+						th:text="'Turnos próximos'" class="accordion-toggle button button-primary" data-toggle="collapse" href="#country1">Country</a>
+            			</div>
+            			<div id="country1" class="accordion-body collapse" th:if="${paciente}" th:href="@{'/turno/listarFuturos/'+${paciente.id}}" >
+            				<div class="accordion-inner">
+            					<table class="table table-striped table-condensed">
+            						<thead>
+            							<tr>
+            							
+            							<th th:if="${paciente}">Fecha</th>
+								<th th:if="${paciente}">Terapeuta</th>
+								<th th:if="${paciente}">
+								<h7 th:if="${#httpServletRequest.requestURI == '/turno/listarEliminados/__${paciente.id}__'}">Cancelado por motivo:</h7>
+								<h7 th:if="${#httpServletRequest.requestURI == '/turno/listarFuturos/__${paciente.id}__'}">Acción:</h7>
+								<h7 th:if="${#httpServletRequest.requestURI == '/turno/listarAnteriores/__${paciente.id}__'}">Acción:</h7>
+								<h7 th:if="${#httpServletRequest.requestURI == '/turno/listar/__${paciente.id}__'}">Acción:</h7>
+            							</tr>
+            						</thead>   
+            						<tbody>
+            							<tr th:each="turno: ${turnos}">
+            								<td th:if="${paciente}"
+								th:text="${#dates.format(turno.fechaTurno, 'dd/MMMM/yyyy HH:mm')}"></td>
+            								<td>123</td>
+            								<td>-</td>
+            								<td>-</td>
+            								<td>-</td>
+            								<td>-</td>
+            								<td>OK</td>
+            							</tr>
+            							<tr>
+            								<td>Site-2</td>
+            								<td>321</td>
+            								<td>-</td>
+            								<td>-</td>
+            								<td>-</td>
+            								<td>-</td>
+            								<td>OK</td>
+            							</tr>
+            						</tbody>
+            					</table>
+            				</div>
+            			</div>
+            			<div class="accordion-heading country">
+            				<a class="accordion-toggle button button-primary" data-toggle="collapse" href="#country2">Country</a>
+            			</div>
+            			<div id="country2" class="accordion-body collapse">
+            				<div class="accordion-inner">
+            					<table class="table table-striped table-condensed">
+            						<thead>
+            							<tr>
+            								<th>Site</th>
+            								<th>Clients</th>
+            								<th>Primary</th>
+            								<th>Secondary</th>
+            								<th>DP</th>
+            								<th>BDP</th>
+            								<th>Status</th>
+            							</tr>
+            						</thead>   
+            						<tbody>
+            							<tr>
+            								<td>Site-1</td>
+            								<td>123</td>
+            								<td>-</td>
+            								<td>-</td>
+            								<td>-</td>
+            								<td>-</td>
+            								<td>OK</td>
+            							</tr>
+            							<tr>
+            								<td>Site-2</td>
+            								<td>321</td>
+            								<td>-</td>
+            								<td>-</td>
+            								<td>-</td>
+            								<td>-</td>
+            								<td>OK</td>
+            							</tr>
+            						</tbody>
+            					</table>
+            				</div>
+            			</div>
+            			<div class="accordion-heading country">
+            				<a class="accordion-toggle button button-primary" data-toggle="collapse" href="#country3">Country</a>
+            			</div>
+            			<div id="country3" class="accordion-body collapse">
+            				<div class="accordion-inner">
+            					<table class="table table-striped table-condensed">
+            						<thead>
+            							<tr>
+            								<th>Site</th>
+            								<th>Clients</th>
+            								<th>Primary</th>
+            								<th>Secondary</th>
+            								<th>DP</th>
+            								<th>BDP</th>
+            								<th>Status</th>
+            							</tr>
+            						</thead>   
+            						<tbody>
+            							<tr>
+            								<td>Site-1</td>
+            								<td>123</td>
+            								<td>-</td>
+            								<td>-</td>
+            								<td>-</td>
+            								<td>-</td>
+            								<td>OK</td>
+            							</tr>
+            							<tr>
+            								<td>Site-2</td>
+            								<td>321</td>
+            								<td>-</td>
+            								<td>-</td>
+            								<td>-</td>
+            								<td>-</td>
+            								<td>OK</td>
+            							</tr>
+            						</tbody>
+            					</table>
+            				</div>
+            			</div>
+            		</div>
+            	</div>
+            </div>
+        </div>
+	</div>
+</div>
+
+
+
+
+
 	<div class="container py-4">
 		<div class="card bg-light">
 			<h1 class="card-header" th:text="${titulo}"></h1>
 			<div class="card-body">
 				<div class="container py-4">
-					<a th:if="${paciente}" class="btn btn-primary btn-xs"
+					<a th:if="${paciente}" class="button button-primary btn-xs"
 						th:href="@{'/turno/listarFuturos/'+${paciente.id}}"
 						th:text="'Turnos próximos'"></a> 
 					<a th:unless="${paciente}"
-						class="btn btn-primary btn-xs" th:href="@{'/turno/listarFuturos'}"
+						class="button button-primary btn-xs" th:href="@{'/turno/listarFuturos'}"
 						th:text="'Turnos próximos'"></a>
 						
 					<a th:if="${paciente}"
-						class="btn btn-primary btn-xs"
+						class="button button-primary btn-xs" 
 						th:href="@{'/turno/listarAnteriores/'+${paciente.id}}"
 						th:text="'Turnos anteriores'"></a> 
 					<a th:unless="${paciente}"
-						class="btn btn-primary btn-xs"
+						class="button button-primary" 
 						th:href="@{'/turno/listarAnteriores'}"
 						th:text="'Turnos anteriores'"></a> 
 					
 					<a th:if="${paciente}"
-						class="btn btn-primary btn-xs"
+						class="button button-primary btn-xs"
 						th:href="@{'/turno/listar/'+${paciente.id}}"
 						th:text="'Todos los turnos'"></a> 
 					<a th:unless="${paciente}"
-						class="btn btn-primary btn-xs" th:href="@{'/turno/listar'}"
+						class="button button-primary button-xs" th:href="@{'/turno/listar'}"
 						th:text="'Todos los turnos'"></a>
 						
 					<a th:if="${paciente}"
-						class="btn btn-danger btn-xs"
+						class="button button-danger button-xs"
 						th:href="@{'/turno/listarEliminados/'+${paciente.id}}"
 						th:text="'Todos los turnos eliminados'"></a> 
 					<a th:unless="${paciente}"
-						class="btn btn-danger btn-xs" th:href="@{'/turno/listarEliminados'}"
+						class="button button-danger button-xs" th:href="@{'/turno/listarEliminados'}"
 						th:text="'Todos los turnos eliminados'"></a>
 					
 					<div class="alert alert-info my-4"
@@ -88,7 +234,7 @@
 								th:text="${turno.observacion}"></td>
 								
 								<td class="text-center" sec:authorize="hasRole('ROLE_ADMINISTRADOR')"><a
-									th:if="${!turno.eliminado}" class="btn btn-danger btn-xs"
+									th:if="${!turno.eliminado}" class="button button-danger button-xs"
 									th:href="@{'/turno/eliminar/'+${turno.id}}"
 									th:text='Eliminar'
 									></a>
@@ -100,11 +246,11 @@
 
 					<div class="py-2" th:object="${paciente}">
 						<h4 class="card-title">
-							<a th:if="${paciente}" class="btn btn-primary btn-xs"
+							<a th:if="${paciente}" class="button button-primary button-xs"
 								th:href="@{'/paciente/ver/'+${paciente.id}}"
 								th:text="'Volver a paciente'"></a> 
 							<a th:unless="${paciente}"
-								class="btn btn-primary btn-xs" th:href="@{'/'}"
+								class="button button-primary button-xs" th:href="@{'/'}"
 								th:text="'Volver'"></a>
 						</h4>
 					</div>

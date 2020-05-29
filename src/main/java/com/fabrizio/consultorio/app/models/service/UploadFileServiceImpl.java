@@ -23,11 +23,11 @@ public class UploadFileServiceImpl implements IUploadFileService {
 	@Override
 	public Resource load(String filename) throws MalformedURLException {
 		Resource recurso = null;
-		if(filename.endsWith("pdf")) {
+		if(filename.endsWith("pdf")||filename.endsWith("doc")||filename.endsWith("docx")) {
 			Path pathPdf = pdfPath(filename);
 			recurso = new UrlResource(pathPdf.toUri());
 			if (!recurso.exists() || !recurso.isReadable()) {
-				throw new RuntimeException("Error: no se puede cargar el pdf: " + pathPdf.toString());
+				throw new RuntimeException("Error: no se puede cargar el archivo: " + pathPdf.toString());
 			}
 		} 
 		else {
@@ -44,7 +44,11 @@ public class UploadFileServiceImpl implements IUploadFileService {
 	@Override
 	public String copy(MultipartFile file) throws IOException {
 		String uniqueFilename = UUID.randomUUID().toString() + "___" + file.getOriginalFilename();
-		if (file.getContentType().endsWith("pdf")) {
+		if ((file.getContentType().endsWith("pdf"))) {
+			Path rutaPdf = pdfPath(uniqueFilename);
+			log.info("rootPath: " + rutaPdf);
+			Files.copy(file.getInputStream(), rutaPdf);
+		} else if (uniqueFilename.endsWith("doc")||uniqueFilename.endsWith("docx")){
 			Path rutaPdf = pdfPath(uniqueFilename);
 			log.info("rootPath: " + rutaPdf);
 			Files.copy(file.getInputStream(), rutaPdf);

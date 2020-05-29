@@ -134,14 +134,6 @@ public class PacienteController {
 		return "redirect:/paciente/ver/{id}";
 	}
 	
-	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR','ROLE_TERAPEUTA','ROLE_PACIENTE','ROLE_USUARIO')")
-	@GetMapping("/pdf/{id}")
-	public String displayPdf(@PathVariable Long id, Model model) {
-		Paciente paciente = pacienteService.findOne(id);
-		model.addAttribute("paciente", paciente);
-		return "subirPdf";
-	}
-	
 	
 	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR')")
 	@PostMapping("/form/{id}")
@@ -217,6 +209,14 @@ public class PacienteController {
 	}
 	
 	
+	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR','ROLE_TERAPEUTA','ROLE_PACIENTE','ROLE_USUARIO')")
+	@GetMapping("/pdf/{id}")
+	public String displayPdf(@PathVariable Long id, Model model) {
+		Paciente paciente = pacienteService.findOne(id);
+		model.addAttribute("paciente", paciente);
+		return "subirPdf";
+	}
+	
 	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR','ROLE_TERAPEUTA')")
 	@PostMapping("/pdf/{id}")
 	public String subirPdf(@PathVariable Long id, Model model, @RequestParam("file") MultipartFile archivo, RedirectAttributes flash, SessionStatus status) {
@@ -224,8 +224,8 @@ public class PacienteController {
 		Pdf pdf = new Pdf();
 
 		if(archivo.isEmpty()) {
-			model.addAttribute("titulo", "Subir Pdf");
-			model.addAttribute("error", "Error: El pdf no puede ser nulo.");
+			model.addAttribute("titulo", "Subir informe");
+			model.addAttribute("error", "Error: El informe no puede ser nulo.");
 			return "subirPdf";
 		}
 		
@@ -275,7 +275,6 @@ public class PacienteController {
 	public ResponseEntity<Resource> verPdf(@PathVariable String filename) {
 		Resource recurso = null;
 		try {
-			System.out.println("filename: "+filename);
 			recurso = uploadFileService.load(filename);
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
