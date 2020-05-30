@@ -31,12 +31,12 @@
     background-color: #000;
 }
 .button-danger{
-    color: red;
-    border-color: red;
+    color: #850100;
+    border-color: #850100;
 }
 .button-danger:hover{
     color: white;
-    background-color: red;
+    background-color: #850100;
 }
 .button-success{
     color: #1e9616;

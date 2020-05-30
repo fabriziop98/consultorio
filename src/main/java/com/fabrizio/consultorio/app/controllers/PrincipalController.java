@@ -52,11 +52,7 @@ public class PrincipalController {
 			break;
 		  }
 		 
-		} else {
-//		  String username = principal.toString();
-//		  log.info("SESION: usuario invitado");
-		  
-		}
+		} 
 		
 		
 		return "inicio";

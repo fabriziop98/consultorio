@@ -9,6 +9,8 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,8 +21,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fabrizio.consultorio.app.models.entity.Paciente;
 import com.fabrizio.consultorio.app.models.entity.Turno;
+import com.fabrizio.consultorio.app.models.entity.Usuario;
 import com.fabrizio.consultorio.app.models.service.IPacienteService;
+import com.fabrizio.consultorio.app.models.service.ITerapeutaService;
 import com.fabrizio.consultorio.app.models.service.ITurnoService;
+import com.fabrizio.consultorio.app.models.service.IUsuarioService;
 
 @Controller
 @RequestMapping("/turno")
@@ -32,12 +37,41 @@ public class TurnoController {
 	@Autowired
 	private IPacienteService pacienteService;
 	
+	@Autowired
+	private IUsuarioService usuarioService;
+	
+	@Autowired
+	private ITerapeutaService terapeutaService;
+	
+	
 	
 	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR')")
 	@GetMapping("/listar")
 	public String listarTurnos(Model model, Authentication authentication, HttpServletRequest request, Locale locale) {
 		model.addAttribute("titulo", "Todos los turnos");
 		model.addAttribute("turnos", turnoService.listarSortedObject(turnoService.listarTodosActivos()));
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		if (principal instanceof UserDetails) {
+		  String username = ((UserDetails)principal).getUsername();
+		  Usuario usuario = usuarioService.findByMail(username);
+		  switch(usuario.getRol()) {
+		  case TERAPEUTA:
+			  model.addAttribute("usuarioId", terapeutaService.byUsuarioId(usuario.getId()).getId());
+//			  log.info("SESION: usuario terapeuta: " + username);
+			  break;
+		  case PACIENTE:
+			  model.addAttribute("usuarioId", pacienteService.byUsuarioId(usuario.getId()).getId());
+//			  log.info("SESION: usuario paciente: " + username);
+			  break;
+		case ADMINISTRADOR:
+			break;
+		case USUARIO:
+			break;
+		default:
+			break;
+		  }
+		 
+		} 
 		return "turnos";
 		
 	}
@@ -50,6 +84,30 @@ public class TurnoController {
 		model.addAttribute("titulo", "Todos los turnos de: "+paciente.getApellido() + " " + paciente.getUsername());
 		model.addAttribute("turnos", turnoService.listarSortedObject(turnoService.listarTodosActivos(paciente)));
 		model.addAttribute("paciente", paciente);
+		
+
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		if (principal instanceof UserDetails) {
+		  String username = ((UserDetails)principal).getUsername();
+		  Usuario usuario = usuarioService.findByMail(username);
+		  switch(usuario.getRol()) {
+		  case TERAPEUTA:
+			  model.addAttribute("usuarioId", terapeutaService.byUsuarioId(usuario.getId()).getId());
+//			  log.info("SESION: usuario terapeuta: " + username);
+			  break;
+		  case PACIENTE:
+			  model.addAttribute("usuarioId", pacienteService.byUsuarioId(usuario.getId()).getId());
+//			  log.info("SESION: usuario paciente: " + username);
+			  break;
+		case ADMINISTRADOR:
+			break;
+		case USUARIO:
+			break;
+		default:
+			break;
+		  }
+		 
+		} 
 		return "turnos";
 		
 	}
@@ -60,6 +118,29 @@ public class TurnoController {
 		model.addAttribute("titulo", "Todos los turnos pasados.");
 		model.addAttribute("turnos", turnoService.listarSortedObject(turnoService.listarPasados()));
 		
+		
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		if (principal instanceof UserDetails) {
+		  String username = ((UserDetails)principal).getUsername();
+		  Usuario usuario = usuarioService.findByMail(username);
+		  switch(usuario.getRol()) {
+		  case TERAPEUTA:
+			  model.addAttribute("usuarioId", terapeutaService.byUsuarioId(usuario.getId()).getId());
+//			  log.info("SESION: usuario terapeuta: " + username);
+			  break;
+		  case PACIENTE:
+			  model.addAttribute("usuarioId", pacienteService.byUsuarioId(usuario.getId()).getId());
+//			  log.info("SESION: usuario paciente: " + username);
+			  break;
+		case ADMINISTRADOR:
+			break;
+		case USUARIO:
+			break;
+		default:
+			break;
+		  }
+		 
+		} 
 		return "turnos";
 		
 	}
@@ -71,6 +152,29 @@ public class TurnoController {
 		model.addAttribute("titulo", "Turnos pasados de: "+paciente.getApellido() + " " + paciente.getUsername());
 		model.addAttribute("turnos", turnoService.listarSortedObject(turnoService.listarPasados(paciente)));
 		model.addAttribute("paciente", paciente);
+		
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		if (principal instanceof UserDetails) {
+		  String username = ((UserDetails)principal).getUsername();
+		  Usuario usuario = usuarioService.findByMail(username);
+		  switch(usuario.getRol()) {
+		  case TERAPEUTA:
+			  model.addAttribute("usuarioId", terapeutaService.byUsuarioId(usuario.getId()).getId());
+//			  log.info("SESION: usuario terapeuta: " + username);
+			  break;
+		  case PACIENTE:
+			  model.addAttribute("usuarioId", pacienteService.byUsuarioId(usuario.getId()).getId());
+//			  log.info("SESION: usuario paciente: " + username);
+			  break;
+		case ADMINISTRADOR:
+			break;
+		case USUARIO:
+			break;
+		default:
+			break;
+		  }
+		 
+		} 
 		return "turnos";
 		
 	}
@@ -83,6 +187,30 @@ public class TurnoController {
 		
 		model.addAttribute("titulo", "Turnos futuros");
 		model.addAttribute("turnos", turnos);
+		
+		
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		if (principal instanceof UserDetails) {
+		  String username = ((UserDetails)principal).getUsername();
+		  Usuario usuario = usuarioService.findByMail(username);
+		  switch(usuario.getRol()) {
+		  case TERAPEUTA:
+			  model.addAttribute("usuarioId", terapeutaService.byUsuarioId(usuario.getId()).getId());
+//			  log.info("SESION: usuario terapeuta: " + username);
+			  break;
+		  case PACIENTE:
+			  model.addAttribute("usuarioId", pacienteService.byUsuarioId(usuario.getId()).getId());
+//			  log.info("SESION: usuario paciente: " + username);
+			  break;
+		case ADMINISTRADOR:
+			break;
+		case USUARIO:
+			break;
+		default:
+			break;
+		  }
+		 
+		} 
 		return "turnos";
 		
 	}
@@ -95,6 +223,29 @@ public class TurnoController {
 		model.addAttribute("titulo", "Turnos futuros de: "+paciente.getApellido() + " " + paciente.getUsername());
 		model.addAttribute("turnos", turnoService.listarSortedObject(turnoService.listarFuturos(paciente)));
 		model.addAttribute("paciente", paciente);
+		
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		if (principal instanceof UserDetails) {
+		  String username = ((UserDetails)principal).getUsername();
+		  Usuario usuario = usuarioService.findByMail(username);
+		  switch(usuario.getRol()) {
+		  case TERAPEUTA:
+			  model.addAttribute("usuarioId", terapeutaService.byUsuarioId(usuario.getId()).getId());
+//			  log.info("SESION: usuario terapeuta: " + username);
+			  break;
+		  case PACIENTE:
+			  model.addAttribute("usuarioId", pacienteService.byUsuarioId(usuario.getId()).getId());
+//			  log.info("SESION: usuario paciente: " + username);
+			  break;
+		case ADMINISTRADOR:
+			break;
+		case USUARIO:
+			break;
+		default:
+			break;
+		  }
+		 
+		} 
 		return "turnos";
 		
 	}
@@ -104,6 +255,30 @@ public class TurnoController {
 	public String listarTurnosEliminados(Model model, Authentication authentication, HttpServletRequest request, Locale locale) {
 		model.addAttribute("titulo", "Todos los turnos eliminados");
 		model.addAttribute("turnos", turnoService.listarSortedObject(turnoService.listarEliminados()));
+		
+		
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		if (principal instanceof UserDetails) {
+		  String username = ((UserDetails)principal).getUsername();
+		  Usuario usuario = usuarioService.findByMail(username);
+		  switch(usuario.getRol()) {
+		  case TERAPEUTA:
+			  model.addAttribute("usuarioId", terapeutaService.byUsuarioId(usuario.getId()).getId());
+//			  log.info("SESION: usuario terapeuta: " + username);
+			  break;
+		  case PACIENTE:
+			  model.addAttribute("usuarioId", pacienteService.byUsuarioId(usuario.getId()).getId());
+//			  log.info("SESION: usuario paciente: " + username);
+			  break;
+		case ADMINISTRADOR:
+			break;
+		case USUARIO:
+			break;
+		default:
+			break;
+		  }
+		 
+		} 
 		return "turnos";
 		
 	}
@@ -115,6 +290,30 @@ public class TurnoController {
 		model.addAttribute("titulo", "Turnos eliminados de: "+paciente.getApellido() + " " + paciente.getUsername());
 		model.addAttribute("turnos", turnoService.listarSortedObject(turnoService.listarEliminados(paciente)));
 		model.addAttribute("paciente", paciente);
+		
+		
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		if (principal instanceof UserDetails) {
+		  String username = ((UserDetails)principal).getUsername();
+		  Usuario usuario = usuarioService.findByMail(username);
+		  switch(usuario.getRol()) {
+		  case TERAPEUTA:
+			  model.addAttribute("usuarioId", terapeutaService.byUsuarioId(usuario.getId()).getId());
+//			  log.info("SESION: usuario terapeuta: " + username);
+			  break;
+		  case PACIENTE:
+			  model.addAttribute("usuarioId", pacienteService.byUsuarioId(usuario.getId()).getId());
+//			  log.info("SESION: usuario paciente: " + username);
+			  break;
+		case ADMINISTRADOR:
+			break;
+		case USUARIO:
+			break;
+		default:
+			break;
+		  }
+		 
+		} 
 		return "turnos";
 		
 	}

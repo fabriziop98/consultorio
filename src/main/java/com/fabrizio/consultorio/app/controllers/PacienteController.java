@@ -21,6 +21,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -37,11 +39,13 @@ import com.fabrizio.consultorio.app.models.entity.Paciente;
 import com.fabrizio.consultorio.app.models.entity.Pdf;
 import com.fabrizio.consultorio.app.models.entity.Terapeuta;
 import com.fabrizio.consultorio.app.models.entity.Turno;
+import com.fabrizio.consultorio.app.models.entity.Usuario;
 import com.fabrizio.consultorio.app.models.service.IPacienteService;
 import com.fabrizio.consultorio.app.models.service.IPdfService;
 import com.fabrizio.consultorio.app.models.service.ITerapeutaService;
 import com.fabrizio.consultorio.app.models.service.ITurnoService;
 import com.fabrizio.consultorio.app.models.service.IUploadFileService;
+import com.fabrizio.consultorio.app.models.service.IUsuarioService;
 
 @Controller
 @RequestMapping("/paciente")
@@ -61,6 +65,9 @@ public class PacienteController {
 	
 	@Autowired
 	private ITurnoService turnoService;
+	
+	@Autowired
+	private IUsuarioService usuarioService;
 	
 	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR','ROLE_TERAPEUTA')")
 	@GetMapping("/listar")
@@ -165,6 +172,21 @@ public class PacienteController {
 	@GetMapping("/listar/{id}")
 	public String verPacienteTerapeuta(@PathVariable(value="id") Long id, Map<String, Object> model, Model modelo, RedirectAttributes flash) {
 		List<Paciente> pacientes = pacienteService.findByTerapeutaId(id);
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		if (principal instanceof UserDetails) {
+			  String username = ((UserDetails)principal).getUsername();
+			  Usuario usuario = usuarioService.findByMail(username);
+			  switch(usuario.getRol()) {
+			  case TERAPEUTA:
+				  model.put("usuarioId", terapeutaService.byUsuarioId(usuario.getId()).getId());
+				  break;
+			case ADMINISTRADOR:
+				break;
+			default:
+				break;
+			  }
+			 
+			} 
 		model.put("titulo", "Pacientes");
 		model.put("pacientes", pacientes);
 		modelo.getAttribute("dateTimePicker");
@@ -179,6 +201,28 @@ public class PacienteController {
 			flash.addFlashAttribute("error", "El cliente no existe en la base de datos");
 			return "redirect:/paciente/listar";
 		}
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		if (principal instanceof UserDetails) {
+		  String username = ((UserDetails)principal).getUsername();
+		  Usuario usuario = usuarioService.findByMail(username);
+		  switch(usuario.getRol()) {
+		  case TERAPEUTA:
+			  model.put("usuarioId", terapeutaService.byUsuarioId(usuario.getId()).getId());
+//			  log.info("SESION: usuario terapeuta: " + username);
+			  break;
+		  case PACIENTE:
+			  model.put("usuarioId", pacienteService.byUsuarioId(usuario.getId()).getId());
+//			  log.info("SESION: usuario paciente: " + username);
+			  break;
+		case ADMINISTRADOR:
+			break;
+		case USUARIO:
+			break;
+		default:
+			break;
+		  }
+		 
+		} 
 		Turno turno = new Turno();
 		List<Terapeuta> terapeutas = paciente.getTerapeutas();
 		List<Terapeuta> terapeutasDisponibles = terapeutaService.listarDisponibles(paciente);
