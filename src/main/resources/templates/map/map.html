@@ -4,7 +4,8 @@
 	<section class="section pb-5">
 
 		<!--Section heading-->
-		<h2 style="color:#80541e; font-family:proxima-nova;"   class="section-heading h1 pt-4">Contáctanos</h2>
+		<h2 style="color: #80541e; font-family: proxima-nova;"
+			class="section-heading h1 pt-4">Contáctanos</h2>
 		<!--Section description-->
 		<p class="section-description pb-4"></p>
 
@@ -26,36 +27,35 @@
 
 						<p>Nos pondremos en contacto contigo en breve.</p>
 						<br>
+						<form method="POST" th:object="${usuarioConsulta}" th:action="@{/formulario}">
+							<div class="md-form">
+								<i></i> <input th:field="*{nombre}" type="text" id="form-name"
+									class="form-control"> <label for="form-name">Nombre</label>
+							</div>
 
-						<div class="md-form">
-							<i ></i> <input type="text"
-								id="form-name" class="form-control"> <label
-								for="form-name">Nombre</label>
-						</div>
+							<div class="md-form">
+								<i></i> <input th:field="*{telefono}" type="number"
+									id="form-email" class="form-control"> <label
+									for="form-email">Teléfono</label>
+							</div>
 
-						<div class="md-form">
-							<i ></i> <input
-								type="text" id="form-email" class="form-control"> <label
-								for="form-email">Correo electrónico</label>
-						</div>
+							<div class="md-form">
+								<i></i> <input th:field="*{email}" type="email" id="form-email"
+									class="form-control"> <label for="form-email">Correo
+									electrónico</label>
+							</div>
 
-						<div class="md-form">
-							<i ></i> <input type="text"
-								id="form-Subject" class="form-control"> <label
-								for="form-Subject">Título</label>
-						</div>
+							<div class="md-form">
+								<i></i> 
+								<textarea th:field="*{consulta}" id="form-text" class="form-control md-textarea"
+									rows="3"></textarea>
+								 <label for="form-text">Consulta</label>
+							</div>
 
-						<div class="md-form">
-							<i ></i>
-							<textarea id="form-text" class="form-control md-textarea"
-								rows="3"></textarea>
-							<label for="form-text">Descripción</label>
-						</div>
-
-						<div class="text-center mt-4">
-							<button class="button button-primary">Enviar</button>
-						</div>
-
+							<div class="text-center mt-4">
+								<button type="submit" class="button button-primary">Enviar</button>
+							</div>
+						</form>
 					</div>
 
 				</div>
@@ -78,21 +78,21 @@
 				<!--Buttons-->
 				<div class="row text-center">
 					<div class="col-md-4">
-						<a class="btn-floating blue accent-1"><i
-							class="fas fa-map-marker-alt"></i></a>
+						<a class="btn-floating blue accent-1">
+							</a>
 						<p>San Francisco, CA 94126</p>
 						<p>United States</p>
 					</div>
 
 					<div class="col-md-4">
-						<a class="btn-floating blue accent-1"><i class="fas fa-phone"></i></a>
+						<a class="btn-floating blue accent-1"></a>
 						<p>+ 01 234 567 89</p>
 						<p>Mon - Fri, 8:00-22:00</p>
 					</div>
 
 					<div class="col-md-4">
 						<a class="btn-floating blue accent-1"><i
-							class="fas fa-envelope"></i></a>
+							></i></a>
 						<p>info@gmail.com</p>
 						<p>sale@gmail.com</p>
 					</div>

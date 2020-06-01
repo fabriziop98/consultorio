@@ -20,7 +20,7 @@ public class MvcConfig implements WebMvcConfigurer  {
 	
 //	para crear in controlador que su unica funcion va a ser cargar la vista de perimiso denegadoi
 	public void addViewControllers(ViewControllerRegistry registry) {
-		registry.addViewController("/error_403").setViewName("error_403");
+		registry.addViewController("/error_403").setViewName("/error");
 	}
 	
 	@Bean

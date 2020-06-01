@@ -41,7 +41,7 @@
 							th:href="@{/turno/listar}">Turnos</a></li>
 						<li sec:authorize="hasRole('ROLE_ADMINISTRADOR')"><a
 							th:href="@{/usuario/listar}">Usuarios</a></li>
-						<li sec:authorize="!isAuthenticated()"><a href="#bottom">Contacto</a></li>
+						<li sec:authorize="!isAuthenticated()"><a href="https://wa.me/5212223717805/?text=HoladesdeApp">Contacto</a></li>
 						<li sec:authorize="!isAuthenticated()"><modal
 								th:replace="/modal/login :: modal"></modal></li>
 						<li sec:authorize="isAuthenticated()" class="dropdown"><a
