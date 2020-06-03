@@ -33,16 +33,16 @@ public class EmailService {
 	public void formularioContacto(UsuarioConsulta usuario) {
 
 		StringBuilder sb = new StringBuilder("&iexcl;Hola, " + usuario.getNombre() + "!"
-				+ "<br/>&iexcl;Gracias por tu interés en nosotros!<br>Nos pondremos en contacto contigo en breve.");
-		StringBuilder sbRegistro = new StringBuilder("&iexcl;Nuevo interesado: " + usuario.getNombre() + "!"
-				+ "<br/>Email: " + usuario.getEmail() + "<br>Telefono: " + usuario.getTelefono() + "<br>Título: "
+				+ "<br/>&iexcl;Gracias por tu inter&eacute;s en nosotros!<br>Nos pondremos en contacto contigo en breve.");
+		StringBuilder sbRegistro = new StringBuilder("&iexcl;Nuevo interesado!: " + usuario.getNombre()
+				+ "<br/>Email: " + usuario.getEmail() + "<br>Tel&eacute;fono: " + usuario.getTelefono() + "<br>Consulta: "
 				+ usuario.getConsulta());
 //	        StringBuilder url = new StringBuilder();
 //	        url.append("https://entramate.org/usuario/validar/" + usuario.getId());
 //	        sb.append(url);
 //	        sb.append("\">&Eacute;ste elance</a>");
 		enviar(usuario.getEmail(), "Gracias por tu consulta", sb.toString());
-		enviar("fabriziop@live.com.ar", "Nuevo interesado", sbRegistro.toString());
+		enviar("marcela_mateu@hotmail.com", "Nuevo interesado", sbRegistro.toString());
 
 	}
 
@@ -65,8 +65,9 @@ public class EmailService {
 
 					String htmlMessage = "";
 					htmlMessage += cuerpo;
-//	                    htmlMessage += "<html><br/><img src=\"https://oficios.club/img/logo.png\" width=\"25%\" /><br/>";
-					htmlMessage += "<br/><small><em>Gracias tu interés en nuestro consultorio. </em></small><br/>";
+	                   
+					htmlMessage += "<html><br/><small><em>Gracias tu inter&eacute;s en nuestro consultorio. </em></small><br/>";
+//					 htmlMessage += "<br/><img th:href=\"@{/images/logoCorto.png}\" width=\"100%\" /><br/>";
 					htmlMessage += "</html>";
 					MimeBodyPart messageBodyPart = new MimeBodyPart();
 					messageBodyPart.setContent(htmlMessage, "text/html");

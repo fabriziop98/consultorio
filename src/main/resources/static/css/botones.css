@@ -39,17 +39,14 @@
     background-color: #850100;
 }
 .button-success{
-    color: #1e9616;
-    border-color: #1e9616;
+    color: #15852D;
+    border-color: #15852D;
 }
 .button-success:hover{
     color: white;
-    background-color: #1e9616;
+    background-color: #15852D;
 }
-.button-neutral:hover{
-    color: #fff;
-    background-color: #000;
-}
+
 
 .button-primary{
     color: #80541e;

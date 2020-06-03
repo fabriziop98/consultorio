@@ -46,7 +46,7 @@
 						<li sec:authorize="hasRole('ROLE_ADMINISTRADOR')"><a
 							th:href="@{/turno/listar}">Turnos</a></li>
 						<li sec:authorize="hasRole('ROLE_ADMINISTRADOR')"><a
-							th:href="@{/usuario/}">Usuarios</a></li>
+							th:href="@{/usuario/listar}">Usuarios</a></li>
 						<li sec:authorize="isAuthenticated()" class="dropdown"><a
 							href="#" th:replace="/modal/logout :: modal" role="button"> <span
 								sec:authentication="name" ></span>

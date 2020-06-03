@@ -34,6 +34,12 @@ import com.fabrizio.consultorio.app.models.entity.Terapeuta;
 import com.fabrizio.consultorio.app.models.service.ITerapeutaService;
 import com.fabrizio.consultorio.app.models.service.IUploadFileService;
 
+import static com.fabrizio.util.Texto.TITULO_LABEL;
+import static com.fabrizio.util.Texto.ERROR_LABEL;
+import static com.fabrizio.util.Texto.SUCCESS_LABEL;
+import static com.fabrizio.util.Texto.TERAPEUTA_LABEL;
+import static com.fabrizio.util.Texto.TERAPEUTAS_LABEL;
+
 @Controller
 @RequestMapping("/terapeuta")
 public class TerapeutaController {
@@ -50,16 +56,16 @@ public class TerapeutaController {
 		
 		List<Terapeuta> terapeutas = terapeutaService.findAll();
 		
-		model.addAttribute("titulo", "Terapeutas");
-		model.addAttribute("terapeutas", terapeutas);
-		return "terapeutas";
+		model.addAttribute(TITULO_LABEL, "Terapeutas");
+		model.addAttribute(TERAPEUTAS_LABEL, terapeutas);
+		return TERAPEUTAS_LABEL;
 		
 	}
 	
 	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR')")
 	@GetMapping("/")
 	public String displayCrearTerapeuta(Model model) {
-		model.addAttribute("terapeuta", new Terapeuta());
+		model.addAttribute(TERAPEUTA_LABEL, new Terapeuta());
 		return "crearTerapeuta";
 	}
 	
@@ -68,14 +74,14 @@ public class TerapeutaController {
 	public String crearTerapeuta(@Valid Terapeuta terapeuta, BindingResult result, Model model,
 			@RequestParam(name="paciente_id[]", required = false)Long[] pacienteId, @RequestParam("file") MultipartFile foto, RedirectAttributes flash, SessionStatus status) {
 //		if (result.hasErrors()) {
-//			model.addAttribute("titulo", "Crear terapeuta");
+//			model.addAttribute(TITULO_LABEL, "Crear terapeuta");
 //			return "crearTerapeuta";
 //		}
 		
 		
 		if(foto.isEmpty()) {
-			model.addAttribute("titulo", "Crear Terapeuta");
-			model.addAttribute("error", "Error: El perfil de la terapeuta no puede no tener foto.");
+			model.addAttribute(TITULO_LABEL, "Crear Terapeuta");
+			model.addAttribute(ERROR_LABEL, "Error: El perfil de la terapeuta no puede no tener foto.");
 			return "crearTerapeuta";
 		}
 		
@@ -95,7 +101,7 @@ public class TerapeutaController {
 			terapeuta.setFoto(uniqueFilename);
 		}
 		
-		flash.addFlashAttribute("success", "Terapeuta creada con éxito.");
+		flash.addFlashAttribute(SUCCESS_LABEL, "Terapeuta creada con éxito.");
 		terapeutaService.save(terapeuta);
 		status.setComplete();
 		return "redirect:/terapeuta/listar";
@@ -107,7 +113,7 @@ public class TerapeutaController {
 			RedirectAttributes flash) {
 		Terapeuta terapeuta = terapeutaService.findOne(id);
 		if (terapeuta == null) {
-			flash.addFlashAttribute("error", "El terapeuta no existe en la base de datos");
+			flash.addFlashAttribute(ERROR_LABEL, "El terapeuta no existe en la base de datos");
 			return "redirect:/paciente/listar";
 		}
 		
@@ -116,8 +122,8 @@ public class TerapeutaController {
 			terapeuta.addPaciente(paciente);
 		}
 		
-		model.put("terapeuta", terapeuta);
-		model.put("titulo", "Detalle terapeuta: " + terapeuta.getUsername());
+		model.put(TERAPEUTA_LABEL, terapeuta);
+		model.put(TITULO_LABEL, "Detalle terapeuta: " + terapeuta.getUsername());
 		return "verPaciente";
 	}
 	
@@ -128,7 +134,7 @@ public class TerapeutaController {
 		if (id>0){
 			Terapeuta terapeuta = terapeutaService.findOne(id);
 			terapeutaService.darDeBaja(terapeuta);
-			flash.addFlashAttribute("success", "Terapeuta: "+terapeuta.getApellido()+" dada de baja.");
+			flash.addFlashAttribute(SUCCESS_LABEL, "Terapeuta: "+terapeuta.getApellido()+" dada de baja.");
 			
 		}
 		return "redirect:/terapeuta/listar";
@@ -139,7 +145,7 @@ public class TerapeutaController {
 	public String eliminar(RedirectAttributes flash) {
 
 		terapeutaService.deleteAll();
-		flash.addFlashAttribute("success", "Todas las terapeutas fueron eliminadas con éxito");
+		flash.addFlashAttribute(SUCCESS_LABEL, "Todas las terapeutas fueron eliminadas con éxito");
 
 		return "redirect:/receta/listar";
 	}

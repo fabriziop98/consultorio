@@ -1,6 +1,21 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+<style>
+button:disabled:hover {
+  background-color: GREY;
+  color: #ffff;
+  cursor: not-allowed;
+  border: 1px solid grey;
+}
+button:disabled {
+  background-color: GREY;
+  color: #ffff;
+  cursor: not-allowed;
+  border: 1px solid grey;
+}
+</style>
 <head th:replace="layout/layout :: head"></head>
+
 <body>
 	<header th:replace="layout/layout :: header"></header>
 	<div class="container py-4">
@@ -94,7 +109,7 @@
 
 						<div class="form-group" >
 							<div class="col-sm-6">
-								<button onkeyup="validarDatosCompletos();" class="btn btn-primary" type="submit" id="btnEnviar" disabled="disabled"
+								<button onkeyup="validarDatosCompletos();" class="button button-primary" type="submit" id="btnEnviar" disabled="disabled"
 									>Guardar usuario</button>
 							</div>
 						</div>

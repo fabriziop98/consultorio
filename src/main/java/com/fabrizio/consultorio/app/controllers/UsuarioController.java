@@ -34,8 +34,13 @@ import com.fabrizio.consultorio.app.models.entity.Usuario;
 import com.fabrizio.consultorio.app.models.service.IUsuarioService;
 import com.fabrizio.consultorio.app.models.service.IUploadFileService;
 
+import static com.fabrizio.util.Texto.USUARIO_LABEL;
+import static com.fabrizio.util.Texto.USUARIOS_LABEL;
+import static com.fabrizio.util.Texto.TITULO_LABEL;
+import static com.fabrizio.util.Texto.ERROR_LABEL;
+import static com.fabrizio.util.Texto.SUCCESS_LABEL;
 @Controller
-@RequestMapping("/usuario")
+@RequestMapping("/"+USUARIO_LABEL)
 
 public class UsuarioController {
 
@@ -52,8 +57,8 @@ public class UsuarioController {
 		
 		List<Usuario> usuarios = usuarioService.findAll();
 		
-		model.addAttribute("titulo", "Usuarios");
-		model.addAttribute("usuarios", usuarios);
+		model.addAttribute(TITULO_LABEL, USUARIOS_LABEL);
+		model.addAttribute(USUARIOS_LABEL, usuarios);
 		return "usuarios";
 			
 	}
@@ -61,7 +66,7 @@ public class UsuarioController {
 	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR')")
 	@GetMapping("/")
 	public String displayCrearUsuario(Model model) {
-		model.addAttribute("usuario", new Usuario());
+		model.addAttribute(USUARIO_LABEL, new Usuario());
 		return "crearUsuario";
 	}
 	
@@ -75,11 +80,11 @@ public class UsuarioController {
 			usuarioService.save(usuario);
 		} catch (Exception e) {
 			e.printStackTrace();
-			flash.addFlashAttribute("error", "Ocurrió un error al intentar crear el usuario.");
+			flash.addFlashAttribute(ERROR_LABEL, "Ocurrió un error al intentar crear el usuario.");
 			return "redirect:/usuario/";
 		}
 		status.setComplete();
-		flash.addFlashAttribute("success", "Usuario "+usuario.getUsername()+" "+usuario.getApellido()+" creado con éxito.");
+		flash.addFlashAttribute(SUCCESS_LABEL, "Usuario "+usuario.getUsername()+" "+usuario.getApellido()+" creado con éxito.");
 		return "redirect:/usuario/listar";
 	}
 	
@@ -87,7 +92,7 @@ public class UsuarioController {
 	@GetMapping("/editar/{id}")
 	public String displayEditarUsuario(@PathVariable Long id, Model model) {
 		Usuario usuario = usuarioService.findOne(id);
-		model.addAttribute("usuario", usuario);
+		model.addAttribute(USUARIO_LABEL, usuario);
 		return "crearUsuario";
 	}
 	
@@ -99,10 +104,10 @@ public class UsuarioController {
 			usuarioService.editar(usuario);
 		} catch (Exception e) {
 			e.printStackTrace();
-			flash.addFlashAttribute("error", "Ocurrió un error al intentar editar el usuario.");
+			flash.addFlashAttribute(ERROR_LABEL, "Ocurrió un error al intentar editar el usuario.");
 			return "redirect:/usuario/listar";
 		}
-		flash.addFlashAttribute("success", "Usuario editado con éxito.");
+		flash.addFlashAttribute(SUCCESS_LABEL, "Usuario editado con éxito.");
 		return "redirect:/usuario/listar";
 	}
 
@@ -111,11 +116,11 @@ public class UsuarioController {
 	public String ver(@PathVariable(value = "id") Long id,  Map<String, Object> model, RedirectAttributes flash) {
 		Usuario usuario = usuarioService.findOne(id);
 		if (usuario == null) {
-			flash.addFlashAttribute("error", "El cliente no existe en la base de datos");
+			flash.addFlashAttribute(ERROR_LABEL, "El cliente no existe en la base de datos");
 			return "redirect:/usuario/listar";
 		}
-		model.put("usuario", usuario);
-		model.put("titulo", "Detalle usuario: " + usuario.getUsername() +" "+ usuario.getApellido());
+		model.put(USUARIO_LABEL, usuario);
+		model.put(TITULO_LABEL, "Detalle usuario: " + usuario.getUsername() +" "+ usuario.getApellido());
 		
 		return "verUsuario";
 	}
@@ -126,7 +131,7 @@ public class UsuarioController {
 		if (id>0){
 			Usuario usuario = usuarioService.findOne(id);
 			usuarioService.darDeBaja(usuario);
-			flash.addFlashAttribute("success", "Terapeuta: "+usuario.getApellido()+" dado de baja.");
+			flash.addFlashAttribute(SUCCESS_LABEL, "Terapeuta: "+usuario.getApellido()+" dado de baja.");
 			
 		}
 		return "redirect:/terapeuta/listar";
@@ -137,7 +142,7 @@ public class UsuarioController {
 	public String eliminar(RedirectAttributes flash) {
 
 		usuarioService.deleteAll();
-		flash.addFlashAttribute("success", "Todas las terapeutas fueron eliminadas con éxito");
+		flash.addFlashAttribute(SUCCESS_LABEL, "Todas las terapeutas fueron eliminadas con éxito");
 
 		return "redirect:/receta/listar";
 	}

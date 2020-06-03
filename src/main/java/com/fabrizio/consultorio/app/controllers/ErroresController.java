@@ -8,6 +8,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import static com.fabrizio.util.Texto.ERROR_LABEL;
+import static com.fabrizio.util.Texto.TITULOERROR_LABEL;
+import static com.fabrizio.util.Texto.DETALLEERROR_LABEL;
+
 @Controller
 @RequestMapping("/error")
 public class ErroresController implements ErrorController {
@@ -15,40 +19,40 @@ public class ErroresController implements ErrorController {
 	@GetMapping()
 	public ModelAndView renderErrorPage(HttpServletRequest httpRequest) {
 
-		ModelAndView mv = new ModelAndView("error");
+		ModelAndView mv = new ModelAndView(ERROR_LABEL);
 		String errorMsg = "";
 		int httpErrorCode = getErrorCode(httpRequest);
 
 		switch (httpErrorCode) {
 		case 400:
-			mv.addObject("tituloError", "Error 400");
-			mv.addObject("error", "La petición es incorrecta");
-			mv.addObject("detalleError", "Es todo lo que sabemos.");
+			mv.addObject(TITULOERROR_LABEL, "Error 400");
+			mv.addObject(ERROR_LABEL, "La petición es incorrecta");
+			mv.addObject(DETALLEERROR_LABEL, "Es todo lo que sabemos.");
 			break;
 		case 401:
-			mv.addObject("tituloError", "Error 401");
-			mv.addObject("error", "No tienes los permisos para entrar a esta página");
-			mv.addObject("detalleError", "Intenta ingresando con un usuario que tenga los permisos correspondientes.");
+			mv.addObject(TITULOERROR_LABEL, "Error 401");
+			mv.addObject(ERROR_LABEL, "No tienes los permisos para entrar a esta página");
+			mv.addObject(DETALLEERROR_LABEL, "Intenta ingresando con un usuario que tenga los permisos correspondientes.");
 			break;
 		case 403:
-			mv.addObject("tituloError", "Error 403");
-			mv.addObject("error", "No tienes los permisos para entrar a esta página");
-			mv.addObject("detalleError", "Intenta ingresando con un usuario que tenga los permisos correspondientes.");
+			mv.addObject(TITULOERROR_LABEL, "Error 403");
+			mv.addObject(ERROR_LABEL, "No tienes los permisos para entrar a esta página");
+			mv.addObject(DETALLEERROR_LABEL, "Intenta ingresando con un usuario que tenga los permisos correspondientes.");
 			break;
 		case 404:
-			mv.addObject("tituloError", "Error 404");
-			mv.addObject("error", "Página no encontrada");
-			mv.addObject("detalleError", "Prueba ingresando otra url o vuelve al principio.");
+			mv.addObject(TITULOERROR_LABEL, "Error 404");
+			mv.addObject(ERROR_LABEL, "Página no encontrada");
+			mv.addObject(DETALLEERROR_LABEL, "Prueba ingresando otra url o vuelve al principio.");
 			break;
 		case 500:
-			mv.addObject("tituloError", "Error 500");
-			mv.addObject("error", "Error en el servidor");
-			mv.addObject("detalleError", "Estamos trabajando para solucionar este problema.");
+			mv.addObject(TITULOERROR_LABEL, "Error 500");
+			mv.addObject(ERROR_LABEL, "Error en el servidor");
+			mv.addObject(DETALLEERROR_LABEL, "Estamos trabajando para solucionar este problema.");
 			break;
 		default:
-			mv.addObject("tituloError", "Error");
-			mv.addObject("error", "Ocurrió un error");
-			mv.addObject("detalleError", "Esto es algo inesperado.");
+			mv.addObject(TITULOERROR_LABEL, "Error");
+			mv.addObject(ERROR_LABEL, "Ocurrió un error");
+			mv.addObject(DETALLEERROR_LABEL, "Esto es algo inesperado.");
 			break;
 		}
 

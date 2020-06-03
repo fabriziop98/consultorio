@@ -21,6 +21,11 @@ import com.fabrizio.consultorio.app.models.service.IPacienteService;
 import com.fabrizio.consultorio.app.models.service.ITerapeutaService;
 import com.fabrizio.consultorio.app.models.service.IUsuarioService;
 
+
+import static com.fabrizio.util.Texto.ERROR_LABEL;
+import static com.fabrizio.util.Texto.SUCCESS_LABEL;
+import static com.fabrizio.util.Texto.USUARIOID_LABEL;
+
 @Controller
 @RequestMapping(value= {"","/inicio"})
 public class PrincipalController {
@@ -49,11 +54,11 @@ public class PrincipalController {
 		  Usuario usuario = usuarioService.findByMail(username);
 		  switch(usuario.getRol()) {
 		  case TERAPEUTA:
-			  model.addAttribute("usuarioId", terapeutaService.byUsuarioId(usuario.getId()).getId());
+			  model.addAttribute(USUARIOID_LABEL, terapeutaService.byUsuarioId(usuario.getId()).getId());
 //			  log.info("SESION: usuario terapeuta: " + username);
 			  break;
 		  case PACIENTE:
-			  model.addAttribute("usuarioId", pacienteService.byUsuarioId(usuario.getId()).getId());
+			  model.addAttribute(USUARIOID_LABEL, pacienteService.byUsuarioId(usuario.getId()).getId());
 //			  log.info("SESION: usuario paciente: " + username);
 			  break;
 		case ADMINISTRADOR:
@@ -73,11 +78,11 @@ public class PrincipalController {
 	@PostMapping("/formulario")
 	public String usuarioFormulario(@Valid UsuarioConsulta usuario, BindingResult result, Model model, RedirectAttributes flash) {
 		if(result.hasErrors()) {
-			flash.addFlashAttribute("danger", "Formulario no ha sido llenado correctamente.");
+			flash.addFlashAttribute(ERROR_LABEL, "Formulario no ha sido llenado correctamente.");
 			return "redirect:/";
 		}
 		mailService.formularioContacto(usuario);
-		flash.addFlashAttribute("success", "Gracias, "+usuario.getNombre()+"tu consulta ha sido enviada.");
+		flash.addFlashAttribute(SUCCESS_LABEL, "Gracias, "+usuario.getNombre()+". Tu consulta ha sido enviada.");
 		UsuarioConsulta nuevoUsuario = new UsuarioConsulta();
 		model.addAttribute("usuarioConsulta", nuevoUsuario);
 		return "redirect:/";

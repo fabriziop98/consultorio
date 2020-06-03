@@ -103,6 +103,9 @@
 					<div class="well" style="background: #fff;">
 
 						<h4>Turnos</h4>
+						<div class="alert alert-info my-4"
+							th:if="${#lists.isEmpty(turnos)}"
+							th:text="'No hay turnos próximos'"></div>
 						<hr th:each="turno : ${turnos}"
 							th:text="'Próximo turno: '+ ${#dates.format(turno, 'dd/MM/yyyy HH:mm')}">
 
@@ -127,39 +130,38 @@
 					</div>
 
 					<section class="section-tours">
-					<input type="hidden" name="idPaciente" id="idPaciente"
+						<input type="hidden" name="idPaciente" id="idPaciente"
 							th:field="*{id}" />
 						<div class="row">
 							<div th:if="${pdf.eliminado!=true}"
-									th:each="pdf : ${paciente.pdf}" class="col-lg-4 mb-4">
+								th:each="pdf : ${paciente.pdf}" class="col-lg-4 mb-4">
 								<div class="my-flip-container">
 									<div class="my-flip-inner my-flip-right">
 										<div class="my-flip-inner-wrapper">
-											<div 
-												style="height: 500x;" class="my-flip-side my-flip-front">
+											<div style="height: 500x;" class="my-flip-side my-flip-front">
 												<div class="my-flip-image my-flip-image--1">
-													<img th:if="${#strings.endsWith(pdf.nombre,'pdf')}" th:src="@{/images/pdf.png}">
-													<img th:if="${#strings.endsWith(pdf.nombre,'doc')}" th:src="@{/images/doc.jpg}">
+													<img th:if="${#strings.endsWith(pdf.nombre,'pdf')}"
+														th:src="@{/images/pdf.png}"> <img
+														th:if="${#strings.endsWith(pdf.nombre,'doc')}"
+														th:src="@{/images/doc.jpg}">
 												</div>
 												<div class="my-flip-details">
 													<h4 style="color: #5d5d5e; font-family: proxima-nova;"
-														class="my-flip-heading"
-														></h4>
+														class="my-flip-heading"></h4>
 													<div class="my-flip-text text-center">
 														<p></p>
-														<a th:if="${#strings.endsWith(pdf.nombre,'pdf')}" th:href="@{'/paciente/listado/pdf/' + ${pdf.nombre}(format=pdf)}"
-													th:text="${#strings.substringAfter(pdf.nombre,'___')}"
-													target="_blank"
-															class="button button-primary"></a>
-															<a th:if="${#strings.endsWith(pdf.nombre,'doc')}" th:href="@{'/paciente/listado/pdf/' + ${pdf.nombre}(format=doc)}"
-													th:text="${#strings.substringAfter(pdf.nombre,'___')}"
-													target="_blank"
-															class="button button-primary"></a>
-															<a
+														<a th:if="${#strings.endsWith(pdf.nombre,'pdf')}"
+															th:href="@{'/paciente/listado/pdf/' + ${pdf.nombre}(format=pdf)}"
+															th:text="${#strings.substringAfter(pdf.nombre,'___')}"
+															target="_blank" class="button button-primary"></a> <a
+															th:if="${#strings.endsWith(pdf.nombre,'doc')}"
+															th:href="@{'/paciente/listado/pdf/' + ${pdf.nombre}(format=doc)}"
+															th:text="${#strings.substringAfter(pdf.nombre,'___')}"
+															target="_blank" class="button button-primary"></a> <a
 															sec:authorize="hasRole('ROLE_ADMINISTRADOR')"
-															class="button button-danger" style="margin: 10%;" 
+															class="button button-danger" style="margin: 10%;"
 															th:href="@{'/paciente/pdf/eliminar/' + ${pdf.id} +'/'+ ${paciente.id}}"
-												th:text="'Eliminar informe'"
+															th:text="'Eliminar informe'"
 															onclick="return confirm('¿Estás seguro que quieres dar de baja?');"></a>
 													</div>
 												</div>
@@ -178,7 +180,7 @@
 							</div>
 						</div>
 					</section>
-					
+
 
 				</div>
 			</div>

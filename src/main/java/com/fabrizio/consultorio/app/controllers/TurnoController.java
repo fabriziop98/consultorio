@@ -27,8 +27,14 @@ import com.fabrizio.consultorio.app.models.service.ITerapeutaService;
 import com.fabrizio.consultorio.app.models.service.ITurnoService;
 import com.fabrizio.consultorio.app.models.service.IUsuarioService;
 
+import static com.fabrizio.util.Texto.TITULO_LABEL;
+import static com.fabrizio.util.Texto.TURNO_LABEL;
+import static com.fabrizio.util.Texto.TURNOS_LABEL;
+import static com.fabrizio.util.Texto.PACIENTE_LABEL;
+import static com.fabrizio.util.Texto.USUARIOID_LABEL;
+import static com.fabrizio.util.Texto.INFO_LABEL;
 @Controller
-@RequestMapping("/turno")
+@RequestMapping("/"+TURNO_LABEL)
 public class TurnoController {
 
 	@Autowired
@@ -48,19 +54,19 @@ public class TurnoController {
 	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR')")
 	@GetMapping("/listar")
 	public String listarTurnos(Model model, Authentication authentication, HttpServletRequest request, Locale locale) {
-		model.addAttribute("titulo", "Todos los turnos");
-		model.addAttribute("turnos", turnoService.listarSortedObject(turnoService.listarTodosActivos()));
+		model.addAttribute(TITULO_LABEL, "Todos los turnos");
+		model.addAttribute(TURNOS_LABEL, turnoService.listarSortedObject(turnoService.listarTodosActivos()));
 		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		if (principal instanceof UserDetails) {
 		  String username = ((UserDetails)principal).getUsername();
 		  Usuario usuario = usuarioService.findByMail(username);
 		  switch(usuario.getRol()) {
 		  case TERAPEUTA:
-			  model.addAttribute("usuarioId", terapeutaService.byUsuarioId(usuario.getId()).getId());
+			  model.addAttribute(USUARIOID_LABEL, terapeutaService.byUsuarioId(usuario.getId()).getId());
 //			  log.info("SESION: usuario terapeuta: " + username);
 			  break;
 		  case PACIENTE:
-			  model.addAttribute("usuarioId", pacienteService.byUsuarioId(usuario.getId()).getId());
+			  model.addAttribute(USUARIOID_LABEL, pacienteService.byUsuarioId(usuario.getId()).getId());
 //			  log.info("SESION: usuario paciente: " + username);
 			  break;
 		case ADMINISTRADOR:
@@ -72,7 +78,7 @@ public class TurnoController {
 		  }
 		 
 		} 
-		return "turnos";
+		return TURNOS_LABEL;
 		
 	}
 	
@@ -81,9 +87,9 @@ public class TurnoController {
 	public String listarTurnosPorPaciente(@PathVariable Long id, Model model, Authentication authentication, HttpServletRequest request, Locale locale) {
 		Paciente paciente = pacienteService.findOne(id);
 		
-		model.addAttribute("titulo", "Todos los turnos de: "+paciente.getApellido() + " " + paciente.getUsername());
-		model.addAttribute("turnos", turnoService.listarSortedObject(turnoService.listarTodosActivos(paciente)));
-		model.addAttribute("paciente", paciente);
+		model.addAttribute(TITULO_LABEL, "Todos los turnos de: "+paciente.getApellido() + " " + paciente.getUsername());
+		model.addAttribute(TURNOS_LABEL, turnoService.listarSortedObject(turnoService.listarTodosActivos(paciente)));
+		model.addAttribute(PACIENTE_LABEL, paciente);
 		
 
 		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -92,11 +98,11 @@ public class TurnoController {
 		  Usuario usuario = usuarioService.findByMail(username);
 		  switch(usuario.getRol()) {
 		  case TERAPEUTA:
-			  model.addAttribute("usuarioId", terapeutaService.byUsuarioId(usuario.getId()).getId());
+			  model.addAttribute(USUARIOID_LABEL, terapeutaService.byUsuarioId(usuario.getId()).getId());
 //			  log.info("SESION: usuario terapeuta: " + username);
 			  break;
 		  case PACIENTE:
-			  model.addAttribute("usuarioId", pacienteService.byUsuarioId(usuario.getId()).getId());
+			  model.addAttribute(USUARIOID_LABEL, pacienteService.byUsuarioId(usuario.getId()).getId());
 //			  log.info("SESION: usuario paciente: " + username);
 			  break;
 		case ADMINISTRADOR:
@@ -108,15 +114,15 @@ public class TurnoController {
 		  }
 		 
 		} 
-		return "turnos";
+		return TURNOS_LABEL;
 		
 	}
 	
 	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR')")
 	@GetMapping("/listarAnteriores")
 	public String listarTurnosAnteriores(Model model, Authentication authentication, HttpServletRequest request, Locale locale) {
-		model.addAttribute("titulo", "Todos los turnos pasados.");
-		model.addAttribute("turnos", turnoService.listarSortedObject(turnoService.listarPasados()));
+		model.addAttribute(TITULO_LABEL, "Todos los turnos pasados.");
+		model.addAttribute(TURNOS_LABEL, turnoService.listarSortedObject(turnoService.listarPasados()));
 		
 		
 		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -125,11 +131,11 @@ public class TurnoController {
 		  Usuario usuario = usuarioService.findByMail(username);
 		  switch(usuario.getRol()) {
 		  case TERAPEUTA:
-			  model.addAttribute("usuarioId", terapeutaService.byUsuarioId(usuario.getId()).getId());
+			  model.addAttribute(USUARIOID_LABEL, terapeutaService.byUsuarioId(usuario.getId()).getId());
 //			  log.info("SESION: usuario terapeuta: " + username);
 			  break;
 		  case PACIENTE:
-			  model.addAttribute("usuarioId", pacienteService.byUsuarioId(usuario.getId()).getId());
+			  model.addAttribute(USUARIOID_LABEL, pacienteService.byUsuarioId(usuario.getId()).getId());
 //			  log.info("SESION: usuario paciente: " + username);
 			  break;
 		case ADMINISTRADOR:
@@ -141,7 +147,7 @@ public class TurnoController {
 		  }
 		 
 		} 
-		return "turnos";
+		return TURNOS_LABEL;
 		
 	}
 	
@@ -149,9 +155,9 @@ public class TurnoController {
 	@GetMapping("/listarAnteriores/{id}")
 	public String listarTurnosAnteriores(@PathVariable Long id, Model model, Authentication authentication, HttpServletRequest request, Locale locale) {
 		Paciente paciente = pacienteService.findOne(id);
-		model.addAttribute("titulo", "Turnos pasados de: "+paciente.getApellido() + " " + paciente.getUsername());
-		model.addAttribute("turnos", turnoService.listarSortedObject(turnoService.listarPasados(paciente)));
-		model.addAttribute("paciente", paciente);
+		model.addAttribute(TITULO_LABEL, "Turnos pasados de: "+paciente.getApellido() + " " + paciente.getUsername());
+		model.addAttribute(TURNOS_LABEL, turnoService.listarSortedObject(turnoService.listarPasados(paciente)));
+		model.addAttribute(PACIENTE_LABEL, paciente);
 		
 		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		if (principal instanceof UserDetails) {
@@ -159,11 +165,11 @@ public class TurnoController {
 		  Usuario usuario = usuarioService.findByMail(username);
 		  switch(usuario.getRol()) {
 		  case TERAPEUTA:
-			  model.addAttribute("usuarioId", terapeutaService.byUsuarioId(usuario.getId()).getId());
+			  model.addAttribute(USUARIOID_LABEL, terapeutaService.byUsuarioId(usuario.getId()).getId());
 //			  log.info("SESION: usuario terapeuta: " + username);
 			  break;
 		  case PACIENTE:
-			  model.addAttribute("usuarioId", pacienteService.byUsuarioId(usuario.getId()).getId());
+			  model.addAttribute(USUARIOID_LABEL, pacienteService.byUsuarioId(usuario.getId()).getId());
 //			  log.info("SESION: usuario paciente: " + username);
 			  break;
 		case ADMINISTRADOR:
@@ -175,7 +181,7 @@ public class TurnoController {
 		  }
 		 
 		} 
-		return "turnos";
+		return TURNOS_LABEL;
 		
 	}
 	
@@ -185,8 +191,8 @@ public class TurnoController {
 		
 		List<Turno> turnos = turnoService.listarSortedObject(turnoService.listarFuturos());
 		
-		model.addAttribute("titulo", "Turnos futuros");
-		model.addAttribute("turnos", turnos);
+		model.addAttribute(TITULO_LABEL, "Turnos futuros");
+		model.addAttribute(TURNOS_LABEL, turnos);
 		
 		
 		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -195,11 +201,11 @@ public class TurnoController {
 		  Usuario usuario = usuarioService.findByMail(username);
 		  switch(usuario.getRol()) {
 		  case TERAPEUTA:
-			  model.addAttribute("usuarioId", terapeutaService.byUsuarioId(usuario.getId()).getId());
+			  model.addAttribute(USUARIOID_LABEL, terapeutaService.byUsuarioId(usuario.getId()).getId());
 //			  log.info("SESION: usuario terapeuta: " + username);
 			  break;
 		  case PACIENTE:
-			  model.addAttribute("usuarioId", pacienteService.byUsuarioId(usuario.getId()).getId());
+			  model.addAttribute(USUARIOID_LABEL, pacienteService.byUsuarioId(usuario.getId()).getId());
 //			  log.info("SESION: usuario paciente: " + username);
 			  break;
 		case ADMINISTRADOR:
@@ -211,7 +217,7 @@ public class TurnoController {
 		  }
 		 
 		} 
-		return "turnos";
+		return TURNOS_LABEL;
 		
 	}
 	
@@ -220,9 +226,9 @@ public class TurnoController {
 	public String listarTurnosFuturos(@PathVariable Long id, Model model, Authentication authentication, HttpServletRequest request, Locale locale) {
 		Paciente paciente = pacienteService.findOne(id);
 		
-		model.addAttribute("titulo", "Turnos futuros de: "+paciente.getApellido() + " " + paciente.getUsername());
-		model.addAttribute("turnos", turnoService.listarSortedObject(turnoService.listarFuturos(paciente)));
-		model.addAttribute("paciente", paciente);
+		model.addAttribute(TITULO_LABEL, "Turnos futuros de: "+paciente.getApellido() + " " + paciente.getUsername());
+		model.addAttribute(TURNOS_LABEL, turnoService.listarSortedObject(turnoService.listarFuturos(paciente)));
+		model.addAttribute(PACIENTE_LABEL, paciente);
 		
 		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		if (principal instanceof UserDetails) {
@@ -230,11 +236,11 @@ public class TurnoController {
 		  Usuario usuario = usuarioService.findByMail(username);
 		  switch(usuario.getRol()) {
 		  case TERAPEUTA:
-			  model.addAttribute("usuarioId", terapeutaService.byUsuarioId(usuario.getId()).getId());
+			  model.addAttribute(USUARIOID_LABEL, terapeutaService.byUsuarioId(usuario.getId()).getId());
 //			  log.info("SESION: usuario terapeuta: " + username);
 			  break;
 		  case PACIENTE:
-			  model.addAttribute("usuarioId", pacienteService.byUsuarioId(usuario.getId()).getId());
+			  model.addAttribute(USUARIOID_LABEL, pacienteService.byUsuarioId(usuario.getId()).getId());
 //			  log.info("SESION: usuario paciente: " + username);
 			  break;
 		case ADMINISTRADOR:
@@ -246,15 +252,15 @@ public class TurnoController {
 		  }
 		 
 		} 
-		return "turnos";
+		return TURNOS_LABEL;
 		
 	}
 	
 	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR','ROLE_TERAPEUTA','ROLE_PACIENTE')")
 	@GetMapping("/listarEliminados")
 	public String listarTurnosEliminados(Model model, Authentication authentication, HttpServletRequest request, Locale locale) {
-		model.addAttribute("titulo", "Todos los turnos eliminados");
-		model.addAttribute("turnos", turnoService.listarSortedObject(turnoService.listarEliminados()));
+		model.addAttribute(TITULO_LABEL, "Todos los turnos eliminados");
+		model.addAttribute(TURNOS_LABEL, turnoService.listarSortedObject(turnoService.listarEliminados()));
 		
 		
 		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -263,11 +269,11 @@ public class TurnoController {
 		  Usuario usuario = usuarioService.findByMail(username);
 		  switch(usuario.getRol()) {
 		  case TERAPEUTA:
-			  model.addAttribute("usuarioId", terapeutaService.byUsuarioId(usuario.getId()).getId());
+			  model.addAttribute(USUARIOID_LABEL, terapeutaService.byUsuarioId(usuario.getId()).getId());
 //			  log.info("SESION: usuario terapeuta: " + username);
 			  break;
 		  case PACIENTE:
-			  model.addAttribute("usuarioId", pacienteService.byUsuarioId(usuario.getId()).getId());
+			  model.addAttribute(USUARIOID_LABEL, pacienteService.byUsuarioId(usuario.getId()).getId());
 //			  log.info("SESION: usuario paciente: " + username);
 			  break;
 		case ADMINISTRADOR:
@@ -279,7 +285,7 @@ public class TurnoController {
 		  }
 		 
 		} 
-		return "turnos";
+		return TURNOS_LABEL;
 		
 	}
 	
@@ -287,9 +293,9 @@ public class TurnoController {
 	@GetMapping("/listarEliminados/{id}")
 	public String listarTurnosEliminados(@PathVariable Long id, Model model, Authentication authentication, HttpServletRequest request, Locale locale) {
 		Paciente paciente = pacienteService.findOne(id);
-		model.addAttribute("titulo", "Turnos eliminados de: "+paciente.getApellido() + " " + paciente.getUsername());
-		model.addAttribute("turnos", turnoService.listarSortedObject(turnoService.listarEliminados(paciente)));
-		model.addAttribute("paciente", paciente);
+		model.addAttribute(TITULO_LABEL, "Turnos eliminados de: "+paciente.getApellido() + " " + paciente.getUsername());
+		model.addAttribute(TURNOS_LABEL, turnoService.listarSortedObject(turnoService.listarEliminados(paciente)));
+		model.addAttribute(PACIENTE_LABEL, paciente);
 		
 		
 		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -298,11 +304,11 @@ public class TurnoController {
 		  Usuario usuario = usuarioService.findByMail(username);
 		  switch(usuario.getRol()) {
 		  case TERAPEUTA:
-			  model.addAttribute("usuarioId", terapeutaService.byUsuarioId(usuario.getId()).getId());
+			  model.addAttribute(USUARIOID_LABEL, terapeutaService.byUsuarioId(usuario.getId()).getId());
 //			  log.info("SESION: usuario terapeuta: " + username);
 			  break;
 		  case PACIENTE:
-			  model.addAttribute("usuarioId", pacienteService.byUsuarioId(usuario.getId()).getId());
+			  model.addAttribute(USUARIOID_LABEL, pacienteService.byUsuarioId(usuario.getId()).getId());
 //			  log.info("SESION: usuario paciente: " + username);
 			  break;
 		case ADMINISTRADOR:
@@ -314,7 +320,7 @@ public class TurnoController {
 		  }
 		 
 		} 
-		return "turnos";
+		return TURNOS_LABEL;
 		
 	}
 	
@@ -327,9 +333,9 @@ public class TurnoController {
 		}
 		Turno turno = turnoService.findOne(id);
 		turnoService.darDeBaja(turno);
-		model.addAttribute("titulo", "Eliminar turno de: "+turno.getPaciente().getUsername()+" "+turno.getPaciente().getApellido());
-		flash.addFlashAttribute("info", "Eliminar turno de: "+turno.getPaciente().getUsername()+" "+turno.getPaciente().getApellido());
-		model.addAttribute("turno", turno);
+		model.addAttribute(TITULO_LABEL, "Eliminar turno de: "+turno.getPaciente().getUsername()+" "+turno.getPaciente().getApellido());
+		flash.addFlashAttribute(INFO_LABEL, "Eliminar turno de: "+turno.getPaciente().getUsername()+" "+turno.getPaciente().getApellido());
+		model.addAttribute(TURNO_LABEL, turno);
 		return "eliminarTurno";
 	}
 	
