@@ -20,7 +20,7 @@ public class ErroresController implements ErrorController {
 	public ModelAndView renderErrorPage(HttpServletRequest httpRequest) {
 
 		ModelAndView mv = new ModelAndView(ERROR_LABEL);
-		String errorMsg = "";
+//		String errorMsg = "";
 		int httpErrorCode = getErrorCode(httpRequest);
 
 		switch (httpErrorCode) {
@@ -56,8 +56,8 @@ public class ErroresController implements ErrorController {
 			break;
 		}
 
-		mv.addObject("codigo", httpErrorCode);
-		mv.addObject("mensaje", errorMsg);
+//		mv.addObject("codigo", httpErrorCode);
+//		mv.addObject("mensaje", errorMsg);
 		return mv;
 	}
 

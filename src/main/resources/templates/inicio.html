@@ -9,8 +9,8 @@
 <link rel="stylesheet" th:href="@{/css/jquery-ui.min.css}" />
 <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
 <link rel="stylesheet" th:href="@{/css/navbar.css}" />
-<link rel="stylesheet" th:href="@{/css/cards.css}"/>
-<link rel="shortcut icon" th:href="@{/images/logoCorto.png}"/>
+<link rel="stylesheet" th:href="@{/css/cards.css}" />
+<link rel="shortcut icon" th:href="@{/images/logoCorto.png}" />
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,6 +19,25 @@
 <link rel="stylesheet"
 	href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+<style>
+@media ( max-width : 880px) {
+	.text {
+		text-transform: uppercase;
+		top:-100px;
+		text-align: left;
+		font-size: 3rem;
+		width: 100%;
+		height: 100vh;
+		color: white;
+		animation: type 4s linear forwards;
+		font-family: "Helvetica Neue", sans-serif;
+		letter-spacing: 0.2rem;
+		width: 90%;
+		opacity: 0;
+ 		position: fixed; 
+	}
+}
+</style>
 </head>
 <body>
 	<div class="wrapper">
@@ -27,8 +46,9 @@
 				<div class="menu-icon">
 					<i class="fa fa-bars fa-2x"></i>
 				</div>
-				
-				<a th:href="@{/inicio/}"><img class="logo" th:src="@{/images/logoCompleto.png}"></img></a>
+
+				<a th:href="@{/inicio/}"><img class="logo"
+					th:src="@{/images/logoCompleto.png}"></img></a>
 				<div class="menu">
 					<ul>
 						<li sec:authorize="hasAnyRole('ROLE_PACIENTE')"><a
@@ -41,158 +61,180 @@
 							th:href="@{/turno/listar}">Turnos</a></li>
 						<li sec:authorize="hasRole('ROLE_ADMINISTRADOR')"><a
 							th:href="@{/usuario/listar}">Usuarios</a></li>
-						<li sec:authorize="!isAuthenticated()"><a href="https://wa.me/5212223717805/?text=HoladesdeApp">Contacto</a></li>
+						<li sec:authorize="!isAuthenticated()"><a
+							href="https://wa.me/5212223717805/?text=HoladesdeApp">Contacto</a></li>
 						<li sec:authorize="!isAuthenticated()"><modal
 								th:replace="/modal/login :: modal"></modal></li>
 						<li sec:authorize="isAuthenticated()" class="dropdown"><a
 							href="#" th:replace="/modal/logout :: modal" role="button"> <span
-								sec:authentication="name" ></span>
-						</a>
-						</li>
+								sec:authentication="name"></span>
+						</a></li>
 					</ul>
 				</div>
-				
+
 				<div id="mensajeAlerta">
-				<div class="alert alert-success" th:if="${success != null}"
-				th:text="${success}"></div>
-				<div class="alert alert-danger" th:if="${error != null}"
-				th:text="${error}"></div>
-				<div class="alert alert-warning" th:if="${warning != null}"
-				th:text="${warning}"></div>
-				<div class="alert alert-info" th:if="${info != null}"
-				th:text="${info}"></div>
+					<div class="alert alert-success" th:if="${success != null}"
+						th:text="${success}"></div>
+					<div class="alert alert-danger" th:if="${error != null}"
+						th:text="${error}"></div>
+					<div class="alert alert-warning" th:if="${warning != null}"
+						th:text="${warning}"></div>
+					<div class="alert alert-info" th:if="${info != null}"
+						th:text="${info}"></div>
 				</div>
 			</nav>
+			<h1 class="text">Hola aca va una descripcion breve de la pagina</h1>
 		</header>
 		<div class="content"></div>
-		</div>
-	
-	
-	
+	</div>
+
+
+
 	<div class="container">
-<!--    <center class="mt-4 mb-4"> -->
-<!--       <h2>¿Qué es la fonoaudiología?</h2> -->
-<!--    </center> -->
-   <section class="section-tours">
-      <div class="row">
-         <div class="col-lg-4 mb-4">
-            <div class="my-flip-container">
-               <div class="my-flip-inner my-flip-right">
-                  <div class="my-flip-inner-wrapper">
-                     <div class="my-flip-side my-flip-front">
-                        <div class="my-flip-image my-flip-image--1">
-                           <img src="https://picsum.photos/600/400?random=5">                                 
-                        </div>
-                        <div class="my-flip-details">
-                           <h4 class="my-flip-heading">My Flip Title</h4>
-                           <div class="my-flip-text">
-                              <p>Lorem ipsum dolor sit amet adipisicing elit sed do eiusmod tempor incididunt labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip</p>
-                           </div>
-                        </div>
-                     </div>
-                     <div class="my-flip-side my-flip-back my-flip-back-1">
-                        <div class="my-flip-back-inner">
-                           <div class="my-flip-price">
-                              <h3>$129</h3>
-                           </div>
-                           <div class="my-flip-back-text">
-                              <ul>
-                                 <li>All Widgets</li>
-                                 <li>Unlimited Section</li>
-                                 <li>300 Line Icon</li>
-                                 <li>Support 24x7</li>
-                                 <li>Updates for 1 year</li>
-                              </ul>
-                           </div>
-                           <div class="my-flip-btn-box"><a href="#0" class="my-flip-btn">Book Now</a></div>
-                        </div>
-                     </div>
-                  </div>
-               </div>
-            </div>
-         </div>
-         <div class="col-lg-4 mb-4">
-            <div class="my-flip-container">
-               <div class="my-flip-inner my-flip-right">
-                  <div class="my-flip-inner-wrapper">
-                     <div class="my-flip-side my-flip-front">
-                        <div class="my-flip-image my-flip-image--2">
-                           <img src="https://picsum.photos/600/400?random=6">                
-                        </div>
-                        <div class="my-flip-details">
-                           <h4 class="my-flip-heading">My Flip Title</h4>
-                           <div class="my-flip-text">
-                              <p>Lorem ipsum dolor sit amet adipisicing elit sed do eiusmod tempor incididunt labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip</p>
-                           </div>
-                        </div>
-                     </div>
-                     <div class="my-flip-side my-flip-back my-flip-back-2">
-                        <div class="my-flip-back-inner">
-                           <div class="my-flip-price">
-                              <h3>$149</h3>
-                           </div>
-                           <div class="my-flip-back-text">
-                              <ul>
-                                 <li>All Widgets</li>
-                                 <li>Unlimited Section</li>
-                                 <li>400 Line Icon</li>
-                                 <li>Support 24x7</li>
-                                 <li>Updates for 2 year</li>
-                              </ul>
-                           </div>
-                           <div class="my-flip-btn-box"><a href="#0" class="my-flip-btn">Book Now</a></div>
-                        </div>
-                     </div>
-                  </div>
-               </div>
-            </div>
-         </div>
-         <div class="col-lg-4 mb-4">
-            <div class="my-flip-container">
-               <div class="my-flip-inner my-flip-right">
-                  <div class="my-flip-inner-wrapper">
-                     <div class="my-flip-side my-flip-front">
-                        <div class="my-flip-image my-flip-image--3">
-                           <img src="https://picsum.photos/600/400?random=7">                               
-                        </div>
-                        <div class="my-flip-details">
-                           <h4 class="my-flip-heading">My Flip Title</h4>
-                           <div class="my-flip-text">
-                              <p>Lorem ipsum dolor sit amet adipisicing elit sed do eiusmod tempor incididunt labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip</p>
-                           </div>
-                        </div>
-                     </div>
-                     <div class="my-flip-side my-flip-back my-flip-back-3">
-                        <div class="my-flip-back-inner">
-                           <div class="my-flip-price">
-                              <h3>$169</h3>
-                           </div>
-                           <div class="my-flip-back-text">
-                              <ul>
-                                 <li>All Widgets</li>
-                                 <li>Unlimited Section</li>
-                                 <li>500+ Line Icon</li>
-                                 <li>Support 24x7</li>
-                                 <li>Lifetime Update</li>
-                              </ul>
-                           </div>
-                           <div class="my-flip-btn-box"><a href="#0" class="my-flip-btn">Book Now</a></div>
-                        </div>
-                     </div>
-                  </div>
-               </div>
-            </div>
-         </div>
-      </div>
-   </section>
-   <div id="bottom"></div>
-  </div>
-	
-	
+		<!--    <center class="mt-4 mb-4"> -->
+		<!--       <h2>¿Qué es la fonoaudiología?</h2> -->
+		<!--    </center> -->
+		<section class="section-tours">
+			<div class="row">
+				<div class="col-lg-4 mb-4">
+					<div class="my-flip-container">
+						<div class="my-flip-inner my-flip-right">
+							<div class="my-flip-inner-wrapper">
+								<div class="my-flip-side my-flip-front">
+									<div class="my-flip-image my-flip-image--1">
+										<img src="/images/nino.jpg">
+									</div>
+									<div class="my-flip-details">
+										<h4 class="my-flip-heading">¿Qué es la Fonoaudiología?</h4>
+										<div class="my-flip-text">
+											<p>Especialidad que se dedica a establecer o reestablecer
+												las habilidades y funciones de la comunicación.</p>
+										</div>
+									</div>
+								</div>
+								<div class="my-flip-side my-flip-back my-flip-back-1">
+									<div class="my-flip-back-inner">
+										<div class="my-flip-price">
+											<h3>Mas detalle</h3>
+										</div>
+										<div class="my-flip-back-text">
+											<ul>
+												<li>El fonoaudiologo es el profesional que aborda el
+													estudio y tratamiento de los procesos normales o
+													patológicos de la comunicación humana en las áreas de voz,
+													audición,lenguaje y fonoestomatología. Es quien establece o
+													reestablece las habilidades comunicativas en todas las
+													etapas de la vida. Realiza: promoción, prevención,
+													evaluación, diagnóstico, tratamiento e investigación y
+													además derivación a otros profesionales. Como asi también
+													integra equipos en salud y educación.</li>
+
+											</ul>
+										</div>
+										<!-- 										<div class="my-flip-btn-box"> -->
+										<!-- 											<a href="#0" class="my-flip-btn">Book Now</a> -->
+										<!-- 										</div> -->
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-4 mb-4">
+					<div class="my-flip-container">
+						<div class="my-flip-inner my-flip-right">
+							<div class="my-flip-inner-wrapper">
+								<div class="my-flip-side my-flip-front">
+									<div class="my-flip-image my-flip-image--2">
+										<img src="/images/comunicacion3.jpg">
+									</div>
+									<div class="my-flip-details">
+										<h4 class="my-flip-heading">Áreas de atención</h4>
+										<div class="my-flip-text">
+											<p>Abordamos las variadas dificultades relacionadas con
+												la interacción oral tanto en niños como adultos.</p>
+										</div>
+									</div>
+								</div>
+								<div class="my-flip-side my-flip-back my-flip-back-2">
+									<div class="my-flip-back-inner">
+										<!-- 										<div class="my-flip-price"> -->
+										<!-- 											<h3></h3> -->
+										<!-- 										</div> -->
+										<div class="my-flip-back-text">
+											<ul>
+												<li>Niños: dificultades para comunicarse (fluidez,
+													pronunciación o articulación, estructuración del lenguaje
+													y/o de la voz). Hábitos orales (succión, deglución,
+													respiración bucal, etc). Deficiencias motoras y cognitivas.
+													Anormalidades de nacimiento (fisura labiopalatina). Fallas
+													sensoriales auditivas.</li>
+												<li>Adultos: secuelas de ACV (dificultades cognitivas,
+													deglución, afasia, trastornos del habla, etc). Patologías
+													de la voz (difonía, afonía, etc).</li>
+											</ul>
+										</div>
+										<div class="my-flip-btn-box">
+											<a href="#bottom" class="my-flip-btn">Tengo mas dudas</a>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-4 mb-4">
+					<div class="my-flip-container">
+						<div class="my-flip-inner my-flip-right">
+							<div class="my-flip-inner-wrapper">
+								<div class="my-flip-side my-flip-front">
+									<div class="my-flip-image my-flip-image--3">
+										<img src="/images/comunicacion1.jpg">
+									</div>
+									<div class="my-flip-details">
+										<h4 class="my-flip-heading">¿Cómo comienzo?</h4>
+										<div class="my-flip-text">
+											<p>La evaluación: el primer contacto imprescindible para
+												establecer un diagnóstico y elaborar un plan de trabajo.</p>
+										</div>
+									</div>
+								</div>
+								<div class="my-flip-side my-flip-back my-flip-back-3">
+									<div class="my-flip-back-inner">
+										<div class="my-flip-price">
+											<!-- 											<h3>Primer contacto</h3> -->
+										</div>
+										<div class="my-flip-back-text">
+											<ul>
+												<li>El primer diagnóstico permite elaborar un plan de
+													trabajo individual y exclusivo a cada paciente. Se toma en
+													consideración los antecedentes médicos, hábitos e historia
+													personal evolutiva para aunarlos con los resultados
+													obtenidos del proceso evaluativo. Planteando asi un camino
+													de recuperación ajustado a las necesidades específicas de
+													cada paciente.</li>
+											</ul>
+										</div>
+										<div class="my-flip-btn-box">
+											<a href="https://wa.me/5212223717805/?text=HoladesdeApp"
+												class="my-flip-btn">Consultar</a>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+		<div id="bottom"></div>
+	</div>
+
+
 	<div class="container">
 		<map th:replace="/map/map :: mapa"></map>
 	</div>
-	
+
 	<script>
 		$(document).ready(function() {
 			$(".menu-icon").on("click", function() {
@@ -232,13 +274,54 @@
 				$('nav').removeClass('black');
 			}
 		})
-		$(function () { 
-  	  var duration = 3000; // 3 seconds
-    	setTimeout(function () { $('#mensajeAlerta').hide(); }, duration);
+		$(function() {
+			var duration = 3000; // 3 seconds
+			setTimeout(function() {
+				$('#mensajeAlerta').hide();
+			}, duration);
 		});
 	</script>
 
 	<footer th:replace="layout/layout :: footer"></footer>
+	<hr />
+	<p style="text-align: center;" sec:authorize="isAuthenticated()">
+		<!-- 		principal authorities muestra los roles del usuario name -->
+		Usuario logeado: <span sec:authentication="name"></span> | Roles: <span
+			sec:authentication="principal.authorities"></span>
+	</p>
+	<tr>
+		<td class="footer">
+
+
+			<table style="margin: 0 auto; text-align: center;" align="center">
+				<tbody>
+					<tr>
+						<td><span class="linee"><img width="30" height="5"
+								src="{{view url='images/sosmed/line-email.jpg'}}" alt="" /></span></td>
+
+					</tr>
+					<tr>
+
+						<td style="padding-top: 10px; padding-bottom: 20px;"><span
+							style="font-weight: 500; line-height: 1.2; font-size: 14px; color: #454545; text-transform: uppercase;">Fabrizio
+								Pratici</span><br /> <span
+							style="font-weight: 500; line-height: 1.2; font-size: 14px; color: #818181; text-transform: capitalize;">Desarrollo
+								web</span></td>
+					</tr>
+				</tbody>
+			</table>
+
+			<table style="margin: 0 auto; text-align: center;" align="center">
+				<tr>
+					<td style="padding: 0 5px;"><a
+						href="mailto:fabriziop@live.com.ar"><img width="30"
+							height="30" src="/images/mail.png" alt="Contacto" /></a></td>
+			</table>
+			<table style="margin: 0 auto; text-align: center;" align="center">
+				<tr>
+				</tr>
+
+			</table>
 </body>
 
 </html>
