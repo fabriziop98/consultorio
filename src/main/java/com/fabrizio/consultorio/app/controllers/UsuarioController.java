@@ -63,7 +63,7 @@ public class UsuarioController {
 			
 	}
 	
-	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR')")
+//	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR')")
 	@GetMapping("/")
 	public String displayCrearUsuario(Model model) {
 		model.addAttribute(USUARIO_LABEL, new Usuario());
@@ -71,7 +71,7 @@ public class UsuarioController {
 	}
 	
 	
-	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR')")
+//	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR')")
 	@PostMapping("/crear")
 	public String crearUsuario(@Valid Usuario usuario, BindingResult result, Model model,
 			@RequestParam(required = false, value = "file") String foto, RedirectAttributes flash, SessionStatus status) {

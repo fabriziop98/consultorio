@@ -131,8 +131,8 @@ public class UsuarioServiceImpl implements IUsuarioService{
 		
 		String foto = usuario.getFoto();
 		usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
-		Usuario u = usuarioDao.getOne(usuario.getId());
-		if(usuario.getMail()!=u.getMail()) {
+		Usuario u = usuarioDao.findById((usuario.getId())).orElse(null);
+		if(!usuario.getMail().equals(u.getMail())) {
 			if (usuarioDao.porMail(usuario.getMail()) != null) {
 				throw new Exception();
 			}

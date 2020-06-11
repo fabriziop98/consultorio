@@ -63,10 +63,9 @@
 							th:href="@{/usuario/listar}">Usuarios</a></li>
 						<li sec:authorize="!isAuthenticated()"><a
 							href="https://wa.me/5212223717805/?text=HoladesdeApp">Contacto</a></li>
-						<li sec:authorize="!isAuthenticated()"><modal
-								th:replace="/modal/login :: modal"></modal></li>
+						<li sec:authorize="!isAuthenticated()"><a th:replace="modal/login :: modal"></a></li>
 						<li sec:authorize="isAuthenticated()" class="dropdown"><a
-							href="#" th:replace="/modal/logout :: modal" role="button"> <span
+							href="#" th:replace="modal/logout :: modal" role="button"> <span
 								sec:authentication="name"></span>
 						</a></li>
 					</ul>
@@ -232,7 +231,7 @@
 
 
 	<div class="container">
-		<map th:replace="/map/map :: mapa"></map>
+		<map th:replace="map/map :: mapa"></map>
 	</div>
 
 	<script>

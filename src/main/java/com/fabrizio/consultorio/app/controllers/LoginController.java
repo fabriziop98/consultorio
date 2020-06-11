@@ -42,6 +42,6 @@ public class LoginController {
 			model.addAttribute(SUCCESS_LABEL, "Has cerrado sesión con éxito!");
 		}
 		model.addAttribute("usuarioConsulta", u);
-		return "/inicio";
+		return "inicio";
 	}
 }
