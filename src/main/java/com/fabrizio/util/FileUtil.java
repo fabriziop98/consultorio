@@ -2,8 +2,8 @@ package com.fabrizio.util;
 
 public final class FileUtil {
 	
-	public static final String RUTA_IMAGENES = "/consultorioFotos/";
+	public static final String RUTA_IMAGENES = System.getProperty("user.dir") + "/consultorioFotos/";
 			
-//			System.getProperty("user.dir") + "/consultorioFotos/";
+			
 	
 }

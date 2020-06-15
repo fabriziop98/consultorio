@@ -3,6 +3,7 @@ package com.fabrizio.consultorio.app.controllers;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.util.List;
 import java.util.Locale;
@@ -11,6 +12,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -28,8 +30,22 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
+import com.amazonaws.auth.profile.ProfileCredentialsProvider;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.model.AmazonS3Exception;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.GetObjectRequest;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.S3Object;
 import com.fabrizio.consultorio.app.models.entity.Usuario;
 import com.fabrizio.consultorio.app.models.service.IUsuarioService;
 import com.fabrizio.consultorio.app.models.service.IUploadFileService;
@@ -39,55 +55,80 @@ import static com.fabrizio.util.Texto.USUARIOS_LABEL;
 import static com.fabrizio.util.Texto.TITULO_LABEL;
 import static com.fabrizio.util.Texto.ERROR_LABEL;
 import static com.fabrizio.util.Texto.SUCCESS_LABEL;
+
 @Controller
-@RequestMapping("/"+USUARIO_LABEL)
+@RequestMapping("/" + USUARIO_LABEL)
 
 public class UsuarioController {
 
 	@Autowired
 	private IUsuarioService usuarioService;
-	
-	
+
 	@Autowired
 	private IUploadFileService uploadFileService;
-	
+
 	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR')")
 	@GetMapping("/listar")
-	public String listarUsuarios(Model model, Authentication authentication, HttpServletRequest request, Locale locale) {
-		
+	public String listarUsuarios(Model model, Authentication authentication, HttpServletRequest request,
+			Locale locale) {
+
 		List<Usuario> usuarios = usuarioService.findAll();
-		
+
 		model.addAttribute(TITULO_LABEL, USUARIOS_LABEL);
 		model.addAttribute(USUARIOS_LABEL, usuarios);
 		return "usuarios";
-			
+
 	}
-	
+
 //	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR')")
 	@GetMapping("/")
 	public String displayCrearUsuario(Model model) {
 		model.addAttribute(USUARIO_LABEL, new Usuario());
 		return "crearUsuario";
 	}
-	
-	
+
 //	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR')")
 	@PostMapping("/crear")
 	public String crearUsuario(@Valid Usuario usuario, BindingResult result, Model model,
-			@RequestParam(required = false, value = "file") String foto, RedirectAttributes flash, SessionStatus status) {
+			@RequestParam(required = false, value = "file") String foto, RedirectAttributes flash,
+			SessionStatus status) {
 		usuario.setFoto(foto);
 		try {
-			usuarioService.save(usuario);
-		} catch (Exception e) {
+			BasicAWSCredentials awsCreds = new BasicAWSCredentials("AKIA3ETWK5VY2MF6Y7MS",
+					"SIZUE5DGzvRqqXzw1RKC++4vq6j30x8e63t+8KL0");
+			AmazonS3 s3Client = AmazonS3ClientBuilder.standard()
+					.withCredentials(new AWSStaticCredentialsProvider(awsCreds)).build();
+					
+			String bucketName = "elasticbeanstalk-us-east-1-765826100593";
+			String folderName = "consultorioFotos";
+			InputStream is = IOUtils.toInputStream(foto);
+			// guarda en s3 con acceso público
+			s3Client.putObject(new PutObjectRequest(bucketName, foto, is, new ObjectMetadata())
+					.withCannedAcl(CannedAccessControlList.PublicRead));
+			// obitene la referencia al objeto de la imagen
+			S3Object s3object = s3Client.getObject(new GetObjectRequest(bucketName, foto));
+			System.out.println(s3object.getObjectContent().getHttpRequest().getURI().toString());
+		} catch (AmazonS3Exception e) {
 			e.printStackTrace();
+//			flash.addFlashAttribute(ERROR_LABEL, "Ocurrió un error al intentar crear el usuario.");
+//			return "redirect:/usuario/";
+		}
+		
+		try {
+			
+			usuarioService.save(usuario);
+		} catch (Exception ex) {
+			ex.printStackTrace();
 			flash.addFlashAttribute(ERROR_LABEL, "Ocurrió un error al intentar crear el usuario.");
 			return "redirect:/usuario/";
 		}
+
 		status.setComplete();
-		flash.addFlashAttribute(SUCCESS_LABEL, "Usuario "+usuario.getUsername()+" "+usuario.getApellido()+" creado con éxito.");
+		flash.addFlashAttribute(SUCCESS_LABEL,
+				"Usuario " + usuario.getUsername() + " " + usuario.getApellido() + " creado con éxito.");
 		return "redirect:/usuario/listar";
 	}
-	
+
 	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR')")
 	@GetMapping("/editar/{id}")
 	public String displayEditarUsuario(@PathVariable Long id, Model model) {
@@ -95,10 +136,11 @@ public class UsuarioController {
 		model.addAttribute(USUARIO_LABEL, usuario);
 		return "crearUsuario";
 	}
-	
+
 	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR')")
 	@PostMapping("/editar/{id}")
-	public String editarUsuario(@Valid Usuario usuario, @RequestParam(required = false, value = "file") String foto, RedirectAttributes flash) {
+	public String editarUsuario(@Valid Usuario usuario, @RequestParam(required = false, value = "file") String foto,
+			RedirectAttributes flash) {
 		try {
 			usuario.setFoto(foto);
 			usuarioService.editar(usuario);
@@ -113,30 +155,30 @@ public class UsuarioController {
 
 	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR','ROLE_TERAPEUTA','ROLE_PACIENTE')")
 	@GetMapping(value = "/ver/{id}")
-	public String ver(@PathVariable(value = "id") Long id,  Map<String, Object> model, RedirectAttributes flash) {
+	public String ver(@PathVariable(value = "id") Long id, Map<String, Object> model, RedirectAttributes flash) {
 		Usuario usuario = usuarioService.findOne(id);
 		if (usuario == null) {
 			flash.addFlashAttribute(ERROR_LABEL, "El cliente no existe en la base de datos");
 			return "redirect:/usuario/listar";
 		}
 		model.put(USUARIO_LABEL, usuario);
-		model.put(TITULO_LABEL, "Detalle usuario: " + usuario.getUsername() +" "+ usuario.getApellido());
-		
+		model.put(TITULO_LABEL, "Detalle usuario: " + usuario.getUsername() + " " + usuario.getApellido());
+
 		return "verUsuario";
 	}
-	
+
 	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR')")
 	@RequestMapping(value = "/eliminar/{id}")
 	public String eliminar(@PathVariable(value = "id") Long id, RedirectAttributes flash) {
-		if (id>0){
+		if (id > 0) {
 			Usuario usuario = usuarioService.findOne(id);
 			usuarioService.darDeBaja(usuario);
-			flash.addFlashAttribute(SUCCESS_LABEL, "Terapeuta: "+usuario.getApellido()+" dado de baja.");
-			
+			flash.addFlashAttribute(SUCCESS_LABEL, "Terapeuta: " + usuario.getApellido() + " dado de baja.");
+
 		}
 		return "redirect:/terapeuta/listar";
 	}
-	
+
 	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR')")
 	@RequestMapping(value = "/eliminar")
 	public String eliminar(RedirectAttributes flash) {
@@ -146,7 +188,7 @@ public class UsuarioController {
 
 		return "redirect:/receta/listar";
 	}
-	
+
 	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR','ROLE_PACIENTE','ROLE_TERAPEUTA')")
 	@GetMapping(value = "/uploads/{filename:.+}")
 	public ResponseEntity<Resource> verFoto(@PathVariable String filename) {
@@ -161,9 +203,7 @@ public class UsuarioController {
 				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + recurso.getFilename() + "\"")
 				.body(recurso);
 	}
-	
-	
-	
+
 	@GetMapping("/foto/{id}")
 	public ResponseEntity<byte[]> abrirFoto(@PathVariable(name = "id") Long id) {
 		final HttpHeaders headers = new HttpHeaders();
@@ -201,7 +241,7 @@ public class UsuarioController {
 		}
 		return name.substring(lastIndexOf);
 	}
-	
+
 	private static byte[] readFileToByteArray(File file) {
 		FileInputStream fis;
 		byte[] bArray = new byte[(int) file.length()];
@@ -215,15 +255,5 @@ public class UsuarioController {
 		}
 		return bArray;
 	}
-	
-	
-	
+
 }
-
-
-
-
-
-
-
-

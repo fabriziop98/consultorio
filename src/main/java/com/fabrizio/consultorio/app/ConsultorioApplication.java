@@ -22,4 +22,3 @@ public class ConsultorioApplication {
 	}
 
 }
-///Users/fabriziopratici/Documents/workspace-spring-tool-suite-4-4.5.1.RELEASE/consultorioFork/target/Consultorio-0.0.1-SNAPSHOT.jar

@@ -7,6 +7,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 import java.util.UUID;
 
 import org.apache.commons.io.IOUtils;
@@ -15,6 +16,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.fabrizio.consultorio.app.models.dao.IPacienteDao;
 import com.fabrizio.consultorio.app.models.dao.ITerapeutaDao;
 import com.fabrizio.consultorio.app.models.dao.ITurnoDao;
@@ -28,6 +32,9 @@ import com.fabrizio.util.FileUtil;
 
 @Service
 public class UsuarioServiceImpl implements IUsuarioService{
+	
+	@Autowired
+	private AmazonUpload amazonUpload;
 	
 	@Autowired
 	private IUsuarioDao usuarioDao;
@@ -64,7 +71,7 @@ public class UsuarioServiceImpl implements IUsuarioService{
 		
 		String uniqueFilename = UUID.randomUUID().toString();
 		if (!foto.isEmpty()) {
-			File archivo = new File(FileUtil.RUTA_IMAGENES +uniqueFilename+"_"+ usuario.getUsername());
+			File archivo = new File(uniqueFilename+"_"+ usuario.getUsername());
 			String pathFoto = archivo.getPath();
 			usuario.setFoto(pathFoto);
 
@@ -238,6 +245,5 @@ public class UsuarioServiceImpl implements IUsuarioService{
 	public Usuario findByMail(String mail) {
 		return usuarioDao.porMail(mail);
 	}
-
-
+	
 }
