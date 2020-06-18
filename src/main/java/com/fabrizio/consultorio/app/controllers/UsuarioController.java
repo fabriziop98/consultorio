@@ -3,7 +3,6 @@ package com.fabrizio.consultorio.app.controllers;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.util.List;
 import java.util.Locale;
@@ -12,7 +11,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -33,21 +31,12 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
-import com.amazonaws.auth.profile.ProfileCredentialsProvider;
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.AmazonClientException;
+import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.s3.model.AmazonS3Exception;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.GetObjectRequest;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.amazonaws.services.s3.model.S3Object;
 import com.fabrizio.consultorio.app.models.entity.Usuario;
 import com.fabrizio.consultorio.app.models.service.IUsuarioService;
+import com.fabrizio.consultorio.app.models.service.AmazonUpload;
 import com.fabrizio.consultorio.app.models.service.IUploadFileService;
 
 import static com.fabrizio.util.Texto.USUARIO_LABEL;
@@ -60,6 +49,9 @@ import static com.fabrizio.util.Texto.SUCCESS_LABEL;
 @RequestMapping("/" + USUARIO_LABEL)
 
 public class UsuarioController {
+	
+	@Autowired
+	private AmazonUpload amazonUpload;
 
 	@Autowired
 	private IUsuarioService usuarioService;
@@ -94,28 +86,13 @@ public class UsuarioController {
 			SessionStatus status) {
 		usuario.setFoto(foto);
 		try {
-			BasicAWSCredentials awsCreds = new BasicAWSCredentials("AKIA3ETWK5VY2MF6Y7MS",
-					"SIZUE5DGzvRqqXzw1RKC++4vq6j30x8e63t+8KL0");
-			AmazonS3 s3Client = AmazonS3ClientBuilder.standard()
-					.withCredentials(new AWSStaticCredentialsProvider(awsCreds)).build();
-					
-			String bucketName = "elasticbeanstalk-us-east-1-765826100593";
-			String folderName = "consultorioFotos";
-			InputStream is = IOUtils.toInputStream(foto);
-			// guarda en s3 con acceso público
-			s3Client.putObject(new PutObjectRequest(bucketName, foto, is, new ObjectMetadata())
-					.withCannedAcl(CannedAccessControlList.PublicRead));
-			// obitene la referencia al objeto de la imagen
-			S3Object s3object = s3Client.getObject(new GetObjectRequest(bucketName, foto));
-			System.out.println(s3object.getObjectContent().getHttpRequest().getURI().toString());
-		} catch (AmazonS3Exception e) {
+			amazonUpload.upload(foto);
+		} catch (AmazonClientException e) {
 			e.printStackTrace();
 //			flash.addFlashAttribute(ERROR_LABEL, "Ocurrió un error al intentar crear el usuario.");
 //			return "redirect:/usuario/";
 		}
-		
 		try {
-			
 			usuarioService.save(usuario);
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -141,6 +118,14 @@ public class UsuarioController {
 	@PostMapping("/editar/{id}")
 	public String editarUsuario(@Valid Usuario usuario, @RequestParam(required = false, value = "file") String foto,
 			RedirectAttributes flash) {
+		try {
+			amazonUpload.upload(foto);
+		} catch (AmazonClientException e) {
+			e.printStackTrace();
+//			flash.addFlashAttribute(ERROR_LABEL, "Ocurrió un error al intentar crear el usuario.");
+//			return "redirect:/usuario/";
+		}
+		
 		try {
 			usuario.setFoto(foto);
 			usuarioService.editar(usuario);

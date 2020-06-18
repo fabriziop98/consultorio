@@ -7,7 +7,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
-import java.util.Properties;
 import java.util.UUID;
 
 import org.apache.commons.io.IOUtils;
@@ -16,9 +15,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.fabrizio.consultorio.app.models.dao.IPacienteDao;
 import com.fabrizio.consultorio.app.models.dao.ITerapeutaDao;
 import com.fabrizio.consultorio.app.models.dao.ITurnoDao;
@@ -33,8 +29,6 @@ import com.fabrizio.util.FileUtil;
 @Service
 public class UsuarioServiceImpl implements IUsuarioService{
 	
-	@Autowired
-	private AmazonUpload amazonUpload;
 	
 	@Autowired
 	private IUsuarioDao usuarioDao;
