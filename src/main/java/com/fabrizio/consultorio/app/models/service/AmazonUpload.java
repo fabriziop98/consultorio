@@ -16,6 +16,8 @@ import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,9 +34,16 @@ import com.amazonaws.services.s3.model.S3Object;
 
 @Service
 public class AmazonUpload {
+	
+	private Logger log = LoggerFactory.getLogger(AmazonUpload.class);
+
+	
 	public void upload(String foto) throws AmazonClientException {
 		
 		MultipartFile multipartFile = null;
+		log.info("====================AMAZON UPLOAD=====================");
+		System.out.println("====================AMAZON UPLOAD=====================");
+		
 		if (foto != null && !foto.equals("")) {
 			File file = new File(UUID.randomUUID().toString());
 			String encodedImg = foto.split(",")[1];

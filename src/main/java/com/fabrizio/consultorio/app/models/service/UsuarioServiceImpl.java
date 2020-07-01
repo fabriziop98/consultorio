@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,9 @@ import com.fabrizio.util.FileUtil;
 
 @Service
 public class UsuarioServiceImpl implements IUsuarioService{
+	
+	
+	private Logger log = LoggerFactory.getLogger(UsuarioServiceImpl.class);
 	
 	
 	@Autowired
@@ -129,8 +134,9 @@ public class UsuarioServiceImpl implements IUsuarioService{
 	
 	@Override
 	public void editar(Usuario usuario) throws Exception {
-		
+		log.info("====================USUARIO EDITAR=====================");
 		String foto = usuario.getFoto();
+		
 		usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
 		Usuario u = usuarioDao.findById((usuario.getId())).orElse(null);
 		if(!usuario.getMail().equals(u.getMail())) {
@@ -140,8 +146,8 @@ public class UsuarioServiceImpl implements IUsuarioService{
 		}
 		
 		String uniqueFilename = UUID.randomUUID().toString();
-		if (!foto.isEmpty()) {
-			File archivo = new File(FileUtil.RUTA_IMAGENES +uniqueFilename+"_"+ usuario.getUsername());
+		if (foto!=null) {
+			File archivo = new File(uniqueFilename+"_"+ usuario.getUsername());
 			String pathFoto = archivo.getPath();
 			usuario.setFoto(pathFoto);
 
@@ -158,7 +164,7 @@ public class UsuarioServiceImpl implements IUsuarioService{
 				System.out.println("Error al guardar la foto de usuario."+ e);
 			}
 		} else {
-			usuario.setFoto(u.getFoto());
+			usuario.setFoto((u.getFoto()));
 		}
 		usuario.setRol(u.getRol());
 		

@@ -28,12 +28,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.support.SessionStatus;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.amazonaws.AmazonClientException;
-import com.amazonaws.AmazonServiceException;
-import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.fabrizio.consultorio.app.models.entity.Usuario;
 import com.fabrizio.consultorio.app.models.service.IUsuarioService;
 import com.fabrizio.consultorio.app.models.service.AmazonUpload;
@@ -118,16 +115,18 @@ public class UsuarioController {
 	@PostMapping("/editar/{id}")
 	public String editarUsuario(@Valid Usuario usuario, @RequestParam(required = false, value = "file") String foto,
 			RedirectAttributes flash) {
-		try {
-			amazonUpload.upload(foto);
-		} catch (AmazonClientException e) {
-			e.printStackTrace();
-//			flash.addFlashAttribute(ERROR_LABEL, "Ocurrió un error al intentar crear el usuario.");
-//			return "redirect:/usuario/";
-		}
+		if(!foto.isEmpty()) {
+			try {
+				usuario.setFoto(foto);
+				amazonUpload.upload(foto);
+			} catch (AmazonClientException e) {
+				e.printStackTrace();
+//				flash.addFlashAttribute(ERROR_LABEL, "Ocurrió un error al intentar crear el usuario.");
+//				return "redirect:/usuario/";
+			}
+		} 
 		
 		try {
-			usuario.setFoto(foto);
 			usuarioService.editar(usuario);
 		} catch (Exception e) {
 			e.printStackTrace();
