@@ -30,10 +30,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.amazonaws.AmazonClientException;
 import com.fabrizio.consultorio.app.models.entity.Usuario;
 import com.fabrizio.consultorio.app.models.service.IUsuarioService;
-import com.fabrizio.consultorio.app.models.service.AmazonUpload;
 import com.fabrizio.consultorio.app.models.service.IUploadFileService;
 
 import static com.fabrizio.util.Texto.USUARIO_LABEL;
@@ -44,12 +42,8 @@ import static com.fabrizio.util.Texto.SUCCESS_LABEL;
 
 @Controller
 @RequestMapping("/" + USUARIO_LABEL)
-
 public class UsuarioController {
 	
-	@Autowired
-	private AmazonUpload amazonUpload;
-
 	@Autowired
 	private IUsuarioService usuarioService;
 
@@ -83,13 +77,6 @@ public class UsuarioController {
 			SessionStatus status) {
 		usuario.setFoto(foto);
 		try {
-			amazonUpload.upload(foto);
-		} catch (AmazonClientException e) {
-			e.printStackTrace();
-//			flash.addFlashAttribute(ERROR_LABEL, "Ocurrió un error al intentar crear el usuario.");
-//			return "redirect:/usuario/";
-		}
-		try {
 			usuarioService.save(usuario);
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -115,17 +102,7 @@ public class UsuarioController {
 	@PostMapping("/editar/{id}")
 	public String editarUsuario(@Valid Usuario usuario, @RequestParam(required = false, value = "file") String foto,
 			RedirectAttributes flash) {
-		if(!foto.isEmpty()) {
-			try {
-				usuario.setFoto(foto);
-				amazonUpload.upload(foto);
-			} catch (AmazonClientException e) {
-				e.printStackTrace();
-//				flash.addFlashAttribute(ERROR_LABEL, "Ocurrió un error al intentar crear el usuario.");
-//				return "redirect:/usuario/";
-			}
-		} 
-		
+		usuario.setFoto(foto);
 		try {
 			usuarioService.editar(usuario);
 		} catch (Exception e) {

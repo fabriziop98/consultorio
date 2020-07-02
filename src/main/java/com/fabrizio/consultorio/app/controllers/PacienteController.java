@@ -35,13 +35,11 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.amazonaws.AmazonClientException;
 import com.fabrizio.consultorio.app.models.entity.Paciente;
 import com.fabrizio.consultorio.app.models.entity.Pdf;
 import com.fabrizio.consultorio.app.models.entity.Terapeuta;
 import com.fabrizio.consultorio.app.models.entity.Turno;
 import com.fabrizio.consultorio.app.models.entity.Usuario;
-import com.fabrizio.consultorio.app.models.service.AmazonUpload;
 import com.fabrizio.consultorio.app.models.service.IPacienteService;
 import com.fabrizio.consultorio.app.models.service.IPdfService;
 import com.fabrizio.consultorio.app.models.service.ITerapeutaService;
@@ -64,8 +62,6 @@ import static com.fabrizio.util.Texto.TERAPEUTAS_LABEL;
 @RequestMapping("/paciente")
 public class PacienteController {
 	
-	@Autowired
-	private AmazonUpload amazonUpload;
 
 	@Autowired
 	private IPacienteService pacienteService;
@@ -336,17 +332,16 @@ public class PacienteController {
 	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR','ROLE_PACIENTE','ROLE_TERAPEUTA')")
 	@GetMapping(value = "/listado/pdf/{filename:.+}")
 	public ResponseEntity<Resource> verPdf(@PathVariable String filename) {
-//		Resource recurso = null;
-//		try {
-			amazonUpload.getArchivo(filename);
-//			recurso = uploadFileService.load(filename);
-//		} 
-//		catch (MalformedURLException e) {
-//			e.printStackTrace();
-//		}
+		Resource recurso = null;
+		try {
+			recurso = uploadFileService.load(filename);
+		} 
+		catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
 
-		return ResponseEntity.ok().build();
-//				.body(recurso);
+		return ResponseEntity.ok()
+				.body(recurso);
 	}
 	
 	@PreAuthorize("hasAnyRole('ROLE_ADMINISTRADOR','ROLE_PACIENTE','ROLE_TERAPEUTA')")

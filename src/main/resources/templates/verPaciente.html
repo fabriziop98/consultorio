@@ -144,6 +144,9 @@
 														th:src="@{/images/pdf.png}"> <img
 														th:if="${#strings.endsWith(pdf.nombre,'doc')}"
 														th:src="@{/images/doc.jpg}">
+														<img
+														th:if="${#strings.endsWith(pdf.nombre,'docx')}"
+														th:src="@{/images/doc.jpg}">
 												</div>
 												<div class="my-flip-details">
 													<h4 style="color: #5d5d5e; font-family: proxima-nova;"
@@ -157,7 +160,13 @@
 															th:if="${#strings.endsWith(pdf.nombre,'doc')}"
 															th:href="@{'/paciente/listado/pdf/' + ${pdf.nombre}(format=doc)}"
 															th:text="${#strings.substringAfter(pdf.nombre,'___')}"
-															target="_blank" class="button button-primary"></a> <a
+															target="_blank" class="button button-primary"></a>
+															<a
+															th:if="${#strings.endsWith(pdf.nombre,'docx')}"
+															th:href="@{'/paciente/listado/pdf/' + ${pdf.nombre}(format=doc)}"
+															th:text="${#strings.substringAfter(pdf.nombre,'___')}"
+															target="_blank" class="button button-primary"></a>
+															 <a
 															sec:authorize="hasRole('ROLE_ADMINISTRADOR')"
 															class="button button-danger" style="margin: 10%;"
 															th:href="@{'/paciente/pdf/eliminar/' + ${pdf.id} +'/'+ ${paciente.id}}"
