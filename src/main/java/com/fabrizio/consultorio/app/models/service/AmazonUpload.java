@@ -25,6 +25,8 @@ import org.springframework.web.multipart.MultipartFile;
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.auth.policy.Resource;
+import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.GetObjectRequest;
@@ -41,8 +43,7 @@ public class AmazonUpload {
 	public void upload(String foto) throws AmazonClientException {
 		
 		MultipartFile multipartFile = null;
-		log.info("====================AMAZON UPLOAD=====================");
-		System.out.println("====================AMAZON UPLOAD=====================");
+		log.info("====================AMAZON UPLOAD FOTO=====================");
 		
 		if (foto != null && !foto.equals("")) {
 			File file = new File(UUID.randomUUID().toString());
@@ -68,7 +69,7 @@ public class AmazonUpload {
 //				.withRegion(Regions.US_EAST_1).build();
 				
 		String bucketName = "elasticbeanstalk-us-east-1-765826100593";
-//		String folderName = "consultorioFotos";
+		String folderName = "consultorioFotos";
 //		InputStream is;
 		try {
 //			is = IOUtils.toInputStream(foto,StandardCharsets.UTF_8.name());
@@ -80,9 +81,9 @@ public class AmazonUpload {
 			
 			ObjectMetadata metadata = new ObjectMetadata();
 	        metadata.setContentLength(multipartFile.getSize());
-			s3Client.putObject(new PutObjectRequest(bucketName, multipartFile.getName(), multipartFile.getInputStream(), metadata));
+			s3Client.putObject(new PutObjectRequest(bucketName+"/"+folderName, multipartFile.getName(), multipartFile.getInputStream(), metadata));
 			// obitene la referencia al objeto de la imagen
-			S3Object s3object = s3Client.getObject(new GetObjectRequest(bucketName, foto));
+			S3Object s3object = s3Client.getObject(new GetObjectRequest(folderName+"/"+bucketName, foto));
 			System.out.println(s3object.getObjectContent().getHttpRequest().getURI().toString());
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -91,39 +92,51 @@ public class AmazonUpload {
 	}
 	
 	
-	
-	
-	public static byte[] getBytes(InputStream is) throws IOException {
-
-	    int len;
-	    int size = 1024;
-	    byte[] buf;
-
-	    if (is instanceof ByteArrayInputStream) {
-	      size = is.available();
-	      buf = new byte[size];
-	      len = is.read(buf, 0, size);
-	    } else {
-	      ByteArrayOutputStream bos = new ByteArrayOutputStream();
-	      buf = new byte[size];
-	      while ((len = is.read(buf, 0, size)) != -1)
-	        bos.write(buf, 0, len);
-	      buf = bos.toByteArray();
-	    }
-	    return buf;
-	  }
-	
-	public long bytesToLong(byte[] bytes) {
-	    ByteBuffer buffer = ByteBuffer.allocate(Long.BYTES);
-	    buffer.put(bytes);
-	    buffer.flip();//need flip 
-	    return buffer.getLong();
+public void uploadArchivo(MultipartFile archivo) throws AmazonClientException {
+		
+		log.info("====================AMAZON UPLOAD ARCHIVO=====================");
+		
+		BasicAWSCredentials awsCreds = new BasicAWSCredentials("AKIA3ETWK5VY2MF6Y7MS",
+				"SIZUE5DGzvRqqXzw1RKC++4vq6j30x8e63t+8KL0");
+		AmazonS3 s3Client = AmazonS3ClientBuilder.standard()
+				.withCredentials(new AWSStaticCredentialsProvider(awsCreds)).build();
+//				.withRegion(Regions.US_EAST_1).build();
+				
+		String bucketName = "elasticbeanstalk-us-east-1-765826100593";
+		String folderName = "consultorioInformes";
+//		InputStream is;
+		try {
+//			is = IOUtils.toInputStream(foto,StandardCharsets.UTF_8.name());
+			
+			// guarda en s3 con acceso público
+			 
+//			s3Client.putObject(new PutObjectRequest(bucketName, foto, is, new ObjectMetadata())
+//					.withCannedAcl(CannedAccessControlList.PublicRead));
+			
+			ObjectMetadata metadata = new ObjectMetadata();
+	        metadata.setContentLength(archivo.getSize());
+			s3Client.putObject(new PutObjectRequest(bucketName+"/"+folderName, archivo.getName(), archivo.getInputStream(), metadata));
+			// obitene la referencia al objeto de la imagen
+			S3Object s3object = s3Client.getObject(new GetObjectRequest(bucketName+"/"+folderName, archivo.getName()));
+			System.out.println(s3object.getObjectContent().getHttpRequest().getURI().toString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 	}
-	
-}
 
-	
-	
+	public void getArchivo(String fileName) {
+		BasicAWSCredentials awsCreds = new BasicAWSCredentials("AKIA3ETWK5VY2MF6Y7MS",
+		"SIZUE5DGzvRqqXzw1RKC++4vq6j30x8e63t+8KL0");
+		AmazonS3 s3Client = AmazonS3ClientBuilder.standard().withRegion(Regions.US_EAST_1)
+		.withCredentials(new AWSStaticCredentialsProvider(awsCreds)).build();
+		String bucketName = "elasticbeanstalk-us-east-1-765826100593";
+		String folderName = "consultorioInformes";
+		@SuppressWarnings("unused")
+		S3Object fullObject = s3Client.getObject(new GetObjectRequest(bucketName+"/"+folderName, fileName));
+		
+	}
+}
 	
 	
 	

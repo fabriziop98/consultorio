@@ -10,15 +10,21 @@ import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.amazonaws.AmazonClientException;
+
 @Service
 public class UploadFileServiceImpl implements IUploadFileService {
 	private final Logger log = LoggerFactory.getLogger(getClass());
+	
+	@Autowired
+	private AmazonUpload amazonUpload;
 
 	@Override
 	public Resource load(String filename) throws MalformedURLException {
@@ -44,22 +50,26 @@ public class UploadFileServiceImpl implements IUploadFileService {
 	@Override
 	public String copy(MultipartFile file) throws IOException {
 		String uniqueFilename = UUID.randomUUID().toString() + "___" + file.getOriginalFilename();
-		if ((file.getContentType().endsWith("pdf"))) {
-			Path rutaPdf = pdfPath(uniqueFilename);
-			log.info("rootPath: " + rutaPdf);
-			Files.copy(file.getInputStream(), rutaPdf);
-		} else if (uniqueFilename.endsWith("doc")||uniqueFilename.endsWith("docx")){
-			Path rutaPdf = pdfPath(uniqueFilename);
-			log.info("rootPath: " + rutaPdf);
-			Files.copy(file.getInputStream(), rutaPdf);
-		} else {
+		if ((file.getContentType().endsWith("pdf")||uniqueFilename.endsWith("doc")||uniqueFilename.endsWith("docx"))) {
+			try {
+				amazonUpload.uploadArchivo(file);
+			} catch (AmazonClientException e) {
+				e.printStackTrace();
+//				flash.addFlashAttribute(ERROR_LABEL, "Ocurrió un error al intentar crear el usuario.");
+//				return "redirect:/usuario/";
+			}
+//			Path rutaPdf = pdfPath(uniqueFilename);
+//			log.info("rootPath: " + rutaPdf);
+//			Files.copy(file.getInputStream(), rutaPdf);
+		} 
+//		else if (uniqueFilename.endsWith("doc")||uniqueFilename.endsWith("docx")){
+//			Path rutaPdf = pdfPath(uniqueFilename);
+//			log.info("rootPath: " + rutaPdf);
+//			Files.copy(file.getInputStream(), rutaPdf);
+		
+		 else {
 			throw new IOException();
 			
-//			Path rootPath = getPath(uniqueFilename);
-//			
-//			log.info("rootPath: " + rootPath);
-//
-//			Files.copy(file.getInputStream(), rootPath);
 		}
 	
 
@@ -80,7 +90,11 @@ public class UploadFileServiceImpl implements IUploadFileService {
 	
 	@Override
 	public Path pdfPath(String filename){
-		return Paths.get("archivos").resolve(filename).toAbsolutePath();
+		//LOCAL
+//		return Paths.get("archivos").resolve(filename).toAbsolutePath();
+		
+		//AMAZON
+		return Paths.get(filename).resolve(filename).toAbsolutePath();
 	}
 	
 	@Override

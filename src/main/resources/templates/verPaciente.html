@@ -85,7 +85,7 @@
 				<div id="home" class="tab-pane fade in active">
 					<div class="form-group pass_show">
 						<a sec:authorize="hasRole('ROLE_ADMINISTRADOR')"
-							th:replace="/modal/asignarTerapeuta :: modal"></a>
+							th:replace="modal/asignarTerapeuta :: modal"></a>
 					</div>
 					<div class="well" style="background: #fff;">
 						<h4>Terapeuta(s)</h4>
@@ -98,7 +98,7 @@
 
 					<div class="form-group pass_show">
 						<a sec:authorize="hasRole('ROLE_ADMINISTRADOR')"
-							class="card-title px-4" th:replace="/modal/asignarTurno :: modal"></a>
+							class="card-title px-4" th:replace="modal/asignarTurno :: modal"></a>
 					</div>
 					<div class="well" style="background: #fff;">
 
